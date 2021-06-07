@@ -1,0 +1,58 @@
+html {
+    margin: 0;
+    padding: 0;
+}
+
+.phones_image {
+    padding-top: 70px;
+    height: 650px;
+    float: right;
+    margin: 10px;
+}
+
+body {
+    background-color: #fafafa!important
+}
+
+.container {
+    margin-top: 5px;
+}
+
+.login-part {
+
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+    height: 500px;
+    width: 350px;
+    margin-top: 100px;
+    padding: 40px;
+}
+
+.nistagram_logo {
+    margin: 15px auto;
+}
+
+.form-group {
+    margin-bottom: 10px!important;
+}
+
+.form-control {
+    background: #f1f1f1!important;
+    border: 1px solid #efefef;
+    font-size: 12px!important;
+}
+
+::placeholder{
+    color: #999!important
+}
+
+.btn {
+    margin: 12px auto;
+    padding: 2px!important;
+    font-weight: 600!important;
+}
+
+.btn-primary {
+    background-color: #3897f0!important;
+    border: 1px solid #3897f0!important;
+}

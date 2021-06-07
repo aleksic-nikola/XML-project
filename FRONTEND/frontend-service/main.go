@@ -17,7 +17,7 @@ func main() {
 	fmt.Println(path)
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.Dir("FRONTEND/frontend-service/public")))
+	mux.Handle("/", http.FileServer(http.Dir("FRONTEND/frontend-service/static")))
 
 	server := &http.Server{
 		Addr:           ":8000",

@@ -33,6 +33,7 @@ func main() {
 	sm := mux.NewRouter()
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
+
 	getRouter.HandleFunc("/req", rh.GetRequests)
 	getRouter.HandleFunc("/messReqs", mrh.GetMessageRequests)
 	getRouter.HandleFunc("/sensitiveContent", sch.GetSensitiveContentReportRequests)
@@ -44,7 +45,7 @@ func main() {
 
 
 	s := http.Server {
-		Addr: ":9090", // configure the bind address
+		Addr: ":9211", // configure the bind address
 		Handler: sm,  // set the default handler
 		ErrorLog: l, // set the logger for the server
 		ReadTimeout: 5 * time.Second, // max time to read request from the client

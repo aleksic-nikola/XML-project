@@ -22,10 +22,20 @@ body {
 
     background: #ffffff;
     border: 1px solid #e6e6e6;
-    height: 500px;
+    height: 380px;
     width: 350px;
-    margin-top: 100px;
+    margin-top: 90px;
     padding: 40px;
+}
+
+.signup-part {
+
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+    height: 100px;
+    width: 350px;
+    margin-top: 10px;
+    padding: 20px;
 }
 
 .nistagram_logo {
@@ -55,4 +65,21 @@ body {
 .btn-primary {
     background-color: #3897f0!important;
     border: 1px solid #3897f0!important;
+}
+
+.signup_text {
+    font-weight: 600px;
+    line-height: 20px;
+    font-size: 17px;
+    color: #999;
+}
+
+.register-part {
+
+    background: #ffffff;
+    border: 1px solid #e6e6e6;
+    height: 480px;
+    width: 350px;
+    margin-top: 90px;
+    padding: 40px;
 }

@@ -19,21 +19,21 @@ func main() {
 	fmt.Println("hello")
 
 	l := log.New(os.Stdout, "auth-service ", log.LstdFlags)
-	
+
 	uh := handlers.NewUsers(l)
 
 	sm := mux.NewRouter()
-	
+
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", uh.GetUsers)
 
-	s := http.Server {
-		Addr: ":9090",
-		Handler : sm,
-		ErrorLog: l,
-		ReadTimeout: 5 * time.Second,
-		WriteTimeout: 5* time.Second,
-		IdleTimeout:  120* time.Second,
+	s := http.Server{
+		Addr:         ":9090",
+		Handler:      sm,
+		ErrorLog:     l,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		IdleTimeout:  120 * time.Second,
 	}
 
 	go func() {
@@ -56,11 +56,8 @@ func main() {
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	s.Shutdown(ctx)	
+	s.Shutdown(ctx)
 
 	runtime.Goexit()
 
-
-
-	
 }

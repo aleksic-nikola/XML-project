@@ -2,14 +2,18 @@ package data
 
 import (
 	"encoding/json"
-	"io")
+	"io"
+
+	"gorm.io/gorm"
+)
 
 
 type User struct {
 	// id, email, username, name, lastname, password, role
-	ID int `json:"id"`
-	Email string `json:"email"`
-	Username string `json:"username"`
+	//ID int `json:"id"`
+	gorm.Model
+	Email string `json:"email" gorm:"uniqueIndex"`
+	Username string `json:"username" gorm:"uniqueIndex"`
 	Name string `json:"name"`
 	LastName string `json:"lastname"`
 	Password string `json:"password"`
@@ -37,7 +41,6 @@ func GetUsers() Users {
 var userList = []*User{
 
 	{
-		ID: 1,
 		Email: "lucyxz@gmail.com",
 		Username: "lucyxz",
 		Name: "Mark",

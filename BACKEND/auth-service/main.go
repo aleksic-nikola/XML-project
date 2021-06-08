@@ -74,13 +74,10 @@ func main() {
 	service := initServices(repo)
 	uh := initHandler(service)
 
-
 	fmt.Println("hello")
 
-	l := log.New(os.Stdout, "auth-service ", log.LstdFlags)
-	
 	sm := mux.NewRouter()
-	
+
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", uh.GetUsers)
 
@@ -121,11 +118,8 @@ func main() {
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	s.Shutdown(ctx)	
+	s.Shutdown(ctx)
 
 	runtime.Goexit()
 
-
-
-	
 }

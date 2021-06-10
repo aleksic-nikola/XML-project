@@ -8,27 +8,27 @@ import (
 	"xml/interaction-service/service"
 )
 
-type MessageHandler struct {
+type NotificationHandler struct {
 	L       *log.Logger
-	Service *service.MessageService
+	Service *service.NotificationService
 }
 
-func NewMessages(l *log.Logger, service *service.MessageService) *MessageHandler {
-	return &MessageHandler{l, service}
+func NewNotifications(l *log.Logger, service *service.NotificationService) *NotificationHandler {
+	return &NotificationHandler{l, service}
 }
 
-func (handler *MessageHandler) CreateMessage(rw http.ResponseWriter, r *http.Request) {
+func (handler *NotificationHandler) CreateNotification(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("creating")
-	var message data.Message
-	err := message.FromJSON(r.Body)
+	var notification data.Notification
+	err := notification.FromJSON(r.Body)
 	if err != nil {
 		handler.L.Println(err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Println(message)
+	fmt.Println(notification)
 
-	err = handler.Service.CreateMessage(&message)
+	err = handler.Service.CreateNotification(&notification)
 	if err != nil {
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
@@ -37,7 +37,7 @@ func (handler *MessageHandler) CreateMessage(rw http.ResponseWriter, r *http.Req
 	rw.Header().Set("Content-Type", "application/json")
 }
 
-func (m *MessageHandler) GetMessages(rw http.ResponseWriter, r *http.Request) {
+func (m *NotificationHandler) GetNotifications(rw http.ResponseWriter, r *http.Request) {
 	m.L.Println("Handle GET Request in MessageHandler")
 
 	lp := data.GetMessages()

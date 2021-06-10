@@ -3,33 +3,121 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
 	"time"
-	"xml/profile-serivce/handlers"
+	"xml/profile-service/data"
+	"xml/profile-service/handlers"
+	"xml/profile-service/repository"
+	"xml/profile-service/service"
+
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
+
+func initDB() *gorm.DB {
+
+	godotenv.Load()
+	host := os.Getenv("HOST")
+	dbport := os.Getenv("DBPORT")
+	user := os.Getenv("USER")
+	name := os.Getenv("NAME")
+	password := os.Getenv("PASSWORD")
+	
+	// db connection string
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", host, user, name, password, dbport)
+	println(dbURI + "*****")
+	// open connection to db
+	database, errx := gorm.Open(postgres.Open(dbURI))
+	
+	if errx != nil {
+		log.Fatal(errx)
+	} else {
+		fmt.Println("Successfully connected to profile-database")
+	}
+	
+	return database
+}
+
+func initProfileRepo(database *gorm.DB) *repository.ProfileRepository {
+	return &repository.ProfileRepository{Database: database}
+}
+
+func initAgentRepo(database *gorm.DB) *repository.AgentRepository {
+	return &repository.AgentRepository{Database: database}
+}
+
+func initVerifiedRepo(database *gorm.DB) *repository.VerifiedRepository {
+	return &repository.VerifiedRepository{Database: database}
+}
+
+func initProfileServices(repo *repository.ProfileRepository) *service.ProfileService {
+	return &service.ProfileService{Repo: repo}
+}
+
+func initAgentServices(repo *repository.AgentRepository) *service.AgentService {
+	return &service.AgentService{Repo: repo}
+}
+
+func initVerifiedServices(repo *repository.VerifiedRepository) *service.VerifiedService {
+	return &service.VerifiedService{Repo: repo}
+}
+
+func initProfileHandler(service *service.ProfileService) *handlers.ProfileHandler {
+	l := log.New(os.Stdout, "profile-service ", log.LstdFlags)
+	return &handlers.ProfileHandler{L: l, Service: service}
+}
+
+func initAgentHandler(service *service.AgentService) *handlers.AgentHandler {
+	l := log.New(os.Stdout, "profile-service ", log.LstdFlags)
+	return &handlers.AgentHandler{L: l, Service: service}
+}
+
+func initVerifiedHandler(service *service.VerifiedService) *handlers.VerifiedHandler {
+	l := log.New(os.Stdout, "profile-service ", log.LstdFlags)
+	return &handlers.VerifiedHandler{L: l, Service: service}
+}
+
 
 func main() {
 
 	fmt.Println("Hello profile-service")
 
+	database := initDB()
+	// defered closing
+	sqlDB, err := database.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sqlDB.Close()
+	// make migrations to the db if they're not already created
+	database.AutoMigrate(&data.Profile{})
+
+	database.AutoMigrate(&data.Agent{})
+	database.AutoMigrate(&data.Verified{})
+
+	profile_repo := initProfileRepo(database)
+	profile_service := initProfileServices(profile_repo)
+	//agent_service := initAgentServices(repo)
+	//verified_service := initVerifiedServices(repo)
+
 	l := log.New(os.Stdout, "profile-service", log.LstdFlags)
-	ph := handlers.NewProfiles(l)
-	agh := handlers.NewAgents(l)
-	adh := handlers.NewAdmins(l)
-	vh := handlers.NewVerifieds(l)
+	ph := initProfileHandler(profile_service)
+	//agh := initAgentHandler(agent_service)
+	//vh := initVerifiedHandler(verified_service)
 
 	sm := mux.NewRouter()
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/getprofiles", ph.GetProfiles)
-	getRouter.HandleFunc("/getagents", agh.GetAgents)
-	getRouter.HandleFunc("/getadmins", adh.GetAdmins)
-	getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
+	//getRouter.HandleFunc("/getagents", agh.GetAgents)
+	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
+	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 
 	s := http.Server {
 		Addr: ":3030",

@@ -3,7 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"xml/profile-serivce/data"
+	"xml/profile-service/data"
 )
 
 type Admins struct {

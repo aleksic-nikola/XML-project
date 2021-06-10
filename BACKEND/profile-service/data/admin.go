@@ -3,7 +3,7 @@ package data
 import (
 	"encoding/json"
 	"io"
-	"time"
+	//"time"
 )
 
 type Admin struct {
@@ -26,13 +26,12 @@ func GetAdmins() Admins {
 	return adminList
 }
 
+var adminList = []*Admin {}
+/*
 var adminList = []*Admin{
 	{
 		Profile: Profile{
-			ID: 1,
-			Name: "Danilo",
-			Lastname: "Paripovic",
-			Email: "danilo@gmail.com",
+			Username: "dparip",
 			Phone: "03214321",
 			Gender: MALE,
 			DateOfBirth: time.Date(1998, time.September, 29, 0, 0, 0, 0, time.UTC),
@@ -56,3 +55,4 @@ var adminList = []*Admin{
 		},
 	},
 }
+*/

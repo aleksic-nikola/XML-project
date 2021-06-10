@@ -7,19 +7,20 @@ import (
 	"xml/profile-service/service"
 )
 
-type AgentHandler struct {
+type ProfileHandler struct {
 	L *log.Logger
-	Service *service.AgentService
+	Service *service.ProfileService
+	
 }
 
-func NewAgents(l *log.Logger, service *service.AgentService) *AgentHandler {
-	return &AgentHandler{l, service}
+func NewProfiles(l *log.Logger, service *service.ProfileService) *ProfileHandler {
+	return &ProfileHandler{l, service}
 }
 
-func (u *AgentHandler) GetAgents(rw http.ResponseWriter, r *http.Request) {
+func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 	u.L.Println("Handle GET Request for Profiles")
 
-	lp := data.GetAgents()
+	lp := data.GetProfiles()
 
 	err := lp.ToJson(rw)
 

@@ -4,23 +4,25 @@ import (
 	"encoding/json"
 	"io"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Profile struct {
-	ID              int                 	`json:"id"`
-	Name            string              	`json:"name"`
-	Lastname        string              	`json:"lastname"`
-	Email           string              	`json:"email"`
-	Phone           string              	`json:"phone"`
-	Gender          Gender              	`json:"gender"`
-	DateOfBirth     time.Time          		`json:"date_of_birth"`
+	gorm.Model
+	Username        string              	`json:"username" gorm:"uniqueIndex"`
+	Phone           string              	`json:"phone" gorm:"uniqueIndex"`
+	Gender          Gender              	`json:"gender" gorm:"type:int" `
+	DateOfBirth     time.Time          	`json:"date_of_birth;type:date"`
 	Website         string         	        `json:"website"`
 	Biography       string       	        `json:"biography"`
-	CloseFriends    []string 	            `json:"close_friends"`
-	Favourites      map[string][]string		`json:"favourites"`
+	CloseFriends    []Profile 	        `json:"close_friends" gorm:"many2many:profile_close_friends;"`
+	Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
 	IsBanned        bool                	`json:"is_banned"`
-	PrivacySetting  PrivacySetting          `json:"privacy_settings"`
-	NotificationSetting NotificationSetting `json:"notification_setting"`
+	PrivacySetting  PrivacySetting          `gorm:"embedded"`
+	NotificationSetting NotificationSetting `json:"notification_setting" gorm:"embedded"`
+	Following 	[]Profile 		`json:"following" gorm:"many2many:profile_following;"`
+	Followers       []Profile 		`json:"followers" gorm:"many2many:profile_followers;"`	
 }
 
 func (u *Profile) FromJSON(r io.Reader) error {
@@ -39,13 +41,12 @@ func GetProfiles() Profiles {
 	return profileList
 }
 
+var profileList = []*Profile {}
+/*
 var profileList = []*Profile{
 
 	{
-		ID: 1,
-		Name: "Danilo",
-		Lastname: "Paripovic",
-		Email: "danilo@gmail.com",
+		Username: "dparip",
 		Phone: "03214321",
 		Gender: MALE,
 		DateOfBirth: time.Date(1998, time.September, 29, 0, 0, 0, 0, time.UTC),
@@ -68,3 +69,4 @@ var profileList = []*Profile{
 		},
 	},
 }
+*/

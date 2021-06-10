@@ -3,19 +3,21 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"xml/profile-serivce/data"
+	"xml/profile-service/data"
+	"xml/profile-service/service"
 )
 
-type Verifieds struct {
-	l *log.Logger
+type VerifiedHandler struct {
+	L *log.Logger
+	Service *service.VerifiedService
 }
 
-func NewVerifieds(l *log.Logger) *Verifieds {
-	return &Verifieds{l}
+func NewVerifieds(l *log.Logger, service *service.VerifiedService) *VerifiedHandler {
+	return &VerifiedHandler{l, service}
 }
 
-func (u *Verifieds) GetVerifieds(rw http.ResponseWriter, r *http.Request) {
-	u.l.Println("Handle GET Request for Profiles")
+func (u *VerifiedHandler) GetVerifieds(rw http.ResponseWriter, r *http.Request) {
+	u.L.Println("Handle GET Request for Profiles")
 
 	lp := data.GetVerifieds()
 

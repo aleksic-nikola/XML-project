@@ -2,12 +2,14 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
 )
 
 type Query struct {
-	Input     string    `json:"input"`
-	QueryType QueryType `json:"query_type"`
+	gorm.Model
+	Input     string    `json:"input" gorm:"uniqueText"`
+	QueryType QueryType `json:"query_type" gorm:"type:int"`
 }
 
 func (q *Query) FromJSON(r io.Reader) error {
@@ -20,7 +22,6 @@ func (q *Queries) ToJSON(w io.Writer) error {
 	return e.Encode(q)
 }
 
-// declaring the collection
 type Queries []*Query
 
 func GetQueries() Queries {

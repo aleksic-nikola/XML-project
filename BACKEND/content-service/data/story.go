@@ -4,16 +4,20 @@ import (
 	"encoding/json"
 	"io"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Story struct {
-	ID int `json:"id"`
-	PostedBy string `json:"postedby"`
+	gorm.Model
+	PostedBy  string    `json:"postedby"`
 	Timestamp time.Time `json:"timestamp"`
-	Media `json:"media"`
-	Location `json:"location"`
+	MediaID   uint      `json:"media_id"`
+	Media     Media     `json:"media" gorm:"foreignKey:MediaID"`
+	//LocationID            uint      `json:"location_id"`
+	//Location              Location  `json:"location" gorm:"foreignKey:LocationID"`
 	IsForCloseFriendsOnly bool `json:"isforclosefriendsonly"`
-	IsHighlighted bool `json:"ishighlighted"`
+	IsHighlighted         bool `json:"ishighlighted"`
 }
 
 func (s *Story) FromJSON(r io.Reader) error {
@@ -35,20 +39,21 @@ func GetStories() Stories {
 var storyList = []*Story{
 
 	{
-		ID: 1,
-		PostedBy: "lucyxz",
+		//ID:        1,
+		PostedBy:  "lucyxz",
 		Timestamp: time.Now(),
 		Media: Media{
-			ID: 1,
+			//MediaID: 1,
 			Type: image,
 			Path: "some_path",
+			Location: Location{
+				//LocationID: 1,
+				Country: "Serbia",
+				City:    "Novi Sad",
+			},
 		},
-		Location: Location{
-			ID: 1,
-			Country: "Serbia",
-			City: "Novi Sad",
-		},
+
 		IsForCloseFriendsOnly: true,
-		IsHighlighted: true,
+		IsHighlighted:         true,
 	},
 }

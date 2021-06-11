@@ -1,22 +1,45 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"xml/search-service/data"
+	"xml/search-service/service"
 )
 
 
-type Queries struct {
-	l *log.Logger
+type QueryHandler struct {
+	L *log.Logger
+	Service *service.QueryService
 }
 
-func NewQueries(l *log.Logger) *Queries {
-	return &Queries{l}
+func NewQueries(l *log.Logger, service *service.QueryService) *QueryHandler {
+	return &QueryHandler{l, service}
 }
 
-func (u *Queries) GetQueries(rw http.ResponseWriter, r *http.Request) {
-	u.l.Println("Handle GET Request for Queries")
+func (u *QueryHandler) CreateQuery(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("creating")
+	var query data.Query
+	err := query.FromJSON(r.Body)
+	if err != nil {
+		u.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(query)
+
+	err = u.Service.CreateQuery(&query)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+	rw.WriteHeader(http.StatusCreated)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
+func (u *QueryHandler) GetQueries(rw http.ResponseWriter, r *http.Request) {
+	u.L.Println("Handle GET Request for Queries")
 
 	lp := data.GetQueries()
 

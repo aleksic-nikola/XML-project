@@ -2,15 +2,17 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
 )
 
 type Product struct {
-	ID             int           `json:"id"`
+	gorm.Model
+	Name           string        `json:"name"`
 	Price          int           `json:"price"`
 	Availability   int           `json:"availability"`
-	PaymentOptions []PaymentOption `json:"payment_options"`
-	Image		   []Image		 `json:"image"`
+	Payments       []Payment     `json:"payment_options" gorm:"many2many:product_payment_options"`
+	Images		   []Image		 `json:"images"`
 }
 
 func (p *Product) FromJSON(r io.Reader) error {
@@ -31,18 +33,6 @@ func GetProducts() Products {
 }
 
 var productList = []*Product{
-	{
-		ID: 1,
-		Price: 300,
-		Availability: 50,
-		PaymentOptions: []PaymentOption {
-			ONPICKUP,
-		},
-		Image: []Image {
-			{
-				Path: "putanja",
-			},
-		},
-	},
+
 }
 

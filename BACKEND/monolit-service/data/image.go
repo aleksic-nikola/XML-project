@@ -2,11 +2,14 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
 )
 
 type Image struct {
+	gorm.Model
 	Path string `json:"path"`
+	ProductID uint `json:"product_refer"`
 }
 
 func (p *Image) FromJSON(r io.Reader) error {

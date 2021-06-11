@@ -188,6 +188,14 @@ func main() {
 	getRouter.HandleFunc("/getprofnotif", profnotifH.GetProfileNotifications).Methods("GET")
 	getRouter.HandleFunc("/getpostnotif", postnotifH.GetPostNotifications).Methods("GET")
 
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/message/add", msgH.CreateMessage)
+	postRouter.HandleFunc("/messagewithcontent/add", msgwcH.CreateMessageWithContent)
+	postRouter.HandleFunc("/messagewithonetimecontent/add", msgwotcH.CreateMessageWithOneTimeContent)
+
+	postRouter.HandleFunc("/postnotification/add", postnotifH.CreatePostNotification)
+	postRouter.HandleFunc("/profilenotification/add", profnotifH.CreateProfileNotification)
+
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

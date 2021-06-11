@@ -3,11 +3,13 @@ package data
 import (
 	"encoding/json"
 	"io"
-	"time"
+	//"time"
+
 )
 
 type Agent struct {
-	Profile    Profile `json:"profile"`
+	ProfileID   string  `json:"profile_id"`
+	Profile    Profile `json:"profile" gorm:"foreignkey:ProfileID"`
 	Webshop    string  `json:"webshop"`
 }
 
@@ -27,13 +29,12 @@ func GetAgents() Agents {
 	return agentList
 }
 
+var agentList = []*Agent{}
+/*
 var agentList = []*Agent{
 	{
 		Profile: Profile{
-			ID: 1,
-			Name: "Danilo",
-			Lastname: "Paripovic",
-			Email: "danilo@gmail.com",
+			Username : "dparip",
 			Phone: "03214321",
 			Gender: MALE,
 			DateOfBirth: time.Date(1998, time.September, 29, 0, 0, 0, 0, time.UTC),
@@ -58,3 +59,4 @@ var agentList = []*Agent{
 		Webshop: "nekisajt.com",
 	},
 }
+*/

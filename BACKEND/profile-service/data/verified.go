@@ -3,12 +3,13 @@ package data
 import (
 	"encoding/json"
 	"io"
-	"time"
+	//"time"
 )
 
 type Verified struct {
-	Profile     Profile      `json:"profile"`
- 	Category 	VerifiedType `json:"category"`
+	ProfileID   uint  `json:"profile_id"`
+	Profile     Profile      `json:"profile" gorm:"foreignkey:ProfileID"`
+ 	Category    VerifiedType `json:"category" gorm:"type:int"`
 }
 
 func (v *Verified) FromJSON(r io.Reader) error {
@@ -27,13 +28,12 @@ func GetVerifieds() Verifieds {
 	return verifiedList
 }
 
+var verifiedList = []*Verified {}
+/*
 var verifiedList = []*Verified{
 	{
 		Profile: Profile{
-			ID: 1,
-			Name: "Danilo",
-			Lastname: "Paripovic",
-			Email: "danilo@gmail.com",
+			Username: "dparip",
 			Phone: "03214321",
 			Gender: MALE,
 			DateOfBirth: time.Date(1998, time.September, 29, 0, 0, 0, 0, time.UTC),
@@ -58,3 +58,4 @@ var verifiedList = []*Verified{
 		Category: BUSINESS,
 	},
 }
+*/

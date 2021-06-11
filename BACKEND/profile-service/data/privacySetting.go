@@ -3,14 +3,15 @@ package data
 import (
 	"encoding/json"
 	"io"
+
 )
 
 type PrivacySetting struct {
 	IsPublic         bool     `json:"is_public"`
 	IsInboxOpen      bool     `json:"is_inbox_open"`
 	IsTaggingAllowed bool     `json:"is_tagging_allowed"`
-	Graylist         []string `json:"graylist"`
-	Blacklist        []string `json:"blacklist"`
+	Graylist         []string `json:"graylist" gorm:"type:text"`
+	Blacklist        []string `json:"blacklist" gorm:"type:text"`
 }
 
 func (ps *PrivacySetting) FromJSON(r io.Reader) error {

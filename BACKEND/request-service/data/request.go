@@ -2,14 +2,15 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
+
 	//"fmt"
 	"io"
 	//"time"
 )
 
 type Request struct {
-
-	ID int `json:"id"`
+	gorm.Model
 	SentBy string `json:"sentby"`
 	Status RequestStatus `json:"RequestStatus"`
 }
@@ -32,17 +33,4 @@ func GetRequests() Requests {
 	return requestsList
 }
 
-var requestsList = []*Request{
-
-	{
-		ID: 1,
-		SentBy: "lucyxz",
-		Status: ACCEPTED,
-
-	},
-	{
-		ID: 2,
-		SentBy : "wintzy",
-		Status: DENIED,
-	},
-}
+var requestsList = []*Request{}

@@ -7,7 +7,8 @@ import (
 
 type MessageRequest struct {
 
-	Request   Request `json:"request"`
+	RequestID uint `json:"request_id"`
+	Request   Request `json:"request" gorm:"foreignkey=RequestID"`
 	MessageID int     `json:"messageid"`
 	For string `json:"for"`
 }
@@ -35,7 +36,7 @@ var messageRequestsList = []*MessageRequest{
 
 	{
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "wintzy",
 			Status: DENIED,
 		},
@@ -45,7 +46,7 @@ var messageRequestsList = []*MessageRequest{
 	},
 	{
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "dani",
 			Status: DENIED,
 		},

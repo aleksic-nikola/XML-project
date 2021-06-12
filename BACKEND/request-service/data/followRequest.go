@@ -7,7 +7,8 @@ import (
 
 type FollowRequest struct {
 
-	Request Request `json:"request"`
+	RequestID uint `json:"request_id"`
+	Request Request `json:"request" gorm:"foreignkey=RequestID"`
 	For string `json:"for"`
 
 }
@@ -27,6 +28,8 @@ func (p *FollowRequests) ToJSON(w io.Writer) error {
 	return e.Encode(p)
 }
 
+
+
 func GetFollowRequests() FollowRequests {
 	return followRequestList
 }
@@ -35,8 +38,9 @@ func GetFollowRequests() FollowRequests {
 var followRequestList = []*FollowRequest{
 
 	{
+		RequestID: 2,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "wintzy",
 			Status: ACCEPTED,
 		},
@@ -44,8 +48,9 @@ var followRequestList = []*FollowRequest{
 
 	},
 	{
+		RequestID: 3,
 		Request : Request{
-			ID: 2,
+			//ID: 3,
 			SentBy : "dani",
 			Status: INPROCESS,
 		},

@@ -7,7 +7,8 @@ import (
 
 type MonitorReportRequest struct {
 
-	Request   Request `json:"request"`
+	RequestID uint `json:"request_id"`
+	Request   Request `json:"request" gorm:"foreignkey=RequestID"`
 	ForCampaign int `json:"forCampaign"`
 
 }
@@ -34,8 +35,9 @@ func GetMonitorReportRequests() MonitorReportRequests {
 var monitorReportRequestList = []*MonitorReportRequest{
 
 	{
+		RequestID: 3,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "wintzy",
 			Status: DENIED,
 		},
@@ -43,8 +45,9 @@ var monitorReportRequestList = []*MonitorReportRequest{
 
 	},
 	{
+		RequestID: 3,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "dani",
 			Status: ACCEPTED,
 		},

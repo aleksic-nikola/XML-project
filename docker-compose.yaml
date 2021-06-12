@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  profile-service:
+    image: nistagram-profile
+    container_name: profile-service
+    build:
+      context: ./BACKEND/profile-service
+      dockerfile: Dockerfile
+    restart: always
+    environment: 
+      HOST : ${HOST}
+      DIALECT : ${DIALECT}
+      DBPORT : ${DBPORT}
+      USER : ${USER}
+      NAME : ${NAME_PROFILE}
+      PASSWORD : ${PASSWORD}
+    depends_on: 
+      - postgres
+    networks:
+      - backend
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    build: 
+      context: ./BACKEND/database
+      dockerfile: Dockerfile
+    ports: 
+      - 5432:5432
+    restart: on-failure
+    environment: 
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: root
+    networks: 
+      - backend
+
+networks:
+  backend:
+    name: backend
+    driver: bridge

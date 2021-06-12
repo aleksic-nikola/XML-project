@@ -6,11 +6,11 @@ import (
 )
 
 type Ad struct {
-	ID int `json:"id"`
-	Description string `json:"description"`
-	Link string `json:"link"`
-	Product `json:"products"`
-	Media `json:"media"`
+	ID          int     `json:"id"`
+	Description string  `json:"description"`
+	Link        string  `json:"link"`
+	Product     Product `json:"products"`
+	Media       Media   `json:"media"`
 }
 
 func (a *Ad) FromJSON(r io.Reader) error {

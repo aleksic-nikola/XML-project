@@ -6,9 +6,9 @@ import (
 )
 
 type Product struct {
-	ID int `json:"id"`
-	Availability int `json:"availability"`
-	Name string `json:"name"`
+	ID           int    `json:"id"`
+	Availability int    `json:"availability"`
+	Name         string `json:"name"`
 }
 
 func (p *Product) FromJSON(r io.Reader) error {

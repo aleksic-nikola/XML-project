@@ -2,15 +2,16 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
 )
 
 type Campaign struct {
-	ID int `json:"id"`
-	CreatedBy string `json:"createdby"`
-	Influencers []string `json:"influencers"`
-	Ads `json:"ads"`
-	TargetAudience `json:"targetaudiences"`
+	gorm.Model
+	CreatedBy      string         `json:"createdby"`
+	Influencers    []string       `json:"influencers" gorm:"type:text"`
+	Ads            []Ad           `json:"ads" gorm:"many2many:campaign_ads"`
+	TargetAudience TargetAudience `json:"targetaudiences"`
 }
 
 func (c *Campaign) FromJSON(r io.Reader) error {

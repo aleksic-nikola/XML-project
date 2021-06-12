@@ -7,8 +7,9 @@ import (
 )
 
 type OneTimeCampaign struct {
-	Campaign `json:"campaign"`
-	Timestamp time.Time `json:"timestamp"`
+	CampaignID uint 	 `json:"campaign_id"`
+	Campaign   Campaign  `json:"campaign" gorm:"foreignkey:CampaignID"`
+	Timestamp  time.Time `json:"timestamp" gorm:"type:date"`
 }
 
 func (otc *OneTimeCampaign) FromJSON(r io.Reader) error {
@@ -31,12 +32,10 @@ var oneTimeCampaignList = []*OneTimeCampaign {
 	{
 		Campaign:
 		Campaign{
-			ID: 1,
 			CreatedBy: "lucyxz",
 			Influencers:
 			[]string{"a", "b", "c"},
-			Ads:
-			[]*Ad{
+			Ads: []Ad{
 				{
 					ID: 1,
 					Description: "description",
@@ -56,11 +55,9 @@ var oneTimeCampaignList = []*OneTimeCampaign {
 			TargetAudience: TargetAudience{
 				ID: 1,
 				Tags: []string{"tag1","tag2"},
-				AgeGroups: []*AgeGroup {
-					{
-						FromAge: 15,
-						TillAge: 25,
-					},
+				AgeGroup: AgeGroup {
+					FromAge: 15,
+					TillAge: 25,
 				},
 			},
 		},

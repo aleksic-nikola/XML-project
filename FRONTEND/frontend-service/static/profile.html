@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/profile.css">
+    
+
+    <title></title>
+</head>
+<body>
+
+    <!-- NAVBAR START-->
+    <nav class="navbar navbar-expand-md navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand brand" href="../index.html"> <img src="" alt="" /></a>
+            <h2 id='systemName'>Ništagram</h2>
+            <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarResponsive"
+            >
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"> nav1 </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> nav2 </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> nav3 </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> nav4 </a>
+                </li>
+
+
+            </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- NAVBAR END-->
+
+
+    <div class = "container"  >
+        <div class = "row">
+
+            <div class="col-sm-6 ">
+                <!-- PROF INFO-->
+                <div class="profileinfo-part text-center">
+
+                    <div class="form-group">
+
+                        <img src="img/avatar.png" class="profile_img">
+
+                        <div class="row">
+                            <div class="form col-lg-12">
+                                <h2 class="myname">Pera Peric</h2>
+                                <button class="btn btn-secondary editprofbtn">Edit profile</button>
+                            </div>
+
+                            <div class="form col-lg-12">
+                                <div class="profinfo">
+                                    <label class = "numinfo">6</label>
+                                    <label class = "info"><a href="">posts</a></label>
+                                    <label class = "numinfo">12</label>
+                                    <label class = "info"><a href="">followers</a></label>
+                                    <label class = "numinfo">25</label>
+                                    <label class = "info"><a href="">following</a></label>
+                                </div>
+                            </div>
+                         
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- IMAGES-->
+                <div class="profilecontent_part text-center">
+
+                    <section class="gallery-block cards-gallery min-vh-100">
+                        <div class="container">
+      
+                            <div class="row">
+                                <!-- SLIKA 1 -->
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 transform-on-hover">
+                                        <a class="lightbox">
+                                            <img src="img/test.png" alt="testimg" class="card-img-top gallery-item">
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- END OF SLIKA1 -->
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 transform-on-hover">
+                                        <a class="lightbox">
+                                            <img src="img/test2.png" alt="testimg" class="card-img-top gallery-item">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 transform-on-hover">
+                                        <a class="lightbox">
+                                            <img src="img/test3.png" alt="testimg" class="card-img-top gallery-item">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 transform-on-hover">
+                                        <a class="lightbox">
+                                            <img src="img/test4.png" alt="testimg" class="card-img-top gallery-item">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card border-0 transform-on-hover">
+                                        <a class="lightbox">
+                                            <img src="img/test5.png" alt="testimg" class="card-img-top gallery-item">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+
+                        </div>
+                    </section>
+
+                
+                    <!-- Button trigger modal -->
+                    <!--
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gallery-modal">
+                        Launch demo modal
+                    </button>
+                    -->
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="gallery-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <!-- <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5> -->
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- CONTENT OF MODAL WHEN CLICKING ON PICTURE -->
+                                <div class="one-feed text-center">
+
+                                    <div class="card">
+                                        <!-- IMAGE OF POST-->
+                                        <img class="card-img-center modal-img" src="img/test2.png" alt="Card image cap">
+                                        <div class="card-body">
+                
+                                            <!-- DESCRIPTION OF IMAGE-->
+                                            <p class="card-text text-left description_part">Moj opis za moju trecu sliku.</p>
+                                            
+                                            <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                                            <p class = "text-left"> 
+                                                <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                                            </p> 
+                                            <hr>
+                
+                
+                                            <h5 class="text-left">Comments:</h5>
+                                            <hr>
+                                            <!-- COMMENTS -->
+                                            
+                                            <table class="table" id="mydatatable">
+                                                <thead class ="hideheader">
+                                                  <tr>
+                                                    <th scope="col" id="commented_by">CommentedBy</th>
+                                                    <th scope="col" id="comment">Comment</th>
+                                                  </tr>
+                                                </thead>
+                                                <div class="bodycontainer scrollable">
+                                                    <tbody class="text-left">
+                
+                                                    <tr>
+                                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                                        <td>Veoma lepa slika, pohvala za fotografa</td>
+                                                    </tr>
+                
+                                                    <tr>
+                                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                                        <td>Vrh</td>
+                                                    </tr>
+                
+                                                    <tr>
+                                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                                        <td>Svaka cast majstore</td>
+                                                    </tr>
+                
+                                                    <tr>
+                                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                                        <td>bravo care</td>
+                                                    </tr>
+                
+                                                    <tr>
+                                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                                        <td>pozdrav</td>
+                                                    </tr>
+                       
+                                                    </tbody>
+                
+                                                 </div>
+                                              </table>
+                
+                                              <hr>
+                                              <div class="writecomment_section">
+                                                <div class="form-group">
+                                                    <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
+                                                    <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
+                                                </div>
+                
+                
+                                              </div>
+                
+                                        </div>
+                                      </div>
+                
+                                      
+                                </div>
+                
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+    ></script>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>

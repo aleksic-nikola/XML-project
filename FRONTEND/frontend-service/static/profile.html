@@ -19,10 +19,12 @@
 <body>
 
     <!-- NAVBAR START-->
-    <nav class="navbar navbar-expand-md navbar-custom">
+    <nav class="navbar sticky-top navbar-expand-md navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand brand" href="../index.html"> <img src="" alt="" /></a>
-            <h2 id='systemName'>Ništagram</h2>
+            <a class="navbar-brand brand" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
+
+            <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
+
             <button
             class="navbar-toggler"
             type="button"
@@ -34,22 +36,21 @@
 
             <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="feed.html"> Home </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> Messages </a>
+                </li>
+
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"> nav1 </a>
+                    <a class="nav-link" href="profile.html"> Profile </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#"> nav2 </a>
+                    <a class="nav-link" href="index.html"> Log out </a>
                 </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#"> nav3 </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#"> nav4 </a>
-                </li>
-
 
             </ul>
             </div>

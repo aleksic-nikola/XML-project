@@ -75,9 +75,8 @@
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-.navbar .brand { 
-    max-height: 60px;
-    max-width: 20%; 
+.navbar .brand {
+    margin-top: 35px;
     overflow: visible;
     padding-top: 0;
     padding-bottom: 2%; 
@@ -89,3 +88,14 @@
     font-family: 'Molengo';
     padding-top: 10px;
   }
+
+.navbar_logo {
+    width : 120px;
+    margin-left: 5px;
+}
+
+.search-input {
+    margin-left: 30%;
+    display: inline-block;
+    width: 250px;
+}

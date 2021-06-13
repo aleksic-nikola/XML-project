@@ -6,8 +6,7 @@ import (
 )
 
 type Media struct {
-	ID   int       `json:"id"`
-	Type MediaType `json:"type"`
+	Type MediaType `json:"type" gorm:"type:text"`
 	Path string    `json:"path"`
 }
 

@@ -6,7 +6,6 @@ import (
 )
 
 type AgeGroup struct {
-	ID      int `json:"id"`
 	FromAge int `json:"fromage"`
 	TillAge int `json:"tillage"`
 }

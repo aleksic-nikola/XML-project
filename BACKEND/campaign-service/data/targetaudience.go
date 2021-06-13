@@ -6,9 +6,8 @@ import (
 )
 
 type TargetAudience struct {
-	ID       int      `json:"id"`
-	Tags     []string `json:"tags"`
-	AgeGroup AgeGroup `json:"age_group"`
+	Tags     []string `json:"tags" gorm:"type:text"`
+	AgeGroup AgeGroup `json:"age_group" gorm:"embedded"`
 }
 
 func (ta *TargetAudience) FromJSON(r io.Reader) error {

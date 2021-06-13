@@ -41,19 +41,16 @@ var oneTimeCampaignList = []*OneTimeCampaign {
 					Description: "description",
 					Link: "link",
 					Product: Product{
-						ID:1,
 						Availability: 10,
 						Name: "Some name",
 					},
 					Media: Media{
-						ID: 1,
 						Type: image,
 						Path: "path_to_image",
 					},
 				},
 			},
 			TargetAudience: TargetAudience{
-				ID: 1,
 				Tags: []string{"tag1","tag2"},
 				AgeGroup: AgeGroup {
 					FromAge: 15,

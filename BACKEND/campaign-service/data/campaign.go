@@ -11,7 +11,7 @@ type Campaign struct {
 	CreatedBy      string         `json:"createdby"`
 	Influencers    []string       `json:"influencers" gorm:"type:text"`
 	Ads            []Ad           `json:"ads" gorm:"many2many:campaign_ads"`
-	TargetAudience TargetAudience `json:"targetaudiences"`
+	TargetAudience TargetAudience `json:"targetaudiences" gorm:"embedded"`
 }
 
 func (c *Campaign) FromJSON(r io.Reader) error {

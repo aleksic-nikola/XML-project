@@ -95,8 +95,9 @@ func main() {
 	}
 	defer sqlDB.Close()
 
-	//database.AutoMigrate(&data.OneTimeCampaign{})
-	//database.AutoMigrate(&data.MultiCampaign{})
+	database.AutoMigrate(&data.OneTimeCampaign{})
+	database.AutoMigrate(&data.MultiCampaign{})
+	database.AutoMigrate(&data.Campaign{})
 	database.AutoMigrate(&data.MonitoringReport{})
 
 	oneTimeCampaign_repo := initOneTimeCampaignRepo(database)

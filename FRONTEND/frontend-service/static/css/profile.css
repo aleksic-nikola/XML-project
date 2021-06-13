@@ -147,3 +147,17 @@ tbody{
     margin-bottom: -6px;
 }
 
+.editdatabtn{
+    margin-right: 5px;
+    margin-left: 5px;
+    width: 230px;
+}
+
+.editprofform {
+    margin: auto!important;
+    width: 50%;
+}
+
+.modalbtns{
+    width: 25%;
+}

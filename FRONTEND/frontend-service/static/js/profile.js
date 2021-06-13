@@ -1,3 +1,12 @@
+$(document).ready(function() {
+
+    editprofmodal();
+
+})
+
+
+
+
 document.addEventListener("click", function(e) {
     if(e.target.classList.contains("gallery-item")) {
         const src = e.target.getAttribute("src");
@@ -14,3 +23,37 @@ document.addEventListener("click", function(e) {
         myModal.show();
     }
 })
+
+function editprofmodal() {
+
+    $( "#editprofdata" ).click(function() {
+        $(this).addClass("active");
+        $("#editprivacy").removeClass("active");
+        $("#editnotif").removeClass("active");
+
+        $('#editprofbody').show();
+        $('#privacysettingsbody').hide();
+        $('#notificationpropertiesbody').hide();
+    });
+
+    $( "#editprivacy" ).click(function() {
+        $(this).addClass("active");
+        $("#editprofdata").removeClass("active");
+        $("#editnotif").removeClass("active");
+
+        $('#editprofbody').hide();
+        $('#privacysettingsbody').show();
+        $('#notificationpropertiesbody').hide();
+    });
+
+    $( "#editnotif" ).click(function() {
+        $(this).addClass("active");
+        $("#editprivacy").removeClass("active");
+        $("#editprofdata").removeClass("active");
+
+        $('#editprofbody').hide();
+        $('#privacysettingsbody').hide();
+        $('#notificationpropertiesbody').show();
+    });
+
+}

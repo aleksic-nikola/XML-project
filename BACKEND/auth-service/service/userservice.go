@@ -1,8 +1,10 @@
 package service
 
 import (
+	
 	"xml/auth-service/data"
-	"xml/auth-service/repository")
+	"xml/auth-service/repository"
+)
 
 
 type UserService struct {
@@ -18,4 +20,10 @@ func (service *UserService) UserExists(id uint) (bool, error) {
 	
 	exists := service.Repo.UserExists(id)
 	return exists, nil
+}
+
+func (service *UserService) FindUserByUsername(username string) (*data.User) {
+	var user data.User
+	service.Repo.Database.Where("username = ?", username).First(&user)
+	return &user
 }

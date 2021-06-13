@@ -1,10 +1,18 @@
-function crosstest() {
+const username = $('#username_field')
+const password = $('#password_field')
 
+function login() {
 
+    var obj = {
+        username : username.val(),
+        password : password.val()
+    }
+    
     $.ajax({
-        type:'GET',
+        type:'POST',
         crossDomain: true,
-        url: 'http://localhost:5050/getmsgs',
+        url: 'http://localhost:9090/login',
+        data : JSON.stringify(obj),
         //headers: { 'Content-Type': 'application/json' },
         contentType : 'application/json',
         success : function(data) {

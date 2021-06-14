@@ -6,9 +6,8 @@ import (
 )
 
 type Media struct {
-	ID int `json:"id"`
-	Type MediaType `json:"type"`
-	Path string `json:"path"`
+	Type MediaType `json:"type" gorm:"type:text"`
+	Path string    `json:"path"`
 }
 
 func (m *Media) FromJSON(r io.Reader) error {

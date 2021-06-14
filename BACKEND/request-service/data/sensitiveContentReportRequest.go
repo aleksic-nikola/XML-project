@@ -7,7 +7,8 @@ import (
 
 type SensitiveContentReportRequest struct {
 
-	Request Request `json:"request"`
+	RequestID uint `json:"request_id"`
+	Request Request `json:"request" gorm:"foreignkey=RequestID"`
 	PostID string `json:"postID"`
 	Note string `json:"note"`
 
@@ -34,8 +35,9 @@ func GetSensitiveContentReportRequests() SensitiveContentReportRequests {
 var SensitiveContentReportRequestList = []*SensitiveContentReportRequest{
 
 	{
+		RequestID: 2,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "wintzy",
 			Status: DENIED,
 		},
@@ -44,8 +46,9 @@ var SensitiveContentReportRequestList = []*SensitiveContentReportRequest{
 
 	},
 	{
+		RequestID: 2,
 		Request : Request{
-			ID: 4,
+			//ID: 4,
 			SentBy : "pera123",
 			Status: ACCEPTED,
 		},

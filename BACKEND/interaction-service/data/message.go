@@ -4,17 +4,19 @@ import (
 	"encoding/json"
 	"io"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Message struct {
-	ID int `json:"id"`
-	From string `json:"from"`
-	For string `json:"for"`
-	Text string `json:"text"`
+	gorm.Model
+	From      string    `json:"from"`
+	For       string    `json:"for"`
+	Text      string    `json:"text"`
 	Timestamp time.Time `json:"timestamp"`
 }
 
-func(m *Message) FromJSON(r io.Reader) error {
+func (m *Message) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(e)
 }
@@ -22,7 +24,7 @@ func(m *Message) FromJSON(r io.Reader) error {
 // collection
 type Messages []*Message
 
-func(m *Messages) ToJSON(w io.Writer) error {
+func (m *Messages) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(m)
 }
@@ -33,17 +35,15 @@ func GetMessages() Messages {
 
 var messageList = []*Message{
 	{
-		ID: 1,
-		From: "nikola",
-		For: "mark",
-		Text: "pozdrav",
+		From:      "nikola",
+		For:       "mark",
+		Text:      "pozdrav",
 		Timestamp: time.Now(),
 	},
 	{
-		ID: 1,
-		From: "nikola",
-		For: "danilo",
-		Text: "happy birthday",
+		From:      "nikola",
+		For:       "danilo",
+		Text:      "happy birthday",
 		Timestamp: time.Now().AddDate(0, 0, -1),
 	},
 }

@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"io"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Comment struct {
-	ID int `json:"id"`
-	PostedBy string `json:"postedby"`
-	Text string `json:"text"`
+	gorm.Model
+	PostID    uint      `json:"post_refer"`
+	PostedBy  string    `json:"postedby"`
+	Text      string    `json:"text"`
 	Timestamp time.Time `json:"timestamp"`
 }
 
@@ -32,9 +35,9 @@ func GetComments() Comments {
 var commentList = []*Comment{
 
 	{
-		ID: 1,
-		PostedBy: "lucyxz",
-		Text: "some text here",
+		//CommentID: 1,
+		PostedBy:  "lucyxz",
+		Text:      "some text here",
 		Timestamp: time.Now(),
 	},
 }

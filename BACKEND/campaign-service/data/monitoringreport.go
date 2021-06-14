@@ -2,19 +2,20 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
 	"time"
 )
 
 type MonitoringReport struct {
-	ID int `json:"id"`
-	Timestamp time.Time `json:"timestamp"`
-	Campaign int `json:"campaign"`
-	Likes int `json:"likes"`
-	Dislikes int `json:"dislikes"`
-	Comments int `json:"comments"`
-	Placements int `json:"placements"`
-	SentBy map[string]int `json:"sentby"`
+	gorm.Model
+	Timestamp  time.Time      `json:"timestamp" gorm:"type:date"`
+	Campaign   int            `json:"campaign"`
+	Likes      int            `json:"likes"`
+	Dislikes   int            `json:"dislikes"`
+	Comments   int            `json:"comments"`
+	Placements int            `json:"placements"`
+	SentBy     map[string]int `json:"sentby" gorm:"type:text"`
 
 }
 
@@ -37,7 +38,6 @@ func GetMonitoringReports() MonitoringReports {
 var monitoringReportList = []*MonitoringReport {
 
 	{
-		ID: 1,
 		Timestamp: time.Now(),
 		Campaign: 1337,
 		Likes: 37,

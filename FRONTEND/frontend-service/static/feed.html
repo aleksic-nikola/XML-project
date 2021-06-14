@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/feed.css">
+
+    <title></title>
+</head>
+<body>
+
+    <!-- NAVBAR START-->
+    <nav class="navbar sticky-top navbar-expand-md navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand brand" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
+
+            <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
+
+            <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarResponsive"
+            >
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="feed.html"> Home </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#"> Messages </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="profile.html"> Profile </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html"> Log out </a>
+                </li>
+
+            </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- NAVBAR END-->
+
+    <div class = container>
+        <div class = "row" >
+
+            <div class="col-sm-6">
+                <!-- STORY PART-->
+                <div class="story-part text-center">
+                    <h1>Stories will come here</h1>
+                </div>
+                <!-- STORY PART END-->
+
+                <!-- POST 1 -->
+                <div class="one-feed text-center">
+
+                    <div class="form-group">
+                        <img src="img/avatar.png" class="profile_img">
+                        <a class="postedby" href=""> Nikola Tomik</a>
+                    </div>
+
+                    <div class="card">
+                        <!-- IMAGE OF POST-->
+                        <img class="card-img-center" src="img/test.png" alt="Card image cap">
+                        <div class="card-body">
+
+                            <!-- DESCRIPTION OF IMAGE-->
+                            <p class="card-text text-left description_part">Moj opis za moju prvu sliku.</p>
+                            
+                            <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                            <p class = "text-left"> 
+                                <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                            </p> 
+                            <hr>
+
+
+                            <h5 class="text-left">Comments:</h5>
+                            <hr>
+                            <!-- COMMENTS -->
+                            
+                            <table class="table" id="mydatatable">
+                                <thead class ="hideheader">
+                                  <tr>
+                                    <th scope="col" id="commented_by">CommentedBy</th>
+                                    <th scope="col" id="comment">Comment</th>
+                                  </tr>
+                                </thead>
+                                <div class="bodycontainer scrollable">
+                                    <tbody class="text-left">
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Veoma lepa slika, pohvala za fotografa</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Vrh</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Svaka cast majstore</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>bravo care</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>pozdrav</td>
+                                    </tr>
+       
+                                    </tbody>
+
+                                 </div>
+                              </table>
+
+                              <hr>
+                              <div class="writecomment_section">
+                                <div class="form-group">
+                                    <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
+                                    <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
+                                </div>
+
+
+                              </div>
+
+                        </div>
+                      </div>
+
+                </div>
+
+                <!-- POST 2 -->
+                <div class="one-feed text-center">
+
+                    <div class="form-group">
+                        <img src="img/avatar.png" class="profile_img">
+                        <a class="postedby" href=""> Nikola Tomik</a>
+                    </div>
+
+                    <div class="card">
+                        <!-- IMAGE OF POST-->
+                        <img class="card-img-center" src="img/test2.png" alt="Card image cap">
+                        <div class="card-body">
+
+                            <!-- DESCRIPTION OF IMAGE-->
+                            <p class="card-text text-left description_part">Moj opis za moju drugu sliku.</p>
+                            
+                            <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                            <p class = "text-left"> 
+                                <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                            </p> 
+                            <hr>
+
+
+                            <h5 class="text-left">Comments:</h5>
+                            <hr>
+                            <!-- COMMENTS -->
+                            
+                            <table class="table" id="mydatatable">
+                                <thead class ="hideheader">
+                                  <tr>
+                                    <th scope="col" id="commented_by">CommentedBy</th>
+                                    <th scope="col" id="comment">Comment</th>
+                                  </tr>
+                                </thead>
+                                <div class="bodycontainer scrollable">
+                                    <tbody class="text-left">
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Veoma lepa slika, pohvala za fotografa</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Vrh</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Svaka cast majstore</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>bravo care</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>pozdrav</td>
+                                    </tr>
+       
+                                    </tbody>
+
+                                 </div>
+                              </table>
+
+                              <hr>
+                              <div class="writecomment_section">
+                                <div class="form-group">
+                                    <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
+                                    <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
+                                </div>
+
+
+                              </div>
+
+                        </div>
+                      </div>
+
+                </div>
+
+                <!-- POST 3 -->
+                <div class="one-feed text-center">
+
+                    <div class="form-group">
+                        <img src="img/avatar.png" class="profile_img">
+                        <a class="postedby" href=""> Nikola Tomik</a>
+                    </div>
+
+                    <div class="card">
+                        <!-- IMAGE OF POST-->
+                        <img class="card-img-center" src="img/test3.png" alt="Card image cap">
+                        <div class="card-body">
+
+                            <!-- DESCRIPTION OF IMAGE-->
+                            <p class="card-text text-left description_part">Moj opis za moju trecu sliku.</p>
+                            
+                            <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                            <p class = "text-left"> 
+                                <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                            </p> 
+                            <hr>
+
+
+                            <h5 class="text-left">Comments:</h5>
+                            <hr>
+                            <!-- COMMENTS -->
+                            
+                            <table class="table" id="mydatatable">
+                                <thead class ="hideheader">
+                                  <tr>
+                                    <th scope="col" id="commented_by">CommentedBy</th>
+                                    <th scope="col" id="comment">Comment</th>
+                                  </tr>
+                                </thead>
+                                <div class="bodycontainer scrollable">
+                                    <tbody class="text-left">
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Veoma lepa slika, pohvala za fotografa</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Vrh</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Svaka cast majstore</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>bravo care</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>pozdrav</td>
+                                    </tr>
+       
+                                    </tbody>
+
+                                 </div>
+                              </table>
+
+                              <hr>
+                              <div class="writecomment_section">
+                                <div class="form-group">
+                                    <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
+                                    <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
+                                </div>
+
+
+                              </div>
+
+                        </div>
+                      </div>
+
+                      
+                </div>
+
+
+                <!-- POST 4 -->
+                <div class="one-feed text-center">
+
+                    <div class="form-group">
+                        <img src="img/avatar.png" class="profile_img">
+                        <a class="postedby" href=""> Nikola Tomik</a>
+                    </div>
+
+                    <div class="card">
+                        <!-- IMAGE OF POST-->
+                        <img class="card-img-center" src="img/test5.png" alt="Card image cap">
+                        <div class="card-body">
+
+                            <!-- DESCRIPTION OF IMAGE-->
+                            <p class="card-text text-left description_part">Moj opis za moju cetvrtu sliku.</p>
+                            
+                            <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                            <p class = "text-left"> 
+                                <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                            </p> 
+                            <hr>
+
+
+                            <h5 class="text-left">Comments:</h5>
+                            <hr>
+                            <!-- COMMENTS -->
+                            
+                            <table class="table" id="mydatatable">
+                                <thead class ="hideheader">
+                                    <tr>
+                                    <th scope="col" id="commented_by">CommentedBy</th>
+                                    <th scope="col" id="comment">Comment</th>
+                                    </tr>
+                                </thead>
+                                <div class="bodycontainer scrollable">
+                                    <tbody class="text-left">
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Veoma lepa slika, pohvala za fotografa</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Vrh</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>Svaka cast majstore</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>bravo care</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
+                                        <td>pozdrav</td>
+                                    </tr>
+        
+                                    </tbody>
+
+                                    </div>
+                                </table>
+
+                                <hr>
+                                <div class="writecomment_section">
+                                <div class="form-group">
+                                    <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
+                                    <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
+                                </div>
+
+
+                                </div>
+
+                        </div>
+                        </div>
+
+                </div>
+
+
+    <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"
+    ></script>
+
+    <script src=""></script>
+</body>
+</html>

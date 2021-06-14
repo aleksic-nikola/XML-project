@@ -1,21 +1,48 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"xml/request-service/data"
+	"xml/request-service/service"
 )
 
-type MonitorReportRequests struct {
-	l *log.Logger
+type MonitorReportRequestHandler struct {
+	L *log.Logger
+	Service *service.MonitorReportRequestService
+
 }
 
-func NewMonitorReportRequest(l *log.Logger) *MonitorReportRequests {
-	return &MonitorReportRequests{l}
+func NewMonitorReportRequest(l *log.Logger, service *service.MonitorReportRequestService) *MonitorReportRequestHandler {
+	return &MonitorReportRequestHandler{l, service}
 }
 
-func (p *MonitorReportRequests) GetMonitorReportRequests(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Request")
+
+func (handler *MonitorReportRequestHandler) CreateMonitorReportRequest(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("creating")
+	var monitorReportRequest data.MonitorReportRequest
+	err := monitorReportRequest.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(monitorReportRequest)
+
+	err = handler.Service.CreateMonitorReportRequest(&monitorReportRequest)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+	rw.WriteHeader(http.StatusCreated)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
+
+
+func (p *MonitorReportRequestHandler) GetMonitorReportRequests(rw http.ResponseWriter, r *http.Request) {
+	p.L.Println("Handle GET Request")
 
 	lp := data.GetMonitorReportRequests()
 

@@ -7,7 +7,8 @@ import (
 
 type AgentRegistrationRequest struct {
 
-	Request Request `json:"request"`
+	RequestID uint `json:"request_id"`
+	Request Request `json:"request" gorm:"foreignkey=RequestID"`
 	Name string `json:"name"`
 	LastName string `json:"lastname"`
 	Password string `json:"password"`
@@ -38,8 +39,9 @@ func GetAgentRegistrationRequests() AgentRegistrationRequests {
 var agentRegistrationRequestList = []*AgentRegistrationRequest{
 
 	{
+		RequestID: 1,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "wintzy",
 			Status: DENIED,
 		},
@@ -51,8 +53,9 @@ var agentRegistrationRequestList = []*AgentRegistrationRequest{
 
 	},
 	{
+		RequestID: 2,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "dani",
 			Status: DENIED,
 		},

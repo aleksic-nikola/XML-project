@@ -4,18 +4,21 @@ import (
 	"encoding/json"
 	"io"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Post struct {
-	ID int `json:"id"`
-	PostedBy string `json:"postedby"`
-	Timestamp time.Time `json:"timestamp"`
-	Description string `json:"description"`
-	Comments `json:"comments"`
-	Location `json:"location"`
-	Medias `json:"medias"`
-	Likes []string `json:"likes"`
-	Dislikes []string `json:"dislikes"`
+	gorm.Model
+	PostedBy    string    `json:"postedby"`
+	Timestamp   time.Time `json:"timestamp"`
+	Description string    `json:"description"`
+	Comments    []Comment `json:"comments"`
+	//LocationID  uint      `json:"location_id"`
+	//Location    Location  `json:"location" gorm:"foreignKey:LocationID" `
+	Medias   []Media  `json:"medias"`
+	Likes    []string `json:"likes" gorm:"type:text"`
+	Dislikes []string `json:"dislikes" gorm:"type:text"`
 }
 
 func (p *Post) FromJSON(r io.Reader) error {
@@ -37,32 +40,32 @@ func GetPosts() Posts {
 var postList = []*Post{
 
 	{
-		ID: 1,
-		PostedBy: "lucyxz",
-		Timestamp: time.Now(),
+		//ID:          1,
+		PostedBy:    "lucyxz",
+		Timestamp:   time.Now(),
 		Description: "the description",
-		Comments:
-			[]*Comment{
-				{
-					ID: 1,
-					PostedBy: "lucyxz",
-					Text: "some text here",
-					Timestamp: time.Now(),
-				},
-			},
-		Location: Location{
-			ID: 1,
-			Country: "Serbia",
-			City: "Novi Sad",
-		},
-		Medias: []*Media{
+		Comments: []Comment{
 			{
-				ID: 1,
+				//CommentID: 1,
+				PostedBy:  "lucyxz",
+				Text:      "some text here",
+				Timestamp: time.Now(),
+			},
+		},
+
+		Medias: []Media{
+			{
+				//MediaID: 1,
 				Type: image,
 				Path: "some_path",
+				Location: Location{
+					//LocationID: 1,
+					Country: "Serbia",
+					City:    "Novi Sad",
+				},
 			},
 		},
-		Likes: []string{"like1"},
+		Likes:    []string{"like1"},
 		Dislikes: []string{"dislike1"},
 	},
 }

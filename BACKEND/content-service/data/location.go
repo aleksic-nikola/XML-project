@@ -3,12 +3,15 @@ package data
 import (
 	"encoding/json"
 	"io"
+
+	"gorm.io/gorm"
 )
 
 type Location struct {
-	ID int `json:"id"`
+	gorm.Model
+	//LocationID int    `json:"id" gorm:"primaryKey"`
 	Country string `json:"country"`
-	City string `json:"city"`
+	City    string `json:"city"`
 }
 
 func (l *Location) FromJSON(r io.Reader) error {

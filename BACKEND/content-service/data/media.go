@@ -3,12 +3,18 @@ package data
 import (
 	"encoding/json"
 	"io"
+
+	"gorm.io/gorm"
 )
 
 type Media struct {
-	ID int `json:"id"`
-	Type MediaType `json:"type"`
-	Path string `json:"path"`
+	gorm.Model
+	//MediaID uint      `gorm:"primaryKey"`
+	PostID     uint      `json:"post_refer"`
+	Type       MediaType `json:"type"`
+	Path       string    `json:"path"`
+	LocationID uint      `json:"location_id"`
+	Location   Location  `json:"location" gorm:"foreignKey:LocationID"`
 }
 
 func (m *Media) FromJSON(r io.Reader) error {
@@ -22,5 +28,3 @@ func (m *Medias) ToJSON(w io.Writer) error {
 }
 
 type Medias []*Media
-
-

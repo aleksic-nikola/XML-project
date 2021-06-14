@@ -22,6 +22,20 @@ import (
 	"gorm.io/gorm"
 )
 
+func printVariables() {
+	fmt.Println("------------------------------")
+	fmt.Println(handlers.GetVariable("auth"))
+	fmt.Println(handlers.GetVariable("campaign"))
+	fmt.Println(handlers.GetVariable("content"))
+	fmt.Println(handlers.GetVariable("interaction"))
+	fmt.Println(handlers.GetVariable("monolit"))
+	fmt.Println(handlers.GetVariable("profile"))
+	fmt.Println(handlers.GetVariable("request"))
+	fmt.Println(handlers.GetVariable("search"))
+	fmt.Println("------------------------------")
+
+}
+
 func initDB() *gorm.DB {
 
 	godotenv.Load()
@@ -40,7 +54,7 @@ func initDB() *gorm.DB {
 	if errx != nil {
 		log.Fatal(errx)
 	} else {
-		fmt.Println("Successfully connected to auth-database")
+		fmt.Println("Successfully connected to content-database")
 	}
 
 	return database
@@ -118,6 +132,8 @@ func initLocationHandler(service *service.LocationService) *handlers.LocationHan
 
 func main() {
 
+	printVariables()
+
 	l := log.New(os.Stdout, "content-service ", log.LstdFlags)
 
 	database := initDB()
@@ -149,6 +165,7 @@ func main() {
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/posts", ph.GetPosts)
 	getRouter.HandleFunc("/stories", sh.GetStories)
+	getRouter.HandleFunc("/current/posts", ph.GetPostsForCurrentUser)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)

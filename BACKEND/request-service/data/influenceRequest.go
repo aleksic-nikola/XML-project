@@ -7,7 +7,8 @@ import (
 
 type InfluenceRequest struct {
 
-	Request Request `json:"request"`
+	RequestID uint `json:"request_id"`
+	Request Request `json:"request" gorm:"foreignkey=RequestID"`
 	CampaignID string `json:"campaignid"`
 
 }
@@ -35,8 +36,9 @@ func GetInfluenceRequests() InfluenceRequests {
 var influenceRequestList = []*InfluenceRequest{
 
 	{
+		RequestID: 4,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "wintzy",
 			Status: ACCEPTED,
 		},
@@ -44,8 +46,9 @@ var influenceRequestList = []*InfluenceRequest{
 
 	},
 	{
+		RequestID: 5,
 		Request : Request{
-			ID: 2,
+			//ID: 2,
 			SentBy : "dani",
 			Status: INPROCESS,
 		},

@@ -7,10 +7,11 @@ import (
 )
 
 type MultiCampaign struct {
-	Campaign `json:"campaign"`
-	FromDate time.Time `json:"fromdate"`
-	ToDate time.Time `json:"todate"`
-	TimesPerDay int `json:"timesperday"`
+	CampaignID	uint	  `json:"campaign_id"`
+	Campaign    Campaign  `json:"campaign" gorm:"foreignkey:CampaignID"`
+	FromDate    time.Time `json:"fromdate" gorm:"type:date"`
+	ToDate      time.Time `json:"todate" gorm:"type:date"`
+	TimesPerDay int       `json:"timesperday"`
 }
 
 func (mc *MultiCampaign) FromJSON(r io.Reader) error {
@@ -33,36 +34,29 @@ var multiCampaignsList = []*MultiCampaign {
 	{
 		Campaign:
 			Campaign{
-				ID: 1,
 				CreatedBy: "lucyxz",
 				Influencers:
 					[]string{"a", "b", "c"},
-				Ads:
-					[]*Ad{
+				Ads: []Ad{
 					{
 						ID: 1,
 						Description: "description",
 						Link: "link",
 						Product: Product{
-							ID:1,
 							Availability: 10,
 							Name: "Some name",
 						},
 						Media: Media{
-							ID: 1,
 							Type: image,
 							Path: "path_to_image",
 						},
 					},
 				},
 				TargetAudience: TargetAudience{
-					ID: 1,
 					Tags: []string{"tag1","tag2"},
-					AgeGroups: []*AgeGroup {
-						{
-							FromAge: 15,
-							TillAge: 25,
-						},
+					AgeGroup: AgeGroup {
+						FromAge: 15,
+						TillAge: 25,
 					},
 				},
 			},

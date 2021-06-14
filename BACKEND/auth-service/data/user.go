@@ -17,8 +17,17 @@ type User struct {
 	Name string `json:"name"`
 	LastName string `json:"lastname"`
 	Password string `json:"password"`
-	Role string `json:"role"`
-	
+	Role string `json:"role"`	
+}
+
+type LoginForm struct {
+	Username string
+	Password string
+}
+
+func (lf *LoginForm) LFFromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(lf)
 }
 
 func (u *User) FromJSON(r io.Reader) error {
@@ -49,4 +58,5 @@ var userList = []*User{
 		Role : "user",
 	},
 }
+
 

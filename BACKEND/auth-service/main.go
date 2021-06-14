@@ -82,7 +82,8 @@ func main() {
 	getRouter.HandleFunc("/", uh.GetUsers)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/users/add", uh.CreateUser)
+	postRouter.HandleFunc("/register", uh.CreateUser)
+	postRouter.HandleFunc("/login", uh.Login)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

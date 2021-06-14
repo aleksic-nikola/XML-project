@@ -7,7 +7,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
-
+// creates a token with the secret defined in the .env file
+// returns a signed token
 func GetToken(username string, role string) (string, error) {
 	godotenv.Load()
 	signingKey := []byte(os.Getenv("ACCESS_SECRET"))
@@ -20,7 +21,8 @@ func GetToken(username string, role string) (string, error) {
 	return tokenString, err
 }
 
-func GerifyToken(tokenString string) (jwt.Claims, error) {
+// verifies that the current token is valid
+func VerifyToken(tokenString string) (jwt.Claims, error) {
 	godotenv.Load()
 	signingKey := []byte(os.Getenv("ACCESS_SECRET"))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

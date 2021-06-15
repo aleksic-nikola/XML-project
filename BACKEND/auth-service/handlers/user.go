@@ -6,25 +6,26 @@ import (
 	"net/http"
 	"strings"
 	"xml/auth-service/data"
+	"xml/auth-service/dto"
 	"xml/auth-service/security"
 	"xml/auth-service/service"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-
 type UserHandler struct {
-	L *log.Logger
+	L       *log.Logger
 	Service *service.UserService
 }
 
 func NewUsers(l *log.Logger, service *service.UserService) *UserHandler {
 	return &UserHandler{l, service}
 }
-// Login function 
+
+// Login function
 // returns 400 if any error occurs
 // returns 401 if credentials are invalid
-// returns 200 with token if successfull 
+// returns 200 with token if successfull
 func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 	var form data.LoginForm
 	err := form.LFFromJSON(r.Body)
@@ -50,14 +51,14 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	rw.Header().Set("Authorization", "Bearer " + token)
+	rw.Header().Set("Authorization", "Bearer "+token)
 	rw.WriteHeader(http.StatusOK)
 	rw.Write([]byte("Token: " + token))
 }
 
 // deserializes the body object into a json
 // throws 400 on any kind of error
-// hashes password 
+// hashes password
 // saves it to db
 func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("creating")
@@ -87,7 +88,7 @@ func (u *UserHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 	err := lp.ToJSON(rw)
 
 	if err != nil {
-		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
+		http.Error(rw, "Unable to unmarshal users json", http.StatusInternalServerError)
 	}
 }
 
@@ -121,5 +122,26 @@ func authMiddleware(next http.Handler) http.Handler {
 }
 
 
+func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating user data")
+	var dto dto.UserEditDTO
+	err := dto.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(dto)
 
+	// uzeti username od trenutno ulogovanog korisnika - auth
+	// proslediti to u service
+	oldUsername := "wintzyboi"
+	err = handler.Service.EditUserData(dto, oldUsername)
 
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}

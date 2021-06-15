@@ -177,7 +177,7 @@ func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request
 
 	// uzeti username od trenutno ulogovanog korisnika - auth
 	// proslediti to u service
-	oldUsername := "wintzyboi"
+	oldUsername := dto.OldUsername
 	err = handler.Service.EditUserData(dto, oldUsername)
 
 	if err != nil {

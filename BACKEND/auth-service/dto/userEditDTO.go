@@ -6,6 +6,7 @@ import (
 )
 
 type UserEditDTO struct {
+	OldUsername string `json:"oldusername"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Name     string `json:"name"`

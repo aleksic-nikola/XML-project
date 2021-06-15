@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -35,19 +37,53 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("updating profile data + user data")
 
-	var userdto dto.UserEditDTO
-	var profiledto dto.ProfileEditDTO
+	//var userdto dto.UserEditDTO
+	var profile dto.ProfileEditDTO
 
-	err := profiledto.ProfFromJSON(r.Body)
+	err := profile.ProfFromJSON(r.Body)
 
-	fmt.Println(profiledto)
-	// TODO: with register -> create also a new profile
-	//
-	// first check updating -- SEND USER UPDATE
-	// send Profile update
-	// if everything OK -> save them
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
+	fmt.Println(profile)
 
+	oldUsername := "tomlaz"
+	err = handler.Service.EditProfileData(profile, oldUsername)
+
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+
+	// update also user
+
+	requestBody, err := json.Marshal(map[string]string{
+		"OldUsername" : oldUsername,
+		"Username" : profile.Username,
+		"Email" : profile.Email,
+		"Name" : profile.Name,
+		"LastName" : profile.LastName,
+	})
+
+	client := &http.Client{}
+
+	url := "http://localhost:9090/edituser"
+
+	fmt.Println(url)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Errorf("Error with creating new profile")
+	}
+	_, err = client.Do(req)
+	if err != nil {
+		fmt.Errorf("Error while  updating user")
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
 }
 
 

@@ -36,6 +36,12 @@ func (service *ProfileService) EditProfileData(dto dto.ProfileEditDTO, oldUserna
 		}
 	}
 
+	if profile.Username != dto.Username {
+		if service.Repo.UserExistsByUsername(dto.Username) {
+			return fmt.Errorf("Username is taken")
+		}
+	}
+
 	// profile update
 	profile.Username = dto.Username
 	profile.Phone = dto.Phone

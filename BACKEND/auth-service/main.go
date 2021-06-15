@@ -89,7 +89,7 @@ func main() {
 	
 
 
-	postRouter.HandleFunc("/editme", uh.EditUserData)
+	postRouter.HandleFunc("/edituser", uh.EditUserData)
 
 
 	//CORS

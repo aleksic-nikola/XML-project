@@ -119,6 +119,9 @@ func main() {
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
+
 	s := http.Server {
 		Addr: ":3030",
 		Handler : sm,

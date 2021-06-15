@@ -80,10 +80,13 @@ func main() {
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", uh.GetUsers)
+	getRouter.HandleFunc("/whoami", uh.WhoAmI)
+	getRouter.Use(uh.AuthMiddleware)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/register", uh.CreateUser)
 	postRouter.HandleFunc("/login", uh.Login)
+	
 
 
 	postRouter.HandleFunc("/editme", uh.EditUserData)

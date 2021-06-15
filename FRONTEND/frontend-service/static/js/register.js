@@ -12,7 +12,7 @@ function register() {
         "name" : name.val(),
         "lastname" : lastname.val(),
         "password" : password.val(),
-        "role" : "admin"
+        "role" : "user"
     }
 
     $.ajax({

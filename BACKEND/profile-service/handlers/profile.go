@@ -31,6 +31,7 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
 func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("updating profile data + user data")
 
@@ -38,11 +39,7 @@ func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.R
 	var profiledto dto.ProfileEditDTO
 
 	err := profiledto.ProfFromJSON(r.Body)
-	if err != nil {
-		handler.L.Println(err)
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
+
 	fmt.Println(profiledto)
 	// TODO: with register -> create also a new profile
 	//
@@ -52,3 +49,28 @@ func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.R
 
 
 }
+
+
+func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("creating profile")
+	var profile data.Profile
+
+	err := profile.FromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(profile)
+
+	err = handler.Service.CreateProfile(&profile)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+	rw.WriteHeader(http.StatusCreated)
+	rw.Header().Set("Content-Type", "application/json")
+}
+

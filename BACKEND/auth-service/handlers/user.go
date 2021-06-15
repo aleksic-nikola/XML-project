@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"xml/auth-service/data"
+	"xml/auth-service/dto"
 	"xml/auth-service/security"
 	"xml/auth-service/service"
 
@@ -50,9 +51,11 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	retToken := dto.TokenDto{Token: token}
+	retToken.ToJSON(rw)
 	rw.Header().Set("Authorization", "Bearer " + token)
 	rw.WriteHeader(http.StatusOK)
-	rw.Write([]byte("Token: " + token))
+	
 }
 
 // deserializes the body object into a json
@@ -91,10 +94,22 @@ func (u *UserHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (u *UserHandler) WhoAmI(rw http.ResponseWriter, r *http.Request) {
+
+	var dto = dto.UsernameRoleDto{Username : r.Header.Get("username"),Role : r.Header.Get("role")}
+	err := dto.ToJSON(rw)
+	fmt.Println("dto is" + dto.Username + " " + dto.Role)
+	u.L.Println(dto)
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal JSON", http.StatusInternalServerError)
+	}
+	rw.WriteHeader(http.StatusOK)
+}
+
 // catches any request to a certain URL and cuts it off
 // checks the authorization header disects the token and sends it back as a header parameter
 // the actual handler function should look at the authorization and decide whether it's allowed or not
-func authMiddleware(next http.Handler) http.Handler {
+func (u *UserHandler) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		tokenString := r.Header.Get("Authorization")
@@ -104,6 +119,7 @@ func authMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
+		fmt.Println(tokenString)
 		claims, err := security.VerifyToken(tokenString)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)

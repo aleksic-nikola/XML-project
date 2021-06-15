@@ -54,34 +54,17 @@ func (p *PostHandler) GetPosts(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Request) {
-	fmt.Println("here")
 	// send whoami to auth service
-	godotenv.Load()
-	client := &http.Client{}
-	tokenString := r.Header.Get("Authorization")
-	url := "http://" + GetVariable("auth") + "/whoami"
-	fmt.Println(url)
-	req, err := http.NewRequest("GET", url, nil)
-	fmt.Println("here")
-	if err != nil {
-		fmt.Errorf(err.Error())
-		return
-	}
-	//var bearer = "Bearer " + tokenString
-	req.Header.Add("Authorization", tokenString)
-	resp, err := client.Do(req)
+	resp, err := userCheck(r.Header.Get("Authorization"))
 	if err != nil {
 		p.L.Fatalln("There has been an error sending the /whoami request")
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
-	fmt.Println("here")
 	fmt.Println(resp.Status)
 	var dto dtos.UsernameRole
 	err = dto.FromJSON(resp.Body)
-	fmt.Println("---------------")
-	fmt.Println(resp.Body)
 	if err != nil {
 		
 		http.Error(
@@ -91,9 +74,22 @@ func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Req
 		)
 		return
 	}
-	fmt.Println(dto)
 	dto.ToJSON(rw)
 	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
 	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
+}
+
+func userCheck(tokenString string) (*http.Response, error) {
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + GetVariable("auth") + "/whoami"
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
 }

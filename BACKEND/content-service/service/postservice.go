@@ -19,3 +19,9 @@ func (service *PostService) PostExists(id uint) (bool, error) {
 	exists := service.Repo.PostExists(id)
 	return exists, nil
 }
+
+func (service *PostService) GetAllPostsForUser(username string) (data.Posts) {
+
+	posts := service.Repo.GetAllPostsForUser(username)
+	return posts
+}

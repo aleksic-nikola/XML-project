@@ -19,3 +19,9 @@ func (service *StoryService) StoryExists(id uint) (bool, error) {
 	exists := service.Repo.StoryExists(id)
 	return exists, nil
 }
+
+func (service *StoryService) GetAllStoriesForUser(username string) (data.Stories) {
+
+	stories := service.Repo.GetAllStoriesForUser(username)
+	return stories
+}

@@ -63,3 +63,46 @@ func (service *ProfileService) EditProfileData(dto dto.ProfileEditDTO, oldUserna
 
 	return nil
 }
+
+func (service *ProfileService) EditProfilePrivacySettings(privacySettings data.PrivacySetting, username string) error {
+	profile := service.Repo.FindProfileByUsername(username)
+
+	if profile == nil {
+		return nil
+	}
+
+	profile.PrivacySetting.IsPublic = privacySettings.IsPublic
+	profile.PrivacySetting.IsInboxOpen = privacySettings.IsInboxOpen
+	profile.PrivacySetting.IsTaggingAllowed = privacySettings.IsTaggingAllowed
+
+	err := service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (service *ProfileService) EditProfileNotificationSettings(notifSettings data.NotificationSetting, username string) error {
+	profile := service.Repo.FindProfileByUsername(username)
+
+	if profile == nil {
+		return nil
+	}
+
+	profile.NotificationSetting.ShowDmNotification = notifSettings.ShowDmNotification
+	profile.NotificationSetting.ShowFollowNotification = notifSettings.ShowFollowNotification
+	profile.NotificationSetting.ShowTaggedNotification = notifSettings.ShowTaggedNotification
+
+	err := service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+

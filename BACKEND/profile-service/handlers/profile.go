@@ -110,3 +110,51 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 	rw.Header().Set("Content-Type", "application/json")
 }
 
+func (handler *ProfileHandler) EditProfilePrivacySettings(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating privacy settings")
+	var privacySettings data.PrivacySetting
+
+	err := privacySettings.FromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(privacySettings)
+
+	// get username from current session
+	username := "tomlaz"
+	err = handler.Service.EditProfilePrivacySettings(privacySettings, username)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+}
+
+func (handler *ProfileHandler) EditProfileNotificationSettings(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating notification settings")
+	var notifSettings data.NotificationSetting
+
+	err := notifSettings.FromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(notifSettings)
+
+	// get username from current session
+	username := "tomlaz"
+	err = handler.Service.EditProfileNotificationSettings(notifSettings, username)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+}
+
+
+

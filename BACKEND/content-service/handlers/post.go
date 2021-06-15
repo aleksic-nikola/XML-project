@@ -55,7 +55,7 @@ func (p *PostHandler) GetPosts(rw http.ResponseWriter, r *http.Request) {
 
 func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Request) {
 	// send whoami to auth service
-	resp, err := userCheck(r.Header.Get("Authorization"))
+	resp, err := UserCheck(r.Header.Get("Authorization"))
 	if err != nil {
 		p.L.Fatalln("There has been an error sending the /whoami request")
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -74,13 +74,21 @@ func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Req
 		)
 		return
 	}
-	dto.ToJSON(rw)
+	posts := p.Service.GetAllPostsForUser(dto.Username)
+	err = posts.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,	
+		)
+	}
 	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
 	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
 }
 
-func userCheck(tokenString string) (*http.Response, error) {
+func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
 	client := &http.Client{}

@@ -166,6 +166,7 @@ func main() {
 	getRouter.HandleFunc("/posts", ph.GetPosts)
 	getRouter.HandleFunc("/stories", sh.GetStories)
 	getRouter.HandleFunc("/current/posts", ph.GetPostsForCurrentUser)
+	getRouter.HandleFunc("/current/stories", sh.GetStoriesForCurrentUser)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)

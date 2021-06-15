@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -78,6 +80,29 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
 	}
+
+	// Create also profile with creating user
+	requestBody, err := json.Marshal(map[string]string{
+		"Username" : user.Username,
+	})
+
+	rw.Header().Set("Content-Type", "application/json")
+	client := &http.Client{}
+	url := "http://localhost:3030/addprofile"
+	fmt.Println(url)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Errorf("Error with creating new profile")
+	}
+
+	//fmt.Printf("%s", r.Body)
+
+	_, err = client.Do(req)
+
+	if err != nil {
+		fmt.Errorf("Error while  creating new profile")
+	}
+
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
 }

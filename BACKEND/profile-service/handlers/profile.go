@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"xml/profile-service/data"
@@ -27,4 +28,26 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
 	}
+}
+
+
+func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("creating profile")
+	var profile data.Profile
+
+	err := profile.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(profile)
+
+	err = handler.Service.CreateProfile(&profile)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+	rw.WriteHeader(http.StatusCreated)
+	rw.Header().Set("Content-Type", "application/json")
 }

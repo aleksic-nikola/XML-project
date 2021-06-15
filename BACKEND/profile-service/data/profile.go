@@ -11,13 +11,13 @@ import (
 type Profile struct {
 	gorm.Model
 	Username        string              	`json:"username" gorm:"uniqueIndex"`
-	Phone           string              	`json:"phone" gorm:"uniqueIndex"`
+	Phone           string              	`json:"phone"`
 	Gender          Gender              	`json:"gender" gorm:"type:int" `
 	DateOfBirth     time.Time          	`json:"date_of_birth;type:date"`
 	Website         string         	        `json:"website"`
 	Biography       string       	        `json:"biography"`
 	CloseFriends    []Profile 	        `json:"close_friends" gorm:"many2many:profile_close_friends;"`
-	Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
+	//Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
 	IsBanned        bool                	`json:"is_banned"`
 	PrivacySetting  PrivacySetting          `gorm:"embedded"`
 	NotificationSetting NotificationSetting `json:"notification_setting" gorm:"embedded"`

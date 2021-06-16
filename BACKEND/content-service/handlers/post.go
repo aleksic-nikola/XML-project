@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"xml/content-service/data"
@@ -47,4 +48,17 @@ func (p *PostHandler) GetPosts(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
 	}
+}
+
+func (handler *PostHandler) GetPostsByUser(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+	lp := handler.Service.GetPostsByUser(username)
+	err := lp.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+	}
+
+	rw.WriteHeader(http.StatusOK)
 }

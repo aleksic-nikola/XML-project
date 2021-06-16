@@ -23,3 +23,9 @@ func (repo *PostRepository) PostExists(id uint) bool {
 	repo.Database.Where("id = ?", id).Find(&data.Post{}).Count(&count)
 	return count != 0
 }
+
+func (repo *PostRepository) GetPostsByUser(user string) data.Posts {
+	var posts data.Posts
+	repo.Database.Where("posted_by = ?", user).Find(&posts)
+	return posts
+}

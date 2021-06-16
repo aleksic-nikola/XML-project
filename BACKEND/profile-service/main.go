@@ -118,6 +118,10 @@ func main() {
 	//getRouter.HandleFunc("/getagents", agh.GetAgents)
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
+	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
+
+	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/profile/create", ph.CreateProfile)
 
 	s := http.Server {
 		Addr: ":3030",

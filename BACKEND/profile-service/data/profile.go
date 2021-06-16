@@ -17,9 +17,9 @@ type Profile struct {
 	Website         string         	        `json:"website"`
 	Biography       string       	        `json:"biography"`
 	CloseFriends    []Profile 	        `json:"close_friends" gorm:"many2many:profile_close_friends;"`
-	Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
+	//Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
 	IsBanned        bool                	`json:"is_banned"`
-	PrivacySetting  PrivacySetting          `gorm:"embedded"`
+	PrivacySetting  PrivacySetting          `json:"privacy_setting" gorm:"embedded"`
 	NotificationSetting NotificationSetting `json:"notification_setting" gorm:"embedded"`
 	Following 	[]Profile 		`json:"following" gorm:"many2many:profile_following;"`
 	Followers       []Profile 		`json:"followers" gorm:"many2many:profile_followers;"`	

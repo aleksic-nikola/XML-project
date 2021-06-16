@@ -2,6 +2,7 @@ package service
 
 import (
 	"xml/profile-service/data"
+	"xml/profile-service/dtos"
 	"xml/profile-service/repository")
 
 
@@ -18,4 +19,9 @@ func (service *ProfileService) ProfileExists(id uint) (bool, error) {
 	
 	exists := service.Repo.ProfileExists(id)
 	return exists, nil
+}
+
+func (service *ProfileService) IsUserPublic(username string) (dtos.ProfilePublic, error) {
+	public, err := service.Repo.IsUserPublic(username)
+	return public, err
 }

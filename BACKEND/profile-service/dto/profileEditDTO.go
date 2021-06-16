@@ -44,3 +44,18 @@ func (u *UserEditDTO) UserToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(u)
 }
+
+type UsernameRole struct {
+	Username string `json:"username"`
+	Role     string `json:"role"`
+}
+
+func (ur *UsernameRole) URFromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ur)
+}
+
+func (ur *UsernameRole) URToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(ur)
+}

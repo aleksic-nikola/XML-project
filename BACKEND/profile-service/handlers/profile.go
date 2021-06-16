@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"xml/profile-service/data"
@@ -37,10 +38,37 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("updating profile data + user data")
 
-	//var userdto dto.UserEditDTO
 	var profile dto.ProfileEditDTO
 
-	err := profile.ProfFromJSON(r.Body)
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		handler.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+
+	fmt.Println("-->ULOGOVAN SAM KAO: ")
+	err = dto.URFromJSON(resp.Body)
+
+	fmt.Println("Logged as: " + dto.Username + " ,with role:" +dto.Role)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	//var userdto dto.UserEditDTO
+
+	fmt.Println("===========HERE I AM==========")
+	err = profile.ProfFromJSON(r.Body)
 
 	if err != nil {
 		handler.L.Println(err)
@@ -50,7 +78,7 @@ func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.R
 
 	fmt.Println(profile)
 
-	oldUsername := "tomlaz"
+	oldUsername := dto.Username
 	err = handler.Service.EditProfileData(profile, oldUsername)
 
 	if err != nil {
@@ -114,7 +142,32 @@ func (handler *ProfileHandler) EditProfilePrivacySettings(rw http.ResponseWriter
 	fmt.Println("updating privacy settings")
 	var privacySettings data.PrivacySetting
 
-	err := privacySettings.FromJSON(r.Body)
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		handler.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+
+	fmt.Println("-->ULOGOVAN SAM KAO: ")
+	err = dto.URFromJSON(resp.Body)
+
+	fmt.Println("Logged as: " + dto.Username + " ,with role:" +dto.Role)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = privacySettings.FromJSON(r.Body)
 
 	if err != nil {
 		handler.L.Println(err)
@@ -125,7 +178,7 @@ func (handler *ProfileHandler) EditProfilePrivacySettings(rw http.ResponseWriter
 	fmt.Println(privacySettings)
 
 	// get username from current session
-	username := "tomlaz"
+	username := dto.Username
 	err = handler.Service.EditProfilePrivacySettings(privacySettings, username)
 	if err != nil {
 		fmt.Println(err)
@@ -137,7 +190,32 @@ func (handler *ProfileHandler) EditProfileNotificationSettings(rw http.ResponseW
 	fmt.Println("updating notification settings")
 	var notifSettings data.NotificationSetting
 
-	err := notifSettings.FromJSON(r.Body)
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		handler.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+
+	fmt.Println("-->ULOGOVAN SAM KAO: ")
+	err = dto.URFromJSON(resp.Body)
+
+	fmt.Println("Logged as: " + dto.Username + " ,with role:" +dto.Role)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = notifSettings.FromJSON(r.Body)
 
 	if err != nil {
 		handler.L.Println(err)
@@ -148,12 +226,26 @@ func (handler *ProfileHandler) EditProfileNotificationSettings(rw http.ResponseW
 	fmt.Println(notifSettings)
 
 	// get username from current session
-	username := "tomlaz"
+	username := dto.Username
 	err = handler.Service.EditProfileNotificationSettings(notifSettings, username)
 	if err != nil {
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
 	}
+}
+
+func UserCheck(tokenString string) (*http.Response, error) {
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + GetVariable("auth") + "/whoami"
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
 }
 
 

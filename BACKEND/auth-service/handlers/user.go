@@ -184,6 +184,40 @@ func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
 	}
+
+	// if the user changed his username , log in with the new username
+
+	if oldUsername != dto.Username {
+		fmt.Print("Logging in user with new username...")
+		// Login with new credentials
+		user := handler.Service.FindUserByUsername(dto.Username)
+
+		fmt.Print(oldUsername + " +++++ " + user.Password)
+
+		requestBody, err := json.Marshal(map[string]string{
+			"Username" : dto.Username,
+			"Password" : user.Password,
+		})
+
+		rw.Header().Set("Content-Type", "application/json")
+		client := &http.Client{}
+		url := "http://localhost:3030/login"
+		fmt.Println(url)
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+		if err != nil {
+			fmt.Errorf("Error while logging user in again")
+		}
+
+		_, err = client.Do(req)
+
+		if err != nil {
+			fmt.Errorf("Error while  loggin in with new credentials")
+		}
+
+		rw.WriteHeader(http.StatusOK)
+
+	}
+
 	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
 }

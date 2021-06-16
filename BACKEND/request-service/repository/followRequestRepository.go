@@ -32,3 +32,9 @@ func (repo *FollowRequestRepository) GetAllRequests() ([]data.FollowRequest, err
 	return followReqs, result.Error
 
 }
+
+func (repo *FollowRequestRepository) FollowRequestExists(sent_by string, forU string) bool {
+	var count int64
+	repo.Database.Where("sent_by = ? AND for_who = ? AND status=0", sent_by, forU).Find(&data.FollowRequest{}).Count(&count)
+	return count != 0
+}

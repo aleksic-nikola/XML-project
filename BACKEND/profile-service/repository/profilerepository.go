@@ -22,3 +22,65 @@ func (repo *ProfileRepository) ProfileExists(id uint) bool {
 	repo.Database.Where("id = ?", id).Find(&data.Profile{}).Count(&count)
 	return count != 0
 }
+
+func (repo *ProfileRepository) GetProfileByUsername(username string) (*data.Profile, error) {
+
+	var profile data.Profile
+
+	result := repo.Database.Where("username = ?", username).First(&profile)
+
+	fmt.Println(profile)
+
+	if result.RowsAffected != 1 {
+		error := fmt.Errorf("We didnt find any object with that username!");
+		return nil, error
+	}
+
+	return &profile, nil
+}
+
+func (repo *ProfileRepository) FollowProfile(myProfile *data.Profile, forFollowProfile *data.Profile) error {
+	fmt.Println("PRE DODAVANJA MENI FOLLOWING: ")
+	fmt.Println(myProfile.Following)
+
+	myProfile.Following = append(myProfile.Following, *forFollowProfile)
+
+	fmt.Println("POSLE DODAVANJA MENI FOLLOWING: ")
+	fmt.Println(myProfile.Following)
+
+
+	forFollowProfile.Followers = append(forFollowProfile.Followers, *myProfile)
+	result := repo.Database.Save(myProfile)
+
+	result = repo.Database.Save(forFollowProfile)
+	fmt.Println(result.RowsAffected)
+	return nil
+}
+
+func (repo *ProfileRepository) GetIdByUsername(username string) (uint, error) {
+	fullProfile, err := repo.GetProfileByUsername(username)
+
+	if err !=nil{
+		return 9999, fmt.Errorf("Greska")
+	}
+
+	return fullProfile.ID, err
+}
+
+func (repo *ProfileRepository) GetAllFollowingByUsername(username string) []string {
+	var profile data.Profile
+	id, _ := repo.GetIdByUsername(username)
+	var allFollowingUsernames []string
+
+	repo.Database.Preload("Following").Find(&profile, id)
+	fmt.Println("Ja sam " + profile.Username)
+	for _, f := range profile.Following {
+		fmt.Println("========================")
+		fmt.Println("Ja pratim ---->" + f.Username)
+		allFollowingUsernames = append(allFollowingUsernames, f.Username)
+	}
+	fmt.Println("---------------------------------------------------------")
+	fmt.Println("Broj ljudi koje pratim: ", len(allFollowingUsernames))
+
+	return allFollowingUsernames
+}

@@ -165,7 +165,6 @@ func main() {
 	}
 	defer sqlDB.Close()
 
-	database.AutoMigrate(&data.Request{})
 	database.AutoMigrate(&data.FollowRequest{})
 	database.AutoMigrate(&data.AgentRegistrationRequest{})
 	database.AutoMigrate(&data.MessageRequest{})

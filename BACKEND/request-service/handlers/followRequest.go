@@ -28,13 +28,14 @@ func (handler *FollowRequestHandler) CreateFollowRequest(rw http.ResponseWriter,
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Println(followReq)
 
 	err = handler.Service.CreateFollowRequest(&followReq)
 	if err != nil {
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
+		return
 	}
+	fmt.Println("PROSAOOO DOLE")
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
 }

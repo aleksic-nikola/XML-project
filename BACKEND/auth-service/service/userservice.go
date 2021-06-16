@@ -5,6 +5,7 @@ import (
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
 	"xml/auth-service/repository"
+	"xml/auth-service/security"
 )
 
 type UserService struct {
@@ -53,6 +54,28 @@ func (service *UserService) EditUserData(userEditDTO dto.UserEditDTO, oldUsernam
 	user.LastName = userEditDTO.LastName
 
 	err := service.Repo.UpdateUser(user)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func(service *UserService) ChangePassword(username string, newpassword string) error {
+
+	user := service.FindUserByUsername(username)
+
+	newpw, err := security.HashPassword(newpassword)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	user.Password = newpw
+	err = service.Repo.UpdateUser(user)
 
 	if err != nil {
 		fmt.Println(err)

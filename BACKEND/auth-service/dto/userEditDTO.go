@@ -22,3 +22,20 @@ func (u *UserEditDTO) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(u)
 }
+
+type PwChangedDTO struct {
+	Username string `json:"username""`
+	OldPassword string `json:"oldpassword"`
+	NewPassword string `json:"newpassword"`
+}
+
+
+func (u *PwChangedDTO) PwFromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(u)
+}
+
+func (u *PwChangedDTO) PwToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(u)
+}

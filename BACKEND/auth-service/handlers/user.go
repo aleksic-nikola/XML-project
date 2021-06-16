@@ -9,6 +9,7 @@ import (
 	"strings"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
+
 	"xml/auth-service/security"
 	"xml/auth-service/service"
 
@@ -216,6 +217,29 @@ func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request
 
 		rw.WriteHeader(http.StatusOK)
 
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
+func (handler *UserHandler) ChangePassowrd(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("Changing users password")
+	var pwdto dto.PwChangedDTO
+	err := pwdto.PwFromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(pwdto)
+
+	err = handler.Service.ChangePassword(pwdto.Username, pwdto.NewPassword)
+
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
 	}
 
 	rw.WriteHeader(http.StatusOK)

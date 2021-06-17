@@ -10,6 +10,11 @@ type UsernameRoleDto struct {
 	Role     string `json:"role"`
 }
 
+type UsernameFollowerDto struct{
+	Username string `json:"username"`
+
+}
+
 type ProfileForFollow struct {
 	FollowToUsername string `json:"follow-to-username"`
 }

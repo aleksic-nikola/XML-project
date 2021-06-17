@@ -149,7 +149,28 @@ func initVerificationRequestHandler(service *service.VerificationRequestService)
 
 
 
+func authorized(h http.HandlerFunc) http.HandlerFunc{
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request){
+		jwtToken := r.Header.Get("Authorization")
+		fmt.Println("BIOOO OVDEEE")
+		resp, err := handlers.UserCheck(jwtToken)
+		if err != nil {
+			fmt.Println("BIOOO IIIIIIIIIIIII OVDEEE")
 
+			//p.L.Fatalln("There has been an error sending the /whoami request")
+			//http.Error(rw, "")
+			rw.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		if(resp.StatusCode != 200){ //biće 401 ako je greska, nije dobar token
+			http.Error(rw, "Token error, unauthorized!", http.StatusUnauthorized)
+			return
+		}
+		//code before
+		h.ServeHTTP(rw,r)
+		//code after
+	})
+}
 
 
 
@@ -229,14 +250,17 @@ func main() {
 	getRouter.HandleFunc("/sensitiveContentReqs", scrrh.GetSensitiveContentReportRequests)
 	getRouter.HandleFunc("/agentRegistrationReqs", arrh.GetAgentRegistrationRequests)
 	getRouter.HandleFunc("/followReqs", frh.GetFollowRequests)
+	getRouter.HandleFunc("/followReqs/getMy", authorized(frh.GetMyFollowRequests))
+
 	getRouter.HandleFunc("/influenceReqs", irh.GetInfluenceRequests)
 	getRouter.HandleFunc("/monitorReportReqs", mrrh.GetMonitorReportRequests)
 	getRouter.HandleFunc("/verificationReqs", vrh.GetVerificationRequests)
 
-
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 
 	postRouter.HandleFunc("/followReqs/add", frh.CreateFollowRequest)
+	postRouter.HandleFunc("/followReqs/accept", frh.AcceptFollowRequest)
+
 	postRouter.HandleFunc("/agentRegistrationReqs/add", scrrh.CreateSensitiveContentReportRequest)
 	postRouter.HandleFunc("/influenceReqs/add", irh.CreateInfluenceRequest)
 	postRouter.HandleFunc("/messReqs/add", mrh.CreateMessageRequest)

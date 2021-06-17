@@ -67,20 +67,46 @@ func (repo *ProfileRepository) GetIdByUsername(username string) (uint, error) {
 	return fullProfile.ID, err
 }
 
-func (repo *ProfileRepository) GetAllFollowingByUsername(username string) []string {
+func (repo *ProfileRepository) GetAllFollowingByUsername(username string) []data.Profile {
 	var profile data.Profile
 	id, _ := repo.GetIdByUsername(username)
-	var allFollowingUsernames []string
 
 	repo.Database.Preload("Following").Find(&profile, id)
 	fmt.Println("Ja sam " + profile.Username)
+	fmt.Println("******************* JA PRATIM SVE: ********************")
+	fmt.Println(profile.Following)
+
 	for _, f := range profile.Following {
 		fmt.Println("========================")
 		fmt.Println("Ja pratim ---->" + f.Username)
-		allFollowingUsernames = append(allFollowingUsernames, f.Username)
+
 	}
 	fmt.Println("---------------------------------------------------------")
-	fmt.Println("Broj ljudi koje pratim: ", len(allFollowingUsernames))
+	fmt.Println("Broj ljudi koje pratim: ", len(profile.Following))
 
-	return allFollowingUsernames
+	return profile.Following
+}
+
+func (repo *ProfileRepository) AcceptFollow(myProfile *data.Profile, newFollower *data.Profile) error {
+
+	fmt.Println("JA: REPO:    ", myProfile.Username)
+	myProfile.Followers = append(myProfile.Followers, *newFollower)
+	result := repo.Database.Save(myProfile)
+	fmt.Println(result.RowsAffected)
+
+	if result.RowsAffected==0{
+		return fmt.Errorf("Error in repo at accepting profile!")
+	}
+	fmt.Println("FOLLOWER: REPO:    ", newFollower.Username)
+
+	newFollower.Following = append(newFollower.Following, *myProfile)
+	result = repo.Database.Save(newFollower)
+	fmt.Println(result.RowsAffected)
+
+	if result.RowsAffected==0{
+		return fmt.Errorf("Error in repo at accepting profile!")
+	}
+
+	return nil
+
 }

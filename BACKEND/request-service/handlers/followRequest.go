@@ -1,11 +1,17 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
 	_ "encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"xml/request-service/data"
+	dtoRequest "xml/request-service/dto"
 	"xml/request-service/service"
 )
 
@@ -40,26 +46,25 @@ func (handler *FollowRequestHandler) CreateFollowRequest(rw http.ResponseWriter,
 	rw.Header().Set("Content-Type", "application/json")
 }
 
+
+
+
+
+
 func (handler *FollowRequestHandler) GetFollowRequestsDB(rw http.ResponseWriter, r *http.Request) {
-	fmt.Println("getting")
-	var followReqs []data.FollowRequest
-	var err error
 
-	followReqs, err = handler.Service.GetAllRequests()
-	if err != nil {
-		fmt.Println(err)
-		rw.WriteHeader(http.StatusExpectationFailed)
-	}
 
-	fmt.Println(followReqs)
 
-	rw.WriteHeader(http.StatusOK)
-	//err = followReqs.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-	}
 
 	rw.Header().Set("Content-Type", "application/json")
+}
+
+func BodyToJson(body io.ReadCloser) (string, error) {
+	bodyBytes, err := ioutil.ReadAll(body)
+	if err != nil {
+		return "", fmt.Errorf("Error with reading body...")
+	}
+	return string(bodyBytes), nil
 }
 
 
@@ -75,4 +80,136 @@ func (p *FollowRequestHandler) GetFollowRequests(rw http.ResponseWriter, r *http
 	if err != nil {
 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
 	}
+}
+
+
+
+
+
+
+func (p *FollowRequestHandler) GetMyFollowRequests(rw http.ResponseWriter, r *http.Request) {
+	p.L.Println("Handle GET Request")
+
+	jwtToken := r.Header.Get("Authorization")
+
+	resp, err := UserCheck(jwtToken)
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	jsonString, err := BodyToJson(resp.Body)
+
+	if err!=nil{
+		fmt.Println("Error BodyToJson...")
+		return
+	}
+	fmt.Println(jsonString)
+
+	var meDto dtoRequest.UsernameRoleDto
+
+	err = json.Unmarshal([]byte(jsonString), &meDto)
+	if err != nil {
+		fmt.Println("Error at Unmarshal")
+		return
+	}
+
+	myFollReqs, err := p.Service.GetMyFollowRequests(meDto.Username)
+
+	fmt.Println("*********************IZ HANDLERA****************")
+	fmt.Println(myFollReqs)
+
+
+	myFollReqsJson, err := json.Marshal(myFollReqs)
+	if err != nil {
+		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
+	}
+	_, err1 := rw.Write(myFollReqsJson)
+
+	if err1 != nil {
+		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
+	}
+}
+
+func UserCheck(tokenString string) (*http.Response, error) {
+	err := godotenv.Load()
+	if err!=nil{
+		fmt.Println("Error at loading env vars\n")
+		return nil,err
+	}
+
+	client := &http.Client{}
+	url := "http://localhost:9090/whoami"
+	req, errReq := http.NewRequest("GET", url, nil)
+
+	if errReq != nil{
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
+
+}
+
+
+
+func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *http.Request) {
+	//we want to accept our request, so we need from request information about which one request we talking about
+	//we nee just our username and username of profile who sent request
+	p.L.Println("Handle POST Request")
+
+	jsonString, err := BodyToJson(r.Body)
+
+	if err!=nil{
+		fmt.Println("Error BodyToJson...")
+		return
+	}
+
+	fmt.Println(jsonString)
+
+	var followReq dtoRequest.FollowRequestDto
+
+	err = json.Unmarshal([]byte(jsonString), &followReq)
+	if err != nil {
+		fmt.Println("Error at Unmarshal")
+		return
+	}
+
+	fmt.Println("OD: ", followReq.SentBy)
+	fmt.Println("ZA: (MENE): ", followReq.ForWho)
+
+
+
+	jwtToken := r.Header.Get("Authorization")
+	client := &http.Client{}
+
+
+	var dtoUsername dtoRequest.ProfileForFollow
+
+	dtoUsername.FollowToUsername = followReq.SentBy
+
+	usernameJson, err := json.Marshal(dtoUsername)
+
+	url := "http://localhost:3030/acceptFollow"//---------------------------------------------------->>>> acceptFollow
+	req, errReq := http.NewRequest("POST", url, bytes.NewBuffer(usernameJson))
+
+	if errReq != nil{
+		http.Error(rw, "Cant accept request", http.StatusBadRequest)
+	}
+	req.Header.Add("Authorization", jwtToken)
+	resp, err := client.Do(req)
+
+	fmt.Println(resp.StatusCode)
+
+	if resp.StatusCode!=200 {
+		http.Error(rw, "Cant accept follow --> profileService", http.StatusInternalServerError)
+		return
+	}
+
+
+	err = p.Service.AcceptFollowRequest(followReq.SentBy, followReq.ForWho) //menja u bazi status
+	if err != nil {
+		fmt.Println("Can't find req")
+		return
+	}
+	rw.WriteHeader(http.StatusOK)
 }

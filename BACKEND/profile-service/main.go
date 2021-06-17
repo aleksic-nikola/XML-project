@@ -119,10 +119,14 @@ func main() {
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 
+	getRouter.HandleFunc("/getAllFollowing", ph.GetAllFollowingUsernameBy)
+
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
 	postRouter.HandleFunc("/follow", ph.FollowAccount)
+
+	postRouter.HandleFunc("/acceptFollow", ph.AcceptFollow)
 
 	s := http.Server {
 		Addr: ":3030",

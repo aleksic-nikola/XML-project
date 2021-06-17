@@ -36,3 +36,14 @@ func (service *FollowRequestService) FollowRequestExists(sent_by string, forU st
 	exists := service.Repo.FollowRequestExists(sent_by, forU)
 	return exists, nil
 }
+
+func (service *FollowRequestService) GetMyFollowRequests(username string) ([]data.FollowRequest, error) {
+	followReqs, err := service.Repo.GetMyFollowRequests(username)
+
+	return followReqs, err
+}
+
+func (service *FollowRequestService) AcceptFollowRequest(sentBy string, forWho string) error {
+	err := service.Repo.AcceptFollowRequest(sentBy, forWho)
+	return err
+}

@@ -38,3 +38,33 @@ func (repo *FollowRequestRepository) FollowRequestExists(sent_by string, forU st
 	repo.Database.Where("sent_by = ? AND for_who = ? AND status=0", sent_by, forU).Find(&data.FollowRequest{}).Count(&count)
 	return count != 0
 }
+
+func (repo *FollowRequestRepository) GetMyFollowRequests(username string) ([]data.FollowRequest, error) {
+	var followReqs []data.FollowRequest
+	repo.Database.Where("for_who = ?", username).Find(&followReqs)
+
+	fmt.Println(followReqs)
+
+	return followReqs, nil
+}
+
+func (repo *FollowRequestRepository) AcceptFollowRequest(sent_by string, forWho string) error {
+	var req data.FollowRequest
+	result := repo.Database.Where("sent_by = ? AND for_who = ? AND status=0", sent_by, forWho).Find(&req)
+
+	if(result.RowsAffected!=1){
+		return fmt.Errorf("Cant find follow request!")
+	}
+
+	fmt.Println("IZ BAZE NASAO REQ: ")
+	fmt.Println(req)
+
+	req.Request.Status = data.ACCEPTED
+
+	repo.Database.Save(req)
+
+	return nil
+}
+
+
+

@@ -3,7 +3,8 @@ package service
 import (
 	"fmt"
 	"xml/profile-service/data"
-	"xml/profile-service/repository")
+	"xml/profile-service/repository"
+)
 
 
 type ProfileService struct {
@@ -44,9 +45,14 @@ func (service *ProfileService) GetIdByUsername(username string) (uint, error) {
 	return userId, err
 }
 
-func (service *ProfileService) GetAllFollowingByUsername(username string) []string {
+func (service *ProfileService) GetAllFollowingByUsername(username string) []data.Profile {
 	followingUsernames := service.Repo.GetAllFollowingByUsername(username)
 
 	return followingUsernames
 
+}
+
+func (service *ProfileService) AcceptFollow(myProfile *data.Profile, newFollower *data.Profile) error {
+	err := service.Repo.AcceptFollow(myProfile, newFollower)
+	return err
 }

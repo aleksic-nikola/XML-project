@@ -121,6 +121,9 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
+	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
+	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
+	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
 	s := http.Server {
 		Addr: ":3030",

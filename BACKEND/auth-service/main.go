@@ -88,6 +88,10 @@ func main() {
 	postRouter.HandleFunc("/login", uh.Login)
 	
 
+
+	postRouter.HandleFunc("/edituser", uh.EditUserData)
+	postRouter.HandleFunc("/changepw", uh.ChangePassowrd)
+
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

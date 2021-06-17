@@ -9,25 +9,26 @@ import (
 	"strings"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
+
 	"xml/auth-service/security"
 	"xml/auth-service/service"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-
 type UserHandler struct {
-	L *log.Logger
+	L       *log.Logger
 	Service *service.UserService
 }
 
 func NewUsers(l *log.Logger, service *service.UserService) *UserHandler {
 	return &UserHandler{l, service}
 }
-// Login function 
+
+// Login function
 // returns 400 if any error occurs
 // returns 401 if credentials are invalid
-// returns 200 with token if successfull 
+// returns 200 with token if successfull
 func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 	var form data.LoginForm
 	err := form.LFFromJSON(r.Body)
@@ -53,16 +54,18 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 	retToken := dto.TokenDto{Token: token}
 	retToken.ToJSON(rw)
 	rw.Header().Set("Authorization", "Bearer " + token)
+
 	rw.WriteHeader(http.StatusOK)
 	
 }
 
 // deserializes the body object into a json
 // throws 400 on any kind of error
-// hashes password 
+// hashes password
 // saves it to db
 func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("creating")
@@ -115,7 +118,7 @@ func (u *UserHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 	err := lp.ToJSON(rw)
 
 	if err != nil {
-		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
+		http.Error(rw, "Unable to unmarshal users json", http.StatusInternalServerError)
 	}
 }
 
@@ -162,5 +165,83 @@ func (u *UserHandler) AuthMiddleware(next http.Handler) http.Handler {
 }
 
 
+func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating user data")
+	var dto dto.UserEditDTO
+	err := dto.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(dto)
 
+	// uzeti username od trenutno ulogovanog korisnika - auth
+	// proslediti to u service
+	oldUsername := dto.OldUsername
+	err = handler.Service.EditUserData(dto, oldUsername)
 
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+
+	// if the user changed his username , log in with the new username
+
+	if oldUsername != dto.Username {
+		fmt.Print("Logging in user with new username...")
+		// Login with new credentials
+		user := handler.Service.FindUserByUsername(dto.Username)
+
+		fmt.Print(oldUsername + " +++++ " + user.Password)
+
+		requestBody, err := json.Marshal(map[string]string{
+			"Username" : dto.Username,
+			"Password" : user.Password,
+		})
+
+		rw.Header().Set("Content-Type", "application/json")
+		client := &http.Client{}
+		url := "http://localhost:3030/login"
+		fmt.Println(url)
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+		if err != nil {
+			fmt.Errorf("Error while logging user in again")
+		}
+
+		_, err = client.Do(req)
+
+		if err != nil {
+			fmt.Errorf("Error while  loggin in with new credentials")
+		}
+
+		rw.WriteHeader(http.StatusOK)
+
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
+func (handler *UserHandler) ChangePassowrd(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("Changing users password")
+	var pwdto dto.PwChangedDTO
+	err := pwdto.PwFromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(pwdto)
+
+	err = handler.Service.ChangePassword(pwdto.Username, pwdto.NewPassword)
+
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}

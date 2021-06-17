@@ -21,6 +21,27 @@ services:
     networks:
       - backend
 
+  auth-service:
+    image: nistagram-auth
+    container_name: auth-service
+    build:
+      context: ./BACKEND/auth-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      HOST: ${HOST}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_PROFILE}
+      PASSWORD: ${PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - 9090:9090
+    networks:
+      - backend
+
   postgres:
     image: postgres
     container_name: postgres

@@ -24,9 +24,8 @@ func NewFollowRequest(l *log.Logger, service *service.FollowRequestService) *Fol
 	return &FollowRequestHandler{l, service}
 }
 
-
 func (handler *FollowRequestHandler) CreateFollowRequest(rw http.ResponseWriter, r *http.Request) {
-	fmt.Println("creating")
+	fmt.Println("Creating...")
 	var followReq data.FollowRequest
 	err := followReq.FromJSON(r.Body)
 	if err != nil {
@@ -41,23 +40,13 @@ func (handler *FollowRequestHandler) CreateFollowRequest(rw http.ResponseWriter,
 		rw.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
-	fmt.Println("PROSAOOO DOLE")
+
 	rw.WriteHeader(http.StatusCreated)
+	fmt.Println("Created")
 	rw.Header().Set("Content-Type", "application/json")
 }
 
 
-
-
-
-
-func (handler *FollowRequestHandler) GetFollowRequestsDB(rw http.ResponseWriter, r *http.Request) {
-
-
-
-
-	rw.Header().Set("Content-Type", "application/json")
-}
 
 func BodyToJson(body io.ReadCloser) (string, error) {
 	bodyBytes, err := ioutil.ReadAll(body)
@@ -83,18 +72,12 @@ func (p *FollowRequestHandler) GetFollowRequests(rw http.ResponseWriter, r *http
 }
 
 
-
-
-
-
 func (p *FollowRequestHandler) GetMyFollowRequests(rw http.ResponseWriter, r *http.Request) {
 	p.L.Println("Handle GET Request")
 
 	jwtToken := r.Header.Get("Authorization")
-
 	resp, err := UserCheck(jwtToken)
 	if err != nil {
-		//p.L.Fatalln("There has been an error sending the /whoami request")
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -104,10 +87,8 @@ func (p *FollowRequestHandler) GetMyFollowRequests(rw http.ResponseWriter, r *ht
 		fmt.Println("Error BodyToJson...")
 		return
 	}
-	fmt.Println(jsonString)
 
 	var meDto dtoRequest.UsernameRoleDto
-
 	err = json.Unmarshal([]byte(jsonString), &meDto)
 	if err != nil {
 		fmt.Println("Error at Unmarshal")
@@ -115,10 +96,6 @@ func (p *FollowRequestHandler) GetMyFollowRequests(rw http.ResponseWriter, r *ht
 	}
 
 	myFollReqs, err := p.Service.GetMyFollowRequests(meDto.Username)
-
-	fmt.Println("*********************IZ HANDLERA****************")
-	fmt.Println(myFollReqs)
-
 
 	myFollReqsJson, err := json.Marshal(myFollReqs)
 	if err != nil {
@@ -153,21 +130,15 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 
 func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *http.Request) {
-	//we want to accept our request, so we need from request information about which one request we talking about
-	//we nee just our username and username of profile who sent request
 	p.L.Println("Handle POST Request")
 
 	jsonString, err := BodyToJson(r.Body)
-
 	if err!=nil{
 		fmt.Println("Error BodyToJson...")
 		return
 	}
 
-	fmt.Println(jsonString)
-
 	var followReq dtoRequest.FollowRequestDto
-
 	err = json.Unmarshal([]byte(jsonString), &followReq)
 	if err != nil {
 		fmt.Println("Error at Unmarshal")
@@ -177,19 +148,20 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 	fmt.Println("OD: ", followReq.SentBy)
 	fmt.Println("ZA: (MENE): ", followReq.ForWho)
 
-
+	if followReq.SentBy == followReq.ForWho{
+		http.Error(rw, "Error request!", http.StatusBadRequest)
+		return
+	}
 
 	jwtToken := r.Header.Get("Authorization")
 	client := &http.Client{}
-
-
 	var dtoUsername dtoRequest.ProfileForFollow
 
 	dtoUsername.FollowToUsername = followReq.SentBy
 
 	usernameJson, err := json.Marshal(dtoUsername)
 
-	url := "http://localhost:3030/acceptFollow"//---------------------------------------------------->>>> acceptFollow
+	url := "http://localhost:3030/acceptFollow"//-------------> Adding new profile to my Followers and me to his Following
 	req, errReq := http.NewRequest("POST", url, bytes.NewBuffer(usernameJson))
 
 	if errReq != nil{
@@ -198,15 +170,18 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 	req.Header.Add("Authorization", jwtToken)
 	resp, err := client.Do(req)
 
-	fmt.Println(resp.StatusCode)
+	if err != nil{
+		http.Error(rw, "Error with sending request...", http.StatusBadRequest)
+		return
+	}
 
 	if resp.StatusCode!=200 {
+		fmt.Println(resp.StatusCode)
 		http.Error(rw, "Cant accept follow --> profileService", http.StatusInternalServerError)
 		return
 	}
 
-
-	err = p.Service.AcceptFollowRequest(followReq.SentBy, followReq.ForWho) //menja u bazi status
+	err = p.Service.AcceptFollowRequest(followReq.SentBy, followReq.ForWho) //change RequestStatus to ACCEPTED
 	if err != nil {
 		fmt.Println("Can't find req")
 		return

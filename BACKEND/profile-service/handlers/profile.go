@@ -235,8 +235,6 @@ func (u *ProfileHandler) GetAllFollowingUsernameBy(rw http.ResponseWriter, r *ht
 		fmt.Println("Error BodyToJson...")
 		return
 	}
-	fmt.Println(jsonString)
-
 	var usernameDto dtos2.UsernameFollowerDto
 
 	err = json.Unmarshal([]byte(jsonString), &usernameDto)
@@ -259,7 +257,6 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 	jwtToken := r.Header.Get("Authorization")
 	resp, err := UserCheck(jwtToken)
 	if err != nil {
-		u.L.Fatalln("There has been an error sending the /whoami request")
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -268,27 +265,32 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 		log.Fatal(err2)
 	}
 	reqBodyString := string(reqBody)
-	fmt.Println("DOBILI: ", reqBodyString)
 
 	bodyBytes, err1 := ioutil.ReadAll(resp.Body)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 	bodyString := string(bodyBytes)
-	fmt.Println("***********************")
-	fmt.Println(bodyString)
 
 	var meDto dtos2.UsernameRoleDto
 
-	json.Unmarshal([]byte(bodyString), &meDto)
+	err = json.Unmarshal([]byte(bodyString), &meDto)
+
+	if err!=nil{
+		http.Error(rw, "Can't unmarshal meDto body!", http.StatusBadRequest)
+		return
+	}
 
 	fmt.Println("Ulogovan je: ", meDto.Username)
 
-	//znamo ko smo mi, sada treba da pronadjemo koga treba da zapratimo
-
 	var profileToFollow dtos2.ProfileForFollow
 
-	json.Unmarshal([]byte(reqBodyString), &profileToFollow)
+	err = json.Unmarshal([]byte(reqBodyString), &profileToFollow)
+
+	if err!=nil{
+		http.Error(rw, "Can't unmarshal body!", http.StatusBadRequest)
+		return
+	}
 
 	fmt.Println("********** Treba da nam postane follower: ",profileToFollow.FollowToUsername)
 
@@ -296,11 +298,14 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 
 	if errNotFound!=nil{
 		fmt.Println("Not Found: ", meDto.Username)
+		http.Error(rw, "Not Found my profile", http.StatusBadRequest)
+		return
 	}
 
 	profileForFollow, errNotFound := u.Service.GetProfileByUsername(profileToFollow.FollowToUsername)
 	if errNotFound!=nil{
-		fmt.Println("Not Found: ", meDto.Username)
+		fmt.Println("Not Found: ", profileToFollow.FollowToUsername)
+		http.Error(rw, "Not Found follower's profile", http.StatusBadRequest)
 	}
 
 	fmt.Println("JA SAM: ", myProfile.Username)

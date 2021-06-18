@@ -86,8 +86,6 @@ func main() {
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/register", uh.CreateUser)
 	postRouter.HandleFunc("/login", uh.Login)
-	
-
 
 	postRouter.HandleFunc("/edituser", uh.EditUserData)
 	postRouter.HandleFunc("/changepw", uh.ChangePassowrd)
@@ -100,7 +98,7 @@ func main() {
 	l := log.New(os.Stdout, "auth-service ", log.LstdFlags)
 
 	s := http.Server{
-		Addr:         ":9090",
+		Addr:         ":8888",
 		Handler:      ch(sm),
 		ErrorLog:     l,
 		ReadTimeout:  5 * time.Second,

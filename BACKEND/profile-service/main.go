@@ -126,7 +126,7 @@ func main() {
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
 	s := http.Server {
-		Addr: ":3030",
+		Addr: ":8888",
 		Handler : sm,
 		ErrorLog: l,
 		ReadTimeout: 5 * time.Second,

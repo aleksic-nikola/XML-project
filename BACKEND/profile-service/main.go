@@ -118,8 +118,11 @@ func main() {
 	//getRouter.HandleFunc("/getagents", agh.GetAgents)
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
+	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
+
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/profile/create", ph.CreateProfile)
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
 	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)

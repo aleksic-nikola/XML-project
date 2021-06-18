@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/gorilla/mux"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -32,6 +33,27 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
 	}
+}
+
+func (u *ProfileHandler) IsUserPublic(rw http.ResponseWriter, request *http.Request)  {
+	params := mux.Vars(request)
+	username := params["username"]
+
+	dto, err := u.Service.IsUserPublic(username)
+
+	if err != nil {
+		http.Error(rw, "Unable to find user with that username", http.StatusNotFound)
+		return
+	}
+
+	err = dto.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
 }
 
 
@@ -137,6 +159,7 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
 }
+
 
 func (handler *ProfileHandler) EditProfilePrivacySettings(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("updating privacy settings")
@@ -247,6 +270,3 @@ func UserCheck(tokenString string) (*http.Response, error) {
 	req.Header.Add("Authorization", tokenString)
 	return client.Do(req)
 }
-
-
-

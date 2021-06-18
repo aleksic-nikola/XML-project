@@ -7,7 +7,6 @@ import (
 	"xml/profile-service/repository"
 )
 
-
 type ProfileService struct {
 	Repo *repository.ProfileRepository
 }
@@ -21,6 +20,11 @@ func (service *ProfileService) ProfileExists(id uint) (bool, error) {
 	
 	exists := service.Repo.ProfileExists(id)
 	return exists, nil
+}
+
+func (service *ProfileService) IsUserPublic(username string) (dto.ProfilePublic, error) {
+	public, err := service.Repo.IsUserPublic(username)
+	return public, err
 }
 
 func (service *ProfileService) EditProfileData(dto dto.ProfileEditDTO, oldUsername string) error {
@@ -105,4 +109,3 @@ func (service *ProfileService) EditProfileNotificationSettings(notifSettings dat
 
 	return nil
 }
-

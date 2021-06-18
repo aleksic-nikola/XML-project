@@ -165,6 +165,7 @@ func main() {
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/posts", ph.GetPosts)
 	getRouter.HandleFunc("/stories", sh.GetStories)
+	getRouter.HandleFunc("/getpostsbyuser/{username}", ph.GetPostsByUser)
 	getRouter.HandleFunc("/current/posts", ph.GetPostsForCurrentUser)
 	getRouter.HandleFunc("/current/stories", sh.GetStoriesForCurrentUser)
 
@@ -178,7 +179,7 @@ func main() {
 		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"}))
 
 	s := http.Server{
-		Addr:         ":8080",           // configure the bind address
+		Addr:         ":1111",           // configure the bind address
 		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client

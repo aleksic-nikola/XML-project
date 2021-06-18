@@ -24,9 +24,14 @@ document.addEventListener("click", function(e) {
     }
 })
 
+
+var whoCanISee = "profile";
+
 function editprofmodal() {
 
     $( "#editprofdata" ).click(function() {
+        whoCanISee = "profile"
+
         $(this).addClass("active");
         $("#editprivacy").removeClass("active");
         $("#editnotif").removeClass("active");
@@ -37,6 +42,8 @@ function editprofmodal() {
     });
 
     $( "#editprivacy" ).click(function() {
+        whoCanISee = "privacy"
+
         $(this).addClass("active");
         $("#editprofdata").removeClass("active");
         $("#editnotif").removeClass("active");
@@ -47,6 +54,8 @@ function editprofmodal() {
     });
 
     $( "#editnotif" ).click(function() {
+        whoCanISee = "notification"
+
         $(this).addClass("active");
         $("#editprivacy").removeClass("active");
         $("#editprofdata").removeClass("active");

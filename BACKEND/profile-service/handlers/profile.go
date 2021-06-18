@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+
 	"xml/profile-service/data"
 	"xml/profile-service/dto"
 	"xml/profile-service/service"
@@ -246,6 +247,50 @@ func UserCheck(tokenString string) (*http.Response, error) {
 	}
 	req.Header.Add("Authorization", tokenString)
 	return client.Do(req)
+}
+
+func getCurrentUserCredentials(tokenString string) (dto.UsernameRole, error) {
+
+	resp, err := UserCheck(tokenString)
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		//rw.WriteHeader(http.StatusInternalServerError)
+		return dto.UsernameRole{}, fmt.Errorf("Error sending who am I request")
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+	err = dto.URFromJSON(resp.Body)
+
+	if err != nil {
+		fmt.Errorf("Error in unmarshaling JSON")
+	}
+
+	return dto, nil
+
+}
+
+func (handler *ProfileHandler) GetCurrent(rw http.ResponseWriter, r *http.Request) {
+	// send whoami to auth service
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	fmt.Println(dto.Username + "----" + dto.Role)
+
+	profile := handler.Service.GetCurrentProfile(dto.Username)
+
+	profile.ToJson(rw)
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
 }
 
 

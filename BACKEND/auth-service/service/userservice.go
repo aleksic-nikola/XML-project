@@ -85,3 +85,9 @@ func(service *UserService) ChangePassword(username string, newpassword string) e
 	return nil
 }
 
+func(service *UserService) GetCurrentUser(username string) *data.User {
+	user := service.FindUserByUsername(username)
+
+	return user
+}
+

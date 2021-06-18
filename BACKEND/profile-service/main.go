@@ -119,6 +119,8 @@ func main() {
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 
+	getRouter.HandleFunc("/getdata", ph.GetCurrent)
+
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
 	postRouter.HandleFunc("/editprofile", ph.EditProfileData)

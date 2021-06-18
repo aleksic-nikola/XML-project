@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/interaction-service/constants"
 	"xml/interaction-service/data"
 	"xml/interaction-service/handlers"
 	"xml/interaction-service/repository"
@@ -25,7 +26,7 @@ import (
 func initDB() *gorm.DB {
 
 	godotenv.Load()
-	host := os.Getenv("HOST")
+	host := constants.HOST
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
@@ -202,7 +203,7 @@ func main() {
 		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"}))
 
 	s := http.Server{
-		Addr:         ":5050",           // configure the bind address
+		Addr:         constants.PORT,           // configure the bind address
 		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client

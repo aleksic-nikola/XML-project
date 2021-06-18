@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/content-service/constants"
 	"xml/content-service/data"
 	"xml/content-service/handlers"
 	"xml/content-service/repository"
@@ -39,14 +40,13 @@ func printVariables() {
 func initDB() *gorm.DB {
 
 	godotenv.Load()
-	host := os.Getenv("HOST")
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
 	password := os.Getenv("PASSWORD")
 
 	// db connection string
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", host, user, name, password, dbport)
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", constants.HOST, user, name, password, dbport)
 
 	// open connection to db
 	database, errx := gorm.Open(postgres.Open(dbURI))
@@ -179,7 +179,7 @@ func main() {
 		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"}))
 
 	s := http.Server{
-		Addr:         ":1111",           // configure the bind address
+		Addr:         constants.GetVariable("PORT"),           // configure the bind address
 		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client

@@ -5,7 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	
+	"xml/content-service/constants"
+
 	"xml/content-service/data"
 	"xml/content-service/data/dtos"
 	"xml/content-service/service"
@@ -107,7 +108,7 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
 	client := &http.Client{}
-	url := "http://" + GetVariable("auth") + "/whoami"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
 	fmt.Println(url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

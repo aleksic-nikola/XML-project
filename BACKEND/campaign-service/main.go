@@ -14,6 +14,7 @@ import (
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/campaign-service/constants"
 	"xml/campaign-service/data"
 	"xml/campaign-service/handlers"
 	repository "xml/campaign-service/repository"
@@ -23,14 +24,13 @@ import (
 func initDB() *gorm.DB {
 
 	godotenv.Load()
-	host := os.Getenv("HOST")
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
 	password := os.Getenv("PASSWORD")
 
 	// db connection string
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", host, user, name, password, dbport)
+	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", constants.HOST, user, name, password, dbport)
 	println(dbURI + "*****")
 	// open connection to db
 	database, errx := gorm.Open(postgres.Open(dbURI))
@@ -132,7 +132,7 @@ func main() {
 	l := log.New(os.Stdout, "content-service ", log.LstdFlags)
 
 	s := http.Server{
-		Addr:         ":7071",      // configure the bind address
+		Addr:         constants.PORT,      // configure the bind address
 		Handler:      ch(sm),                // set the default handler
 		ErrorLog:     l,                 // set the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client

@@ -170,6 +170,7 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)
+	postRouter.HandleFunc("/post/upload", ph.UploadPost)
 	postRouter.HandleFunc("/story/add", sh.CreateStory)
 
 	//CORS

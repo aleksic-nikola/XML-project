@@ -13,14 +13,24 @@ function login() {
         crossDomain: true,
         url: 'http://localhost:9090/login',
         data : JSON.stringify(obj),
-        //headers: { 'Content-Type': 'application/json' },
         contentType : 'application/json',
+        //dataType: 'JSON',
         success : function(data) {
-            console.log(data)
+            console.log(data.token)
+            console.log('your token is' + data.token)
+            localStorage.setItem('myToken', data.token);
+            alert("Succesfully logged in")
+            redirectMe()
+            //alert(data.token)
         },
         error : function(xhr, status, data) {
             console.log(xhr)
-            console.log('Cant get msgs');
+            console.log('Error in login');
         }
     })
+}
+
+function redirectMe() {
+    console.log('redirecting user to feed page')
+    window.location.href = 'feed.html'
 }

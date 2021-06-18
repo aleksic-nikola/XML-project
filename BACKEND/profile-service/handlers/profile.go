@@ -309,13 +309,13 @@ func (handler *ProfileHandler) GetCurrent(rw http.ResponseWriter, r *http.Reques
 	}
 
 	fmt.Println(dto.Username + "----" + dto.Role)
-
+	rw.Header().Set("Content-Type", "application/json")
 	profile := handler.Service.GetCurrentProfile(dto.Username)
 
 	profile.ToJson(rw)
 
 	rw.WriteHeader(http.StatusOK)
-	rw.Header().Set("Content-Type", "application/json")
+
 }
 
 

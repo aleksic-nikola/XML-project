@@ -14,6 +14,7 @@ import (
 	"xml/profile-service/handlers"
 	"xml/profile-service/repository"
 	"xml/profile-service/service"
+	gohandlers "github.com/gorilla/handlers"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -131,9 +132,14 @@ func main() {
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
+	//CORS
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
+		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),
+		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"}))
+
 	s := http.Server {
 		Addr: constants.PORT,
-		Handler : sm,
+		Handler : ch(sm),
 		ErrorLog: l,
 		ReadTimeout: 5 * time.Second,
 		WriteTimeout: 5* time.Second,

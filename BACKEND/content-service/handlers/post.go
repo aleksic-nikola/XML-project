@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	
+	"xml/content-service/constants"
+
 	"xml/content-service/data"
 	"xml/content-service/data/dtos"
 	"xml/content-service/service"
@@ -53,6 +55,20 @@ func (p *PostHandler) GetPosts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (handler *PostHandler) GetPostsByUser(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+	lp := handler.Service.GetPostsByUser(username)
+	err := lp.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
 func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Request) {
 	// send whoami to auth service
 	resp, err := UserCheck(r.Header.Get("Authorization"))
@@ -92,7 +108,7 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
 	client := &http.Client{}
-	url := "http://" + GetVariable("auth") + "/whoami"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
 	fmt.Println(url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

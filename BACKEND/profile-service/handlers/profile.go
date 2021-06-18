@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-
+	"xml/profile-service/constants"
 	"xml/profile-service/data"
 	"xml/profile-service/dto"
 	"xml/profile-service/service"
@@ -33,6 +34,27 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
 	}
+}
+
+func (u *ProfileHandler) IsUserPublic(rw http.ResponseWriter, request *http.Request)  {
+	params := mux.Vars(request)
+	username := params["username"]
+
+	dto, err := u.Service.IsUserPublic(username)
+
+	if err != nil {
+		http.Error(rw, "Unable to find user with that username", http.StatusNotFound)
+		return
+	}
+
+	err = dto.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
 }
 
 
@@ -99,7 +121,8 @@ func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.R
 
 	client := &http.Client{}
 
-	url := "http://localhost:9090/edituser"
+	//url := "http://localhost:9090/edituser"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/edituser"
 
 	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
@@ -138,6 +161,7 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
 }
+
 
 func (handler *ProfileHandler) EditProfilePrivacySettings(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("updating privacy settings")
@@ -239,7 +263,7 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
 	client := &http.Client{}
-	url := "http://" + GetVariable("auth") + "/whoami"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
 	fmt.Println(url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -248,6 +272,7 @@ func UserCheck(tokenString string) (*http.Response, error) {
 	req.Header.Add("Authorization", tokenString)
 	return client.Do(req)
 }
+
 
 func getCurrentUserCredentials(tokenString string) (dto.UsernameRole, error) {
 
@@ -292,6 +317,7 @@ func (handler *ProfileHandler) GetCurrent(rw http.ResponseWriter, r *http.Reques
 	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
 }
+
 
 
 

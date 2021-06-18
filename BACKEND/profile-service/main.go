@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/profile-service/constants"
 	"xml/profile-service/data"
 	"xml/profile-service/handlers"
 	"xml/profile-service/repository"
@@ -21,9 +22,9 @@ import (
 )
 
 func initDB() *gorm.DB {
-
+	constants.PrintVars()
 	godotenv.Load()
-	host := os.Getenv("HOST")
+	host := constants.HOST
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
@@ -118,17 +119,20 @@ func main() {
 	//getRouter.HandleFunc("/getagents", agh.GetAgents)
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
+	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
+
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/profile/create", ph.CreateProfile)
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
 	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
 	s := http.Server {
-		Addr: ":3030",
+		Addr: constants.PORT,
 		Handler : sm,
 		ErrorLog: l,
 		ReadTimeout: 5 * time.Second,

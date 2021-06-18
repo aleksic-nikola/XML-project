@@ -20,6 +20,11 @@ func (service *PostService) PostExists(id uint) (bool, error) {
 	return exists, nil
 }
 
+func (service *PostService) GetPostsByUser(username string) data.Posts {
+	posts := service.Repo.GetPostsByUser(username)
+	return posts
+}
+
 func (service *PostService) GetAllPostsForUser(username string) (data.Posts) {
 
 	posts := service.Repo.GetAllPostsForUser(username)

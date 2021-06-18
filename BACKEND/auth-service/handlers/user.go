@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"xml/auth-service/constants"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
 
@@ -91,7 +92,8 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	rw.Header().Set("Content-Type", "application/json")
 	client := &http.Client{}
-	url := "http://localhost:3030/addprofile"
+	//url := "http://localhost:3030/addprofile"
+	url := "http://" + constants.PROFILE_SERVICE_URL + "/addprofile"
 	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 	if err != nil {
@@ -202,7 +204,8 @@ func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request
 
 		rw.Header().Set("Content-Type", "application/json")
 		client := &http.Client{}
-		url := "http://localhost:3030/login"
+		//url := "http://localhost:3030/login"
+		url := "http://" + constants.AUTH_SERVICE_URL + "/login"
 		fmt.Println(url)
 		req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 		if err != nil {

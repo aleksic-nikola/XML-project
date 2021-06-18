@@ -14,6 +14,7 @@ import (
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/monolit-service/constants"
 	"xml/monolit-service/data"
 	"xml/monolit-service/handlers"
 	"xml/monolit-service/repository"
@@ -23,7 +24,7 @@ import (
 func initDB() *gorm.DB {
 
 	godotenv.Load()
-	host := os.Getenv("HOST")
+	host := constants.HOST
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
@@ -111,7 +112,7 @@ func main() {
 	l := log.New(os.Stdout, "monolit-service ", log.LstdFlags)
 
 	s := http.Server {
-		Addr: ":2902",
+		Addr: constants.PORT,
 		Handler : ch(sm),
 		ErrorLog: l,
 		ReadTimeout: 5 * time.Second,

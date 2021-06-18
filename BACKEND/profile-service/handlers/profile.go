@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	"fmt"
-	"github.com/gorilla/mux"
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
+	"xml/profile-service/constants"
 	"xml/profile-service/data"
 	"xml/profile-service/dto"
 	"xml/profile-service/service"
@@ -120,7 +121,8 @@ func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.R
 
 	client := &http.Client{}
 
-	url := "http://localhost:9090/edituser"
+	//url := "http://localhost:9090/edituser"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/edituser"
 
 	fmt.Println(url)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
@@ -261,7 +263,7 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
 	client := &http.Client{}
-	url := "http://" + GetVariable("auth") + "/whoami"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
 	fmt.Println(url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

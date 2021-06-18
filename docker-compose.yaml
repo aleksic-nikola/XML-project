@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment: 
-      HOST : ${HOST}
+      HOST_NAME : ${HOST_NAME}
       DIALECT : ${DIALECT}
       DBPORT : ${DBPORT}
       USER : ${USER}
@@ -30,6 +30,7 @@ services:
       AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
       PORT: ${PROFILE_SERVICE_PORT}
+      DOCKERIZED : ${DOCKERIZED}
     depends_on: 
       - postgres
     networks:
@@ -43,7 +44,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      HOST: ${HOST}
+      HOST_NAME: ${HOST_NAME}
       DIALECT: ${DIALECT}
       DBPORT: ${DBPORT}
       USER: ${USER}
@@ -51,7 +52,10 @@ services:
       PASSWORD: ${PASSWORD}
       AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT : ${PROFILE_SERVICE_PORT}
       PORT: ${AUTH_SERVICE_PORT}
+      DOCKERIZED : ${DOCKERIZED}
     depends_on:
       - postgres
     networks:

@@ -3,28 +3,29 @@ package main
 import (
 	"context"
 	"fmt"
+	gohandlers "github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/auth-service/constants"
 	"xml/auth-service/data"
 	"xml/auth-service/handlers"
 	"xml/auth-service/repository"
 	"xml/auth-service/service"
-
-	gohandlers "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
+
 
 func initDB() *gorm.DB {
 
 	godotenv.Load()
-	host := os.Getenv("HOST")
+	host := constants.HOST
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
@@ -32,7 +33,7 @@ func initDB() *gorm.DB {
 
 	// db connection string
 	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", host, user, name, password, dbport)
-
+	println(dbURI + "*****")
 	// open connection to db
 	database, errx := gorm.Open(postgres.Open(dbURI))
 
@@ -59,7 +60,7 @@ func initHandler(service *service.UserService) *handlers.UserHandler {
 }
 
 func main() {
-
+	constants.PrintVars()
 	database := initDB()
 	// defered closing
 	sqlDB, err := database.DB()
@@ -98,7 +99,7 @@ func main() {
 	l := log.New(os.Stdout, "auth-service ", log.LstdFlags)
 
 	s := http.Server{
-		Addr:         ":8888",
+		Addr:         constants.PORT, //":9090", //":8888",
 		Handler:      ch(sm),
 		ErrorLog:     l,
 		ReadTimeout:  5 * time.Second,

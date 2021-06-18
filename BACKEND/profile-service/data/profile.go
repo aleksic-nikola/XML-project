@@ -11,7 +11,7 @@ import (
 type Profile struct {
 	gorm.Model
 	Username        string              	`json:"username" gorm:"uniqueIndex"`
-	Phone           string              	`json:"phone" gorm:"uniqueIndex"`
+	Phone           string              	`json:"phone"`
 	Gender          Gender              	`json:"gender" gorm:"type:int" `
 	DateOfBirth     time.Time          	`json:"date_of_birth;type:date"`
 	Website         string         	        `json:"website"`

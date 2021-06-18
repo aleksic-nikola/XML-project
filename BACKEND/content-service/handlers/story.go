@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"xml/content-service/data"
+	"xml/content-service/data/dtos"
 	"xml/content-service/service"
 )
 
@@ -37,8 +38,8 @@ func (handler *StoryHandler) CreateStory(rw http.ResponseWriter, r *http.Request
 	rw.Header().Set("Content-Type", "application/json")
 }
 
-func (p *StoryHandler) GetStories(rw http.ResponseWriter, r *http.Request) {
-	p.L.Println("Handle GET Request for Posts")
+func (s *StoryHandler) GetStories(rw http.ResponseWriter, r *http.Request) {
+	s.L.Println("Handle GET Request for Posts")
 
 	ls := data.GetStories()
 
@@ -47,4 +48,39 @@ func (p *StoryHandler) GetStories(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal stories json", http.StatusInternalServerError)
 	}
+}
+
+func (s *StoryHandler) GetStoriesForCurrentUser(rw http.ResponseWriter, r *http.Request) {
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		s.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
+	if err != nil {
+		
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	stories := s.Service.GetAllStoriesForUser(dto.Username)
+	err = stories.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,	
+		)
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
 }

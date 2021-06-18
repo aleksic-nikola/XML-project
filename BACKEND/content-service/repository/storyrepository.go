@@ -23,3 +23,9 @@ func (repo *StoryRepository) StoryExists(id uint) bool {
 	repo.Database.Where("id = ?", id).Find(&data.Story{}).Count(&count)
 	return count != 0
 }
+
+func (repo *StoryRepository) GetAllStoriesForUser(username string) (data.Stories) {
+	var stories data.Stories
+	repo.Database.Where("posted_by = ?", username).Find(&stories)
+	return stories
+}

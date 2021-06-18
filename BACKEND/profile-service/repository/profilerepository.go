@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"xml/profile-service/data"
-	"xml/profile-service/dtos"
+	"xml/profile-service/dto"
 
 	"gorm.io/gorm"
 )
@@ -23,18 +23,37 @@ func (repo *ProfileRepository) ProfileExists(id uint) bool {
 	return count != 0
 }
 
-func (repo *ProfileRepository) IsUserPublic(username string) (dtos.ProfilePublic, error) {
-	if !repo.ProfileExistsByUsername(username) {
-		return dtos.ProfilePublic{}, fmt.Errorf("no user with that username")
+func (repo *ProfileRepository) IsUserPublic(username string) (dto.ProfilePublic, error) {
+	if !repo.UserExistsByUsername(username) {
+		return dto.ProfilePublic{}, fmt.Errorf("no user with that username")
 	}
 	var profile data.Profile
 	repo.Database.Where("username = ?", username).Find(&data.Profile{}).First(&profile)
-	var dto = dtos.ProfilePublic{Public: profile.PrivacySetting.IsPublic}
+	var dto = dto.ProfilePublic{Public: profile.PrivacySetting.IsPublic}
 
 	return dto, nil
 }
 
-func (repo *ProfileRepository) ProfileExistsByUsername(username string) bool {
+func(repo *ProfileRepository) FindProfileByUsername(username string) *data.Profile {
+	var profile data.Profile
+	repo.Database.Where("username =?", username).First(&profile)
+	return &profile
+}
+
+func(repo *ProfileRepository) UserExistsByPhone(phone string) bool {
+	var count int64
+	repo.Database.Where("phone = ?", phone).Find(&data.Profile{}).Count(&count)
+	return count != 0
+}
+
+func(repo *ProfileRepository) UpdateProfile(profile *data.Profile) error {
+	err := repo.Database.Save(&profile).Error
+
+	return err
+}
+
+func(repo *ProfileRepository) UserExistsByUsername(username string) bool {
+
 	var count int64
 	repo.Database.Where("username = ?", username).Find(&data.Profile{}).Count(&count)
 	return count != 0

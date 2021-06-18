@@ -120,11 +120,16 @@ func main() {
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
 
+
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/profile/create", ph.CreateProfile)
+	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
+	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
+	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
+	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
 	s := http.Server {
-		Addr: ":3030",
+		Addr: ":8888",
 		Handler : sm,
 		ErrorLog: l,
 		ReadTimeout: 5 * time.Second,

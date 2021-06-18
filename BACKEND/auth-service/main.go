@@ -80,10 +80,15 @@ func main() {
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", uh.GetUsers)
+	getRouter.HandleFunc("/whoami", uh.WhoAmI)
+	getRouter.Use(uh.AuthMiddleware)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/register", uh.CreateUser)
 	postRouter.HandleFunc("/login", uh.Login)
+
+	postRouter.HandleFunc("/edituser", uh.EditUserData)
+	postRouter.HandleFunc("/changepw", uh.ChangePassowrd)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
@@ -93,7 +98,7 @@ func main() {
 	l := log.New(os.Stdout, "auth-service ", log.LstdFlags)
 
 	s := http.Server{
-		Addr:         ":9090",
+		Addr:         ":8888",
 		Handler:      ch(sm),
 		ErrorLog:     l,
 		ReadTimeout:  5 * time.Second,

@@ -5,8 +5,12 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	
 	"xml/content-service/data"
+	"xml/content-service/data/dtos"
 	"xml/content-service/service"
+
+	"github.com/joho/godotenv"
 )
 
 type PostHandler struct {
@@ -61,4 +65,54 @@ func (handler *PostHandler) GetPostsByUser(rw http.ResponseWriter, r *http.Reque
 	}
 
 	rw.WriteHeader(http.StatusOK)
+
+}
+
+func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Request) {
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		p.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
+	if err != nil {
+		
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	posts := p.Service.GetAllPostsForUser(dto.Username)
+	err = posts.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,	
+		)
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
+}
+
+func UserCheck(tokenString string) (*http.Response, error) {
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + GetVariable("auth") + "/whoami"
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
 }

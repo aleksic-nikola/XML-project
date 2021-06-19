@@ -3,13 +3,9 @@ package data
 import (
 	"encoding/json"
 	"io"
-
-	"gorm.io/gorm"
 )
 
 type Location struct {
-	gorm.Model
-	//LocationID int    `json:"id" gorm:"primaryKey"`
 	Country string `json:"country"`
 	City    string `json:"city"`
 }

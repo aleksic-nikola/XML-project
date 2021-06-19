@@ -37,13 +37,19 @@ function register() {
 
         },
         error : function(xhr, status, data) {
-            console.log(xhr);
-            console.log('Cant get msgs');
-            
-            // to be checked in the future why after successfull reg drops error...
-            alert('Successfull registration, please log in')
-            clearRegFields();
-            redirectToLogin();
+            console.log(xhr.status);
+      
+            if(xhr.status == 417) {
+                alert("User exists with this username or email!")
+
+            } else {
+                // to be checked in the future why after successfull reg drops error...
+                alert('Successfull registration, please log in')
+                clearRegFields();
+                redirectToLogin();
+
+            }
+
         }
     })
 }

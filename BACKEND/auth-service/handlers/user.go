@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
+
 	"log"
 	"net/http"
 	"strings"
 	"xml/auth-service/constants"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
+
 
 	"xml/auth-service/security"
 	"xml/auth-service/service"
@@ -55,11 +58,11 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
+	rw.Header().Set("Content-Type", "application/json")
 	retToken := dto.TokenDto{Token: token}
 	retToken.ToJSON(rw)
-	rw.Header().Set("Authorization", "Bearer " + token)
 
+	rw.Header().Set("Authorization", "Bearer " + token)
 	rw.WriteHeader(http.StatusOK)
 	
 }
@@ -247,4 +250,61 @@ func (handler *UserHandler) ChangePassowrd(rw http.ResponseWriter, r *http.Reque
 
 	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
+}
+
+
+func UserCheck(tokenString string) (*http.Response, error) {
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
+}
+
+
+func getCurrentUserCredentials(tokenString string) (dto.UsernameRoleDto, error) {
+
+	resp, err := UserCheck(tokenString)
+	if err != nil {
+		return dto.UsernameRoleDto{}, fmt.Errorf("Error sending who am I request")
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRoleDto
+	err = dto.FromJSON(resp.Body)
+
+	if err != nil {
+		fmt.Errorf("Error in unmarshaling JSON")
+	}
+
+	return dto, nil
+
+}
+
+func (handler *UserHandler) GetCurrent(rw http.ResponseWriter, r *http.Request) {
+	// send whoami
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	fmt.Println(dto.Username + "----" + dto.Role)
+	rw.Header().Set("Content-Type", "application/json")
+	user := handler.Service.GetCurrentUser(dto.Username)
+
+	user.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
 }

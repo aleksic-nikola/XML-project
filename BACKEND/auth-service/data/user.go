@@ -40,6 +40,11 @@ func (u *Users) ToJSON(w io.Writer) error {
 	return e.Encode(u)
 }
 
+func (u *User) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(u)
+}
+
 // declaring the collection 
 type Users []*User
 

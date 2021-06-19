@@ -35,6 +35,11 @@ func (u*Profiles) ToJson(w io.Writer) error {
 	return e.Encode(u)
 }
 
+func (u*Profile) ToJson(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(u)
+}
+
 type Profiles []*Profile
 
 func GetProfiles() Profiles {

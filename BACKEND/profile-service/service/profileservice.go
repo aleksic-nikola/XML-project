@@ -109,3 +109,12 @@ func (service *ProfileService) EditProfileNotificationSettings(notifSettings dat
 
 	return nil
 }
+
+
+func (service *ProfileService) GetCurrentProfile(username string) *data.Profile {
+	profile := service.Repo.FindProfileByUsername(username)
+
+	return profile
+}
+
+

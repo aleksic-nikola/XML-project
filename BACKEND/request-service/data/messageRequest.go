@@ -7,10 +7,9 @@ import (
 
 type MessageRequest struct {
 
-	RequestID uint `json:"request_id"`
-	Request   Request `json:"request" gorm:"foreignkey=RequestID"`
-	MessageID int     `json:"messageid"`
-	For string `json:"for"`
+	Request   Request `json:"request" gorm:"embedded"`
+	MessageID int     `json:"messageid" gorm:"uniqueIndex"`
+	ForWho string `json:"forWho"`
 }
 
 func (p *MessageRequest) FromJSON(r io.Reader) error {
@@ -41,7 +40,7 @@ var messageRequestsList = []*MessageRequest{
 			Status: DENIED,
 		},
 		MessageID: 123,
-		For: "nikola123",
+		ForWho: "nikola123",
 
 	},
 	{
@@ -51,6 +50,6 @@ var messageRequestsList = []*MessageRequest{
 			Status: DENIED,
 		},
 		MessageID: 123,
-		For: "tomik",
+		ForWho: "tomik",
 	},
 }

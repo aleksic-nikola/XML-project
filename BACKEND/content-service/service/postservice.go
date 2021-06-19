@@ -20,8 +20,39 @@ func (service *PostService) PostExists(id uint) (bool, error) {
 	return exists, nil
 }
 
+func (service *PostService) GetPostsByUser(username string) data.Posts {
+	posts := service.Repo.GetPostsByUser(username)
+	return posts
+}
+
 func (service *PostService) GetAllPostsForUser(username string) (data.Posts) {
 
 	posts := service.Repo.GetAllPostsForUser(username)
 	return posts
+}
+
+func (service *PostService) GetLikedPostsByUser(username string) data.Posts {
+	posts := service.Repo.GetAllPosts()
+	likedPosts := data.Posts{}
+	for _,post := range posts {
+		for _,likedby := range post.Likes {
+			if likedby.Username == username {
+				likedPosts = append(likedPosts, post)
+			}
+		}
+	}
+	return likedPosts
+}
+
+func (service *PostService) GetDislikedPostsByUser(username string) data.Posts {
+	posts := service.Repo.GetAllPosts()
+	dislikedPosts := data.Posts{}
+	for _,post := range posts {
+		for _,dislikedby := range post.Dislikes {
+			if dislikedby.Username == username {
+				dislikedPosts = append(dislikedPosts, post)
+			}
+		}
+	}
+	return dislikedPosts
 }

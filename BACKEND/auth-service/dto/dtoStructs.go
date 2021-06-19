@@ -23,3 +23,8 @@ func (t *TokenDto) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(t)
 }
+
+func (u *UsernameRoleDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(u)
+}

@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"xml/profile-service/constants"
 	"xml/profile-service/data"
-	dtos2 "xml/profile-service/dto"
+	"xml/profile-service/dto"
 	"xml/profile-service/service"
 )
 
@@ -34,6 +36,108 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
 	}
+}
+
+func (u *ProfileHandler) IsUserPublic(rw http.ResponseWriter, request *http.Request)  {
+	params := mux.Vars(request)
+	username := params["username"]
+
+	dto, err := u.Service.IsUserPublic(username)
+
+	if err != nil {
+		http.Error(rw, "Unable to find user with that username", http.StatusNotFound)
+		return
+	}
+
+	err = dto.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+
+
+func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating profile data + user data")
+
+	var profile dto.ProfileEditDTO
+
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		handler.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+
+	fmt.Println("-->ULOGOVAN SAM KAO: ")
+	err = dto.URFromJSON(resp.Body)
+
+	fmt.Println("Logged as: " + dto.Username + " ,with role:" +dto.Role)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	//var userdto dto.UserEditDTO
+
+	fmt.Println("===========HERE I AM==========")
+	err = profile.ProfFromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(profile)
+
+	oldUsername := dto.Username
+	err = handler.Service.EditProfileData(profile, oldUsername)
+
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+
+	// update also user
+
+	requestBody, err := json.Marshal(map[string]string{
+		"OldUsername" : oldUsername,
+		"Username" : profile.Username,
+		"Email" : profile.Email,
+		"Name" : profile.Name,
+		"LastName" : profile.LastName,
+	})
+
+	client := &http.Client{}
+
+	//url := "http://localhost:9090/edituser"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/edituser"
+
+	fmt.Println(url)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Errorf("Error with creating new profile")
+	}
+	_, err = client.Do(req)
+	if err != nil {
+		fmt.Errorf("Error while  updating user")
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
 }
 
 
@@ -68,7 +172,7 @@ func (u *ProfileHandler) FollowAccount(rw http.ResponseWriter, r *http.Request){
 	fmt.Println("***********************")
 	fmt.Println(bodyString)
 
-	var meDto dtos2.UsernameRoleDto
+	var meDto dto.UsernameRoleDto
 
 	json.Unmarshal([]byte(bodyString), &meDto)
 
@@ -76,7 +180,7 @@ func (u *ProfileHandler) FollowAccount(rw http.ResponseWriter, r *http.Request){
 
 	//znamo ko smo mi, sada treba da pronadjemo koga treba da zapratimo
 
-	var profileToFollow dtos2.ProfileForFollow
+	var profileToFollow dto.ProfileForFollow
 
 	json.Unmarshal([]byte(reqBodyString), &profileToFollow)
 
@@ -134,7 +238,7 @@ func SendFollowRequest(myProfile *data.Profile, profileToFollow *data.Profile) e
 	client := &http.Client{}
 
 
-	var dto1 dtos2.FollowRequestDto
+	var dto1 dto.FollowRequestDto
 
 	dto1.ForWho = profileToFollow.Username
 	dto1.Request.SentBy = myProfile.Username
@@ -142,10 +246,12 @@ func SendFollowRequest(myProfile *data.Profile, profileToFollow *data.Profile) e
 
 	json, err := json.Marshal(dto1)
 
+
 	if err!=nil{
 		return fmt.Errorf("Error unmarshaling request json")
 	}
-	url := "http://localhost:9211/followReqs/add"
+	url := "http://" + constants.REQUEST_SERVICE_URL + "/followReqs/add"
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
 
 	if err != nil{
@@ -179,24 +285,6 @@ func (u *ProfileHandler) GetIdByUsername(username string) uint {
 	return userId
 }
 
-func UserCheck(tokenString string) (*http.Response, error) {
-	err := godotenv.Load()
-	if err!=nil{
-		fmt.Println("Error at loading env vars\n")
-		return nil,err
-	}
-
-	client := &http.Client{}
-	url := "http://localhost:9090/whoami"
-	req, errReq := http.NewRequest("GET", url, nil)
-
-	if errReq != nil{
-		return nil, fmt.Errorf("Error with the whoami request")
-	}
-	req.Header.Add("Authorization", tokenString)
-	return client.Do(req)
-
-}
 
 func BodyToJson(body io.ReadCloser) (string, error) {
 	bodyBytes, err := ioutil.ReadAll(body)
@@ -211,11 +299,13 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 	var profile data.Profile
 
 	err := profile.FromJSON(r.Body)
+
 	if err != nil {
 		handler.L.Println(err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
 	fmt.Println(profile)
 
 	err = handler.Service.CreateProfile(&profile)
@@ -227,6 +317,7 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 	rw.Header().Set("Content-Type", "application/json")
 }
 
+
 func (u *ProfileHandler) GetAllFollowingUsernameBy(rw http.ResponseWriter, r *http.Request) {
 
 	jsonString, err := BodyToJson(r.Body)
@@ -235,7 +326,7 @@ func (u *ProfileHandler) GetAllFollowingUsernameBy(rw http.ResponseWriter, r *ht
 		fmt.Println("Error BodyToJson...")
 		return
 	}
-	var usernameDto dtos2.UsernameFollowerDto
+	var usernameDto dto.UsernameFollowerDto
 
 	err = json.Unmarshal([]byte(jsonString), &usernameDto)
 	if err != nil {
@@ -272,7 +363,7 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 	}
 	bodyString := string(bodyBytes)
 
-	var meDto dtos2.UsernameRoleDto
+	var meDto dto.UsernameRoleDto
 
 	err = json.Unmarshal([]byte(bodyString), &meDto)
 
@@ -283,7 +374,7 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Ulogovan je: ", meDto.Username)
 
-	var profileToFollow dtos2.ProfileForFollow
+	var profileToFollow dto.ProfileForFollow
 
 	err = json.Unmarshal([]byte(reqBodyString), &profileToFollow)
 
@@ -319,3 +410,161 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+
+func (handler *ProfileHandler) EditProfilePrivacySettings(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating privacy settings")
+	var privacySettings data.PrivacySetting
+
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		handler.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+
+	fmt.Println("-->ULOGOVAN SAM KAO: ")
+	err = dto.URFromJSON(resp.Body)
+
+	fmt.Println("Logged as: " + dto.Username + " ,with role:" +dto.Role)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = privacySettings.FromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(privacySettings)
+
+	// get username from current session
+	username := dto.Username
+	err = handler.Service.EditProfilePrivacySettings(privacySettings, username)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+}
+
+func (handler *ProfileHandler) EditProfileNotificationSettings(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating notification settings")
+	var notifSettings data.NotificationSetting
+
+	// send whoami to auth service
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		handler.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+
+	fmt.Println("-->ULOGOVAN SAM KAO: ")
+	err = dto.URFromJSON(resp.Body)
+
+	fmt.Println("Logged as: " + dto.Username + " ,with role:" +dto.Role)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = notifSettings.FromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(notifSettings)
+
+	// get username from current session
+	username := dto.Username
+	err = handler.Service.EditProfileNotificationSettings(notifSettings, username)
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+}
+
+func UserCheck(tokenString string) (*http.Response, error) {
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
+}
+
+
+func getCurrentUserCredentials(tokenString string) (dto.UsernameRole, error) {
+
+	resp, err := UserCheck(tokenString)
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		//rw.WriteHeader(http.StatusInternalServerError)
+		return dto.UsernameRole{}, fmt.Errorf("Error sending who am I request")
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRole
+	err = dto.URFromJSON(resp.Body)
+
+	if err != nil {
+		fmt.Errorf("Error in unmarshaling JSON")
+	}
+
+	return dto, nil
+
+}
+
+func (handler *ProfileHandler) GetCurrent(rw http.ResponseWriter, r *http.Request) {
+	// send whoami to auth service
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	fmt.Println(dto.Username + "----" + dto.Role)
+	rw.Header().Set("Content-Type", "application/json")
+	profile := handler.Service.GetCurrentProfile(dto.Username)
+
+	profile.ToJson(rw)
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
+

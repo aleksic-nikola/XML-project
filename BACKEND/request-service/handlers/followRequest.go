@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"xml/request-service/constants"
 	"xml/request-service/data"
 	dtoRequest "xml/request-service/dto"
 	"xml/request-service/service"
@@ -161,7 +162,8 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 
 	usernameJson, err := json.Marshal(dtoUsername)
 
-	url := "http://localhost:3030/acceptFollow"//-------------> Adding new profile to my Followers and me to his Following
+
+	url := "http://" + constants.PROFILE_SERVICE_URL + "/acceptFollow"    //-------------> Adding new profile to my Followers and me to his Following
 	req, errReq := http.NewRequest("POST", url, bytes.NewBuffer(usernameJson))
 
 	if errReq != nil{

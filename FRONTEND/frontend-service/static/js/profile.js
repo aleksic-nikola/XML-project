@@ -12,6 +12,7 @@ var postList
 var this_is_me // username / role
 var this_is_my_profile // profile of currently logged in user
 var user_on_page
+var whoCanISee
 
 $(document).ready(function() {
     //commented cuz of database
@@ -200,7 +201,7 @@ function checkIfShowingPostIsAllowed() {
     return this_is_me != undefined
 }
 
-var whoCanISee = "profile";
+whoCanISee = "profile";
 
 function editprofmodal() {
 

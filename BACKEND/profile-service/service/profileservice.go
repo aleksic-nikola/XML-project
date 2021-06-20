@@ -153,12 +153,14 @@ func (service *ProfileService) GetCurrentProfile(username string) *data.Profile 
 	return profile
 }
 
-<<<<<<< HEAD
-func (service *ProfileService) GetAllFollowersByUsername(username string) []data.Profile   {
+func (service *ProfileService) GetAllFollowersByUsername(username string) []data.Profile {
 	followers := service.Repo.GetAllFollowersByUsername(username)
 
 	return followers
-=======
+}
+
+
+
 func (service *ProfileService) BlockProfile(profile_username string, blocked_prof_username string) (*data.Profile,error) {
 	profile ,err :=  service.Repo.GetProfileByUsername(profile_username)
 
@@ -221,5 +223,4 @@ func (service *ProfileService) MuteProfile(profile_username string, muted_prof_u
 	}
 
 	return profile, nil
->>>>>>> 7c36b5c191400ca58855b790b4cd9cd6b1109664
 }

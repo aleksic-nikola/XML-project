@@ -16,8 +16,7 @@ $(document).ready(function() {
 
     setFollowers()
     getMyDatas1();
-    getDataFromProfile()
-
+  
     whoAmI()
     editprofmodal()
     fetchCurrentPageUser()
@@ -112,7 +111,8 @@ function fetchCurrentPageUser() {
     const name = urlParams.get('user')
     console.log(name);
     if (name == null) {
-        countdownToRedirect(3, "back")
+        //countdownToRedirect(3, "back")
+        console.log("....nestoo")
     } else {
         fetchUser(name)
     }

@@ -1,10 +1,10 @@
-const username = $('#username_field')
+const username1 = $('#username_field')
 const password = $('#password_field')
 
 function login() {
 
     var obj = {
-        username : username.val(),
+        username : username1.val(),
         password : password.val()
     }
     

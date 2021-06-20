@@ -146,3 +146,19 @@ func(repo *ProfileRepository) UserExistsByUsername(username string) bool {
 	repo.Database.Where("username = ?", username).Find(&data.Profile{}).Count(&count)
 	return count != 0
 }
+
+func (repo *ProfileRepository) GetProfileByID(my_id uint) (*data.Profile, error) {
+
+	var profile data.Profile
+
+	result := repo.Database.Where("id = ?", my_id).First(&profile)
+
+	fmt.Println(profile)
+
+	if result.RowsAffected != 1 {
+		error := fmt.Errorf("We didnt find any object with that username!");
+		return nil, error
+	}
+
+	return &profile, nil
+}

@@ -137,6 +137,9 @@ func main() {
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
+	postRouter.HandleFunc("/blockuser", ph.BlockUser)
+	postRouter.HandleFunc("/muteuser", ph.MuteUser)
+
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

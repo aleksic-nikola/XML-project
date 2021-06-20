@@ -152,3 +152,67 @@ func (service *ProfileService) GetCurrentProfile(username string) *data.Profile 
 
 	return profile
 }
+
+func (service *ProfileService) BlockProfile(profile_username string, blocked_prof_username string) (*data.Profile,error) {
+	profile ,err :=  service.Repo.GetProfileByUsername(profile_username)
+
+	if profile_username == blocked_prof_username {
+		fmt.Errorf("You can't block yourself")
+		return nil, err
+	}
+
+	if err!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", profile_username)
+		return nil, err
+	}
+
+	prof_to_block, error := service.Repo.GetProfileByUsername(blocked_prof_username)
+
+	if error!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", blocked_prof_username)
+		return nil, error
+	}
+
+	profile.PrivacySetting.Blacklist = append(profile.PrivacySetting.Blacklist, *prof_to_block)
+
+	err = service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in saving blocked user")
+		return nil, err
+	}
+
+	return profile, nil
+}
+
+func (service *ProfileService) MuteProfile(profile_username string, muted_prof_username string) (*data.Profile,error) {
+	profile ,err :=  service.Repo.GetProfileByUsername(profile_username)
+
+	if profile_username == muted_prof_username {
+		fmt.Errorf("You can't mute yourself")
+		return nil, err
+	}
+
+	if err!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", profile_username)
+		return nil, err
+	}
+
+	prof_to_mute, error := service.Repo.GetProfileByUsername(muted_prof_username)
+
+	if error!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", muted_prof_username)
+		return nil, error
+	}
+
+	profile.PrivacySetting.Graylist = append(profile.PrivacySetting.Graylist, *prof_to_mute)
+
+	err = service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in saving muted user")
+		return nil, err
+	}
+
+	return profile, nil
+}

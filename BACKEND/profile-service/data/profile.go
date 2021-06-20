@@ -18,11 +18,13 @@ type Profile struct {
 	Biography       string       	        `json:"biography"`
 	CloseFriends    []Profile 	        `json:"close_friends" gorm:"many2many:profile_close_friends;"`
 	//Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
-	IsBanned        bool                	`json:"is_banned"`
-	PrivacySetting  PrivacySetting          `json:"privacy_setting" gorm:"embedded"`
+	IsBanned            bool                `json:"is_banned"`
+	PrivacySetting      PrivacySetting      `json:"privacy_setting" gorm:"embedded"`
 	NotificationSetting NotificationSetting `json:"notification_setting" gorm:"embedded"`
-	Following 	[]Profile 		`json:"following" gorm:"many2many:profile_following;"`
-	Followers       []Profile 		`json:"followers" gorm:"many2many:profile_followers;"`	
+	Following           []Profile           `json:"following" gorm:"many2many:profile_following;"`
+	Followers           []Profile           `json:"followers" gorm:"many2many:profile_followers;"`
+	Graylist            []Profile           `json:"graylist" gorm:"many2many:profile_graylisted;"`
+	Blacklist           []Profile           `json:"blacklist" gorm:"many2many:profile_blacklisted;"`
 }
 
 func (u *Profile) FromJSON(r io.Reader) error {

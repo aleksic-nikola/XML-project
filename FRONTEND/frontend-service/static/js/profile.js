@@ -1,22 +1,45 @@
-
-var post1 = {postedby:"dparip",timestamp:"2020-01-01T00:00:00Z",description:"opdaddsis",comments:[],
-            medias:[{type:"IMAGE",path:"../img/avatar.png",location:{country:"Srbija",city:"BT"}}],
-            likes:[{Username:"gfgf"}],
-            dislikes:[{Username:"cas"},{Username:"aaaa"}]}
-
-var post2 = {postedby:"dparip",timestamp:"2020-01-01T00:00:00Z",description:"opdaddsis",comments:[],
-            medias:[{type:"IMAGE",path:"../img/phones_image.png",location:{country:"Srbija",city:"BT"}}],likes:
-            [{Username:"gfgf"}],
-            dislikes:[{Username:"cas"},{Username:"aaaa"}]}
-
-var postList = [post1, post2]
-
 var loggedIn
+
+var post1 = {ID:"1",postedby:"dparip",timestamp:"2020-01-01T00:00:00Z",description:"opdaddsis",
+	comments:[{
+		postedby:  "lucyxz",
+		text:      "some text here",
+		timestamp : 'dont care',
+	},
+	{
+		postedby:  "ahaheagha",
+		text:      "someeayaeyaeyaweyea text here",
+		timestamp : 'dont care',
+	}],
+	medias:[{type:"IMAGE",path:"../img/avatar.png",location:{country:"Srbija",city:"BT"}}],
+	likes:[{Username:"gfgf"}],
+	dislikes:[{Username:"cas"},{Username:"aaaa"}]}
+
+var post2 = {ID:"2",postedby:"dparip",timestamp:"2020-01-01T00:00:00Z",description:"opdaddsis",comments:[
+	{
+		postedby:  "wintzyxz",
+		text:      "bravo text here",
+		timestamp : 'dont care',
+	},
+	{
+		postedby:  "danip",
+		text:      "some agaehahazhawe here",
+		timestamp : 'dont care',
+	}
+	],
+medias:[{type:"IMAGE",path:"../img/phones_image.png",location:{country:"Srbija",city:"BT"}}],likes:
+[{Username:"gfgf"}],
+dislikes:[{Username:"cas"},{Username:"aaaa"}]}
+
+var postList = [post2, post1]
+
+
 
 $(document).ready(function() {
 
     editprofmodal();
     myProfileOrOther();
+    printOriginVariables()
 
 })
 
@@ -32,6 +55,7 @@ function myProfileOrOther() {
     }
 }
 
+
 document.addEventListener("click", function(e) {
     if(e.target.classList.contains("gallery-item")) {
 
@@ -42,11 +66,10 @@ document.addEventListener("click", function(e) {
 
             document.querySelector(".modal-img").src = src;
             const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
-
-            /*
-            NAPOMENA:  ****************
-                - dodati da se i opis, komentari... se menjaju a ne samo slika.
-            */
+            const post_id = e.target.getAttribute("id")
+            console.log(post_id)
+            showImageModal(post_id.split("-")[1], postList)
+            
 
             myModal.show();
         }
@@ -55,6 +78,8 @@ document.addEventListener("click", function(e) {
         }
     }
 })
+
+
 
 
 var whoCanISee = "profile";
@@ -124,7 +149,7 @@ function getOtherProfile(name) {
     $.ajax({
         type: 'GET',
         crossDomain: true,
-        url: 'http://localhost:9090/whoami',
+        url: AUTH_SERVICE_URL + '/whoami',
         contentType: 'application/json',
         dataType: 'JSON',
         beforeSend: function (xhr) {
@@ -133,51 +158,39 @@ function getOtherProfile(name) {
         success : function(data) {
             loggedIn = true;
             console.log(data)
+            checkUserPublicity(name)
         },
         error : function() {
             loggedIn = false
             //IamNotLoggedIn
-            $.ajax({
-                type: 'GET',
-                crossDomain: true,
-                url: 'http://localhost:3030/isuserpublic/' + name,
-                contentType: 'application/json',
-                dataType: 'JSON',
-                success : function(user) {
-                    alert(user.ispublic)
-                    if (user.ispublic == true) {
-                        showPhotos()    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
-                    } else {
-                        $("#photos").css("visibility", "hidden")
-                        $("#userprivate").html("User is private")
-                    }
-                }, 
-                error : function() {                    
-                    $("#maincontainer").css("visibility", "hidden")
-                    $("#userdoesntexist").html("User with that username doesn't exists")
-                    countdownToRedirect(3, "back")
-                }
-            })
+            checkUserPublicity(name)
+            
         }
     })
 }
 
-function showPhotos() {
-
-    var posts = "";
-
-    postList.forEach(function(post) {
-
-        posts += `<div class="col-md-6 col-lg-4">
-                        <div class="card border-0 transform-on-hover">
-                            <a class="lightbox">
-                                <img src="${post.medias[0].path}" alt="testimg" class="card-img-top gallery-item">
-                            </a>
-                        </div>
-                  </div>`
+function checkUserPublicity(name) {
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/isuserpublic/' + name,
+        contentType: 'application/json',
+        dataType: 'JSON',
+        success : function(user) {
+            alert(user.ispublic)
+            if (user.ispublic == true) {
+                showPhotosForNonLoggedInUser(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+            } else {
+                $("#photos").css("visibility", "hidden")
+                $("#userprivate").html("User is private")
+            }
+        }, 
+        error : function() {                    
+            $("#maincontainer").css("visibility", "hidden")
+            $("#userdoesntexist").html("User with that username doesn't exists")
+            countdownToRedirect(3, "back")
+        }
     })
-
-    $("#postsHere").html(posts) 
 }
 
 /*
@@ -186,7 +199,7 @@ function getMyDatas() {
     $.ajax({
         type:'GET',
         crossDomain: true,
-        url: 'http://localhost:9090/getdata',
+        url: AUTH_SERVICE_URL + '/getdata',
         contentType : 'application/json',
         dataType: 'JSON',
         beforeSend: function (xhr) {
@@ -205,7 +218,7 @@ function getMyDatas() {
     $.ajax({
         type:'GET',
         crossDomain: true,
-        url: 'http://localhost:3030/getdata',
+        url: PROFILE_SERVICE_URL + '/getdata',
         contentType : 'application/json',
         dataType: 'JSON',
         beforeSend: function (xhr) {

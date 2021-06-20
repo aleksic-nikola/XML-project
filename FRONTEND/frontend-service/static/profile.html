@@ -132,21 +132,25 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body" id="image_modal_body">
                                 <!-- CONTENT OF MODAL WHEN CLICKING ON PICTURE -->
                                 <div class="one-feed text-center">
 
                                     <div class="card">
                                         <!-- IMAGE OF POST-->
-                                        <img class="card-img-center modal-img" src="img/test2.png" alt="Card image cap">
+                                        <div id="which_image">
+                                            <img class="card-img-center modal-img" src="img/test2.png" alt="Card image cap">
+                                        </div>
                                         <div class="card-body">
                 
                                             <!-- DESCRIPTION OF IMAGE-->
-                                            <p class="card-text text-left description_part">Moj opis za moju trecu sliku.</p>
+                                            <p class="card-text text-left description_part" id="image_description">Moj opis za moju trecu sliku.</p>
                                             
                                             <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
-                                            <p class = "text-left"> 
-                                                <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                                            <p class = "text-left">
+                                                <div id="like_button_div">
+                                                    <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                                                </div> 
                                             </p> 
                                             <hr>
                 
@@ -163,7 +167,7 @@
                                                   </tr>
                                                 </thead>
                                                 <div class="bodycontainer scrollable">
-                                                    <tbody class="text-left">
+                                                    <tbody class="text-left" id="comments_body">
                 
                                                     <tr>
                                                         <td class = "first_td"> <a class ="commentedby" href=""> Mark Markic: </a> </td>
@@ -199,7 +203,10 @@
                                               <div class="writecomment_section">
                                                 <div class="form-group">
                                                     <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
-                                                    <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
+                                                    <div id="post_comment_button_div">
+                                                        <button class="btn btn-primary postcommentbtn" id="post_comment_btn" onclick="postComment()"> Post </button>
+
+                                                    </div>
                                                 </div>
             
                                                 
@@ -404,8 +411,10 @@
 
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-
+    <script src="js/constants.js"></script>
     <script src="js/timer.js"></script>
+    <script src="js/postprint/profileprint.js"></script>
+    <script src="js/modals/profilephotomodal.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/editprof.js"></script>
 </body>

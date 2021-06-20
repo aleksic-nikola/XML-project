@@ -14,6 +14,7 @@ import (
 	"os/signal"
 	"runtime"
 	"time"
+	"xml/search-service/constants"
 	"xml/search-service/data"
 	"xml/search-service/handlers"
 	"xml/search-service/repository"
@@ -23,7 +24,7 @@ import (
 func initDB() *gorm.DB {
 
 	godotenv.Load()
-	host := os.Getenv("HOST")
+	host := constants.HOST
 	dbport := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	name := os.Getenv("NAME")
@@ -89,7 +90,7 @@ func main() {
 	l := log.New(os.Stdout, "search-service", log.LstdFlags)
 
 	s := http.Server {
-		Addr: ":9494",
+		Addr: constants.PORT,
 		Handler : ch(sm),
 		ErrorLog: l,
 		ReadTimeout: 5 * time.Second,

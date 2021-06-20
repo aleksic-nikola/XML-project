@@ -13,8 +13,7 @@ type Media struct {
 	PostID     uint      `json:"post_refer"`
 	Type       MediaType `json:"type"`
 	Path       string    `json:"path"`
-	LocationID uint      `json:"location_id"`
-	Location   Location  `json:"location" gorm:"foreignKey:LocationID"`
+	Location   Location  `json:"location" gorm:"embedded"`
 }
 
 func (m *Media) FromJSON(r io.Reader) error {

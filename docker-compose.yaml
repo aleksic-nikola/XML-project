@@ -1,5 +1,16 @@
 version: "3.8"
 services:
+
+  gateway:
+    image: nginx:1.19.8-alpine
+    ports:
+      - 8888:8888
+    networks:
+      - backend
+    volumes:
+      - ./BACKEND/Gateway/nginx.conf:/etc/nginx/nginx.conf
+      - ./BACKEND/Gateway/api_gateway.conf:/etc/nginx/api_gateway.conf
+
   profile-service:
     image: nistagram-profile
     container_name: profile-service
@@ -8,16 +19,45 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment: 
-      HOST : ${HOST}
+      HOST_NAME : ${HOST_NAME}
       DIALECT : ${DIALECT}
       DBPORT : ${DBPORT}
       USER : ${USER}
       NAME : ${NAME_PROFILE}
       PASSWORD : ${PASSWORD}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PORT: ${PROFILE_SERVICE_PORT}
+      DOCKERIZED : ${DOCKERIZED}
     depends_on: 
       - postgres
-    ports:
-      - 3030:3030
+    networks:
+      - backend
+
+  auth-service:
+    image: nistagram-auth
+    container_name: auth-service
+    build:
+      context: ./BACKEND/auth-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      HOST_NAME: ${HOST_NAME}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_AUTH}
+      PASSWORD: ${PASSWORD}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT : ${PROFILE_SERVICE_PORT}
+      PORT: ${AUTH_SERVICE_PORT}
+      DOCKERIZED : ${DOCKERIZED}
+    depends_on:
+      - postgres
     networks:
       - backend
 

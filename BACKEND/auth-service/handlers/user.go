@@ -1,31 +1,38 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/joho/godotenv"
+
 	"log"
 	"net/http"
 	"strings"
+	"xml/auth-service/constants"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
+
+
 	"xml/auth-service/security"
 	"xml/auth-service/service"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-
 type UserHandler struct {
-	L *log.Logger
+	L       *log.Logger
 	Service *service.UserService
 }
 
 func NewUsers(l *log.Logger, service *service.UserService) *UserHandler {
 	return &UserHandler{l, service}
 }
-// Login function 
+
+// Login function
 // returns 400 if any error occurs
 // returns 401 if credentials are invalid
-// returns 200 with token if successfull 
+// returns 200 with token if successfull
 func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 	var form data.LoginForm
 	err := form.LFFromJSON(r.Body)
@@ -51,8 +58,10 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	rw.Header().Set("Content-Type", "application/json")
 	retToken := dto.TokenDto{Token: token}
 	retToken.ToJSON(rw)
+
 	rw.Header().Set("Authorization", "Bearer " + token)
 	rw.WriteHeader(http.StatusOK)
 	
@@ -60,7 +69,7 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 
 // deserializes the body object into a json
 // throws 400 on any kind of error
-// hashes password 
+// hashes password
 // saves it to db
 func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("creating")
@@ -78,6 +87,30 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
 	}
+
+	// Create also profile with creating user
+	requestBody, err := json.Marshal(map[string]string{
+		"Username" : user.Username,
+	})
+
+	rw.Header().Set("Content-Type", "application/json")
+	client := &http.Client{}
+	//url := "http://localhost:3030/addprofile"
+	url := "http://" + constants.PROFILE_SERVICE_URL + "/addprofile"
+	fmt.Println(url)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		fmt.Errorf("Error with creating new profile")
+	}
+
+	//fmt.Printf("%s", r.Body)
+
+	_, err = client.Do(req)
+
+	if err != nil {
+		fmt.Errorf("Error while  creating new profile")
+	}
+
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
 }
@@ -90,7 +123,7 @@ func (u *UserHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 	err := lp.ToJSON(rw)
 
 	if err != nil {
-		http.Error(rw, "Unable to unmarshal users json" , http.StatusInternalServerError)
+		http.Error(rw, "Unable to unmarshal users json", http.StatusInternalServerError)
 	}
 }
 
@@ -137,5 +170,141 @@ func (u *UserHandler) AuthMiddleware(next http.Handler) http.Handler {
 }
 
 
+func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("updating user data")
+	var dto dto.UserEditDTO
+	err := dto.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(dto)
+
+	// uzeti username od trenutno ulogovanog korisnika - auth
+	// proslediti to u service
+	oldUsername := dto.OldUsername
+	err = handler.Service.EditUserData(dto, oldUsername)
+
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+
+	// if the user changed his username , log in with the new username
+
+	if oldUsername != dto.Username {
+		fmt.Print("Logging in user with new username...")
+		// Login with new credentials
+		user := handler.Service.FindUserByUsername(dto.Username)
+
+		fmt.Print(oldUsername + " +++++ " + user.Password)
+
+		requestBody, err := json.Marshal(map[string]string{
+			"Username" : dto.Username,
+			"Password" : user.Password,
+		})
+
+		rw.Header().Set("Content-Type", "application/json")
+		client := &http.Client{}
+		//url := "http://localhost:3030/login"
+		url := "http://" + constants.AUTH_SERVICE_URL + "/login"
+		fmt.Println(url)
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+		if err != nil {
+			fmt.Errorf("Error while logging user in again")
+		}
+
+		_, err = client.Do(req)
+
+		if err != nil {
+			fmt.Errorf("Error while  loggin in with new credentials")
+		}
+
+		rw.WriteHeader(http.StatusOK)
+
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}
+
+func (handler *UserHandler) ChangePassowrd(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("Changing users password")
+	var pwdto dto.PwChangedDTO
+	err := pwdto.PwFromJSON(r.Body)
+
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println(pwdto)
+
+	err = handler.Service.ChangePassword(pwdto.Username, pwdto.NewPassword)
+
+	if err != nil {
+		fmt.Println(err)
+		rw.WriteHeader(http.StatusExpectationFailed)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+}
 
 
+func UserCheck(tokenString string) (*http.Response, error) {
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
+}
+
+
+func getCurrentUserCredentials(tokenString string) (dto.UsernameRoleDto, error) {
+
+	resp, err := UserCheck(tokenString)
+	if err != nil {
+		return dto.UsernameRoleDto{}, fmt.Errorf("Error sending who am I request")
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dto.UsernameRoleDto
+	err = dto.FromJSON(resp.Body)
+
+	if err != nil {
+		fmt.Errorf("Error in unmarshaling JSON")
+	}
+
+	return dto, nil
+
+}
+
+func (handler *UserHandler) GetCurrent(rw http.ResponseWriter, r *http.Request) {
+	// send whoami
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	fmt.Println(dto.Username + "----" + dto.Role)
+	rw.Header().Set("Content-Type", "application/json")
+	user := handler.Service.GetCurrentUser(dto.Username)
+
+	user.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
+}

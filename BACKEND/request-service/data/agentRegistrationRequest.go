@@ -7,12 +7,11 @@ import (
 
 type AgentRegistrationRequest struct {
 
-	RequestID uint `json:"request_id"`
-	Request Request `json:"request" gorm:"foreignkey=RequestID"`
+	Request Request `json:"request" gorm:"embedded"`
 	Name string `json:"name"`
 	LastName string `json:"lastname"`
 	Password string `json:"password"`
-	Email string `json:"email"`
+	Email string `json:"email" gorm:"uniqueIndex"`
 	Website string `json:"website"`
 
 }
@@ -39,7 +38,6 @@ func GetAgentRegistrationRequests() AgentRegistrationRequests {
 var agentRegistrationRequestList = []*AgentRegistrationRequest{
 
 	{
-		RequestID: 1,
 		Request : Request{
 			//ID: 2,
 			SentBy : "wintzy",
@@ -53,7 +51,6 @@ var agentRegistrationRequestList = []*AgentRegistrationRequest{
 
 	},
 	{
-		RequestID: 2,
 		Request : Request{
 			//ID: 2,
 			SentBy : "dani",

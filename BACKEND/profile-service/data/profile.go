@@ -11,15 +11,15 @@ import (
 type Profile struct {
 	gorm.Model
 	Username        string              	`json:"username" gorm:"uniqueIndex"`
-	Phone           string              	`json:"phone" gorm:"uniqueIndex"`
+	Phone           string              	`json:"phone"`
 	Gender          Gender              	`json:"gender" gorm:"type:int" `
 	DateOfBirth     time.Time          	`json:"date_of_birth;type:date"`
 	Website         string         	        `json:"website"`
 	Biography       string       	        `json:"biography"`
 	CloseFriends    []Profile 	        `json:"close_friends" gorm:"many2many:profile_close_friends;"`
-	Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
+	//Favourites      map[string][]string	`json:"favourites" gorm:"type:text"`
 	IsBanned        bool                	`json:"is_banned"`
-	PrivacySetting  PrivacySetting          `gorm:"embedded"`
+	PrivacySetting  PrivacySetting          `json:"privacy_setting" gorm:"embedded"`
 	NotificationSetting NotificationSetting `json:"notification_setting" gorm:"embedded"`
 	Following 	[]Profile 		`json:"following" gorm:"many2many:profile_following;"`
 	Followers       []Profile 		`json:"followers" gorm:"many2many:profile_followers;"`	
@@ -31,6 +31,11 @@ func (u *Profile) FromJSON(r io.Reader) error {
 }
 
 func (u*Profiles) ToJson(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(u)
+}
+
+func (u*Profile) ToJson(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(u)
 }

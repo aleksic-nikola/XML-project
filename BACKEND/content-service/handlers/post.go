@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"fmt"
+
+	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-
+	"xml/content-service/constants"
 	"xml/content-service/data"
 	"xml/content-service/data/dtos"
 	"xml/content-service/service"
@@ -54,6 +56,20 @@ func (p *PostHandler) GetPosts(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
 	}
+}
+
+func (handler *PostHandler) GetPostsByUser(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+	lp := handler.Service.GetPostsByUser(username)
+	err := lp.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
 }
 
 func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Request) {
@@ -135,7 +151,7 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
 	client := &http.Client{}
-	url := "http://" + GetVariable("auth") + "/whoami"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
 	fmt.Println(url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -157,6 +173,75 @@ func getCurrentUserCredentials(tokenString string) (dtos.UsernameRole, error) {
 	fmt.Println(resp.Status)
 	var dto dtos.UsernameRole
 	err = dto.FromJSON(resp.Body)
-	return dto, fmt.Errorf("Error unmarshalling JSON from response body")
+	if err != nil {
+		fmt.Errorf("Error unmarshalling JSON from response body")
+	}
+	return dto, nil
+}
+
+func (p *PostHandler) GetLikedPostsByUser(rw http.ResponseWriter, r *http.Request) {
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		p.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dtos.UsernameRole
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	posts := p.Service.GetLikedPostsByUser(dto.Username)
+	err = posts.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+	}
+	rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (p *PostHandler) GetDislikedPostsByUser(rw http.ResponseWriter, r *http.Request) {
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		p.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	posts := p.Service.GetDislikedPostsByUser(dto.Username)
+	err = posts.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+	}
+	rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(http.StatusOK)
 
 }
+

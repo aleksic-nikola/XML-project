@@ -11,7 +11,7 @@ import (
 
 type Request struct {
 	gorm.Model
-	SentBy string `json:"sentby"`
+	SentBy string `json:"sentby" gorm:"primaryKey"`
 	Status RequestStatus `json:"RequestStatus"`
 }
 

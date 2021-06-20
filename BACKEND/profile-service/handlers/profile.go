@@ -41,6 +41,7 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 func (u *ProfileHandler) IsUserPublic(rw http.ResponseWriter, request *http.Request)  {
 	params := mux.Vars(request)
 	username := params["username"]
+	fmt.Println(username)
 
 	dto, err := u.Service.IsUserPublic(username)
 

@@ -57,9 +57,11 @@
         </div>
     </nav>
     <!-- NAVBAR END-->
+    
+    <div id="userdoesntexist">
+    </div>
 
-
-    <div class = "container"  >
+    <div class = "container" id="maincontainer">
         <div class = "row">
 
             <div class="col-sm-6 ">
@@ -95,54 +97,17 @@
 
                 </div>
 
+                <div id="userprivate">
+                </div>
+
                 <!-- IMAGES-->
-                <div class="profilecontent_part text-center">
+                <div id="photos" class="profilecontent_part text-center">
 
                     <section class="gallery-block cards-gallery min-vh-100">
                         <div class="container">
       
-                            <div class="row">
+                            <div id="postsHere" class="row">
                                 <!-- SLIKA 1 -->
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 transform-on-hover">
-                                        <a class="lightbox">
-                                            <img src="img/test.png" alt="testimg" class="card-img-top gallery-item">
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- END OF SLIKA1 -->
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 transform-on-hover">
-                                        <a class="lightbox">
-                                            <img src="img/test2.png" alt="testimg" class="card-img-top gallery-item">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 transform-on-hover">
-                                        <a class="lightbox">
-                                            <img src="img/test3.png" alt="testimg" class="card-img-top gallery-item">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 transform-on-hover">
-                                        <a class="lightbox">
-                                            <img src="img/test4.png" alt="testimg" class="card-img-top gallery-item">
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card border-0 transform-on-hover">
-                                        <a class="lightbox">
-                                            <img src="img/test5.png" alt="testimg" class="card-img-top gallery-item">
-                                        </a>
-                                    </div>
-                                </div>
-
                                 
                             </div>
 
@@ -236,8 +201,8 @@
                                                     <textarea class="form-control comment_textarea" id="insert_comment" rows="2" placeholder="Add a comment..."></textarea>
                                                     <button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>
                                                 </div>
-                
-                
+            
+                                                
                                               </div>
                 
                                         </div>
@@ -437,6 +402,7 @@
         crossorigin="anonymous"
     ></script>
 
+    <script src="js/timer.js"></script>
     <script src="js/profile.js"></script>
 </body>
 </html>

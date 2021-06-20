@@ -89,8 +89,9 @@ function editprofmodal() {
 
 }
 
+/*
 function getMyDatas() {
-    
+    // getdata from user
     $.ajax({
         type:'GET',
         crossDomain: true,
@@ -109,7 +110,7 @@ function getMyDatas() {
         }
     })
 
-
+    // getdata from profile
     $.ajax({
         type:'GET',
         crossDomain: true,
@@ -126,7 +127,7 @@ function getMyDatas() {
             console.log(xhr)
             console.log('Cant get user data');
         }
-    })
-
-    
+    }) 
 }
+*/
+

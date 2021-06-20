@@ -7,9 +7,9 @@ import (
 
 type InfluenceRequest struct {
 
-	RequestID uint `json:"request_id"`
-	Request Request `json:"request" gorm:"foreignkey=RequestID"`
+	Request Request `json:"request" gorm:"embedded"`
 	CampaignID string `json:"campaignid"`
+	ForWho string `json:"forWho"`
 
 }
 
@@ -36,7 +36,6 @@ func GetInfluenceRequests() InfluenceRequests {
 var influenceRequestList = []*InfluenceRequest{
 
 	{
-		RequestID: 4,
 		Request : Request{
 			//ID: 2,
 			SentBy : "wintzy",
@@ -46,7 +45,7 @@ var influenceRequestList = []*InfluenceRequest{
 
 	},
 	{
-		RequestID: 5,
+
 		Request : Request{
 			//ID: 2,
 			SentBy : "dani",

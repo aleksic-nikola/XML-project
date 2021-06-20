@@ -35,3 +35,9 @@ func (repo *PostRepository) GetAllPostsForUser(username string) (data.Posts) {
 	repo.Database.Where("posted_by = ?", username).Find(&posts)
 	return posts
 }
+
+func (repo *PostRepository) GetAllPosts() data.Posts {
+	var posts data.Posts
+	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Find(&posts)
+	return posts
+}

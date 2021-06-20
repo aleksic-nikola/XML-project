@@ -2,10 +2,9 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Post struct {
@@ -17,8 +16,8 @@ type Post struct {
 	//LocationID  uint      `json:"location_id"`
 	//Location    Location  `json:"location" gorm:"foreignKey:LocationID" `
 	Medias   []Media  `json:"medias"`
-	Likes    []string `json:"likes" gorm:"type:text"`
-	Dislikes []string `json:"dislikes" gorm:"type:text"`
+	Likes    []User `json:"likes" gorm:"many2many:post_likes;"`
+	Dislikes []User `json:"dislikes" gorm:"many2many:post_dislikes;"`
 }
 
 func (p *Post) FromJSON(r io.Reader) error {
@@ -37,9 +36,9 @@ func GetPosts() Posts {
 	return postList
 }
 
-var postList = []*Post{
+var postList = []*Post{}
 
-	{
+	/*{
 		//ID:          1,
 		PostedBy:    "lucyxz",
 		Timestamp:   time.Now(),
@@ -68,4 +67,9 @@ var postList = []*Post{
 		Likes:    []string{"like1"},
 		Dislikes: []string{"dislike1"},
 	},
+}*/
+
+type User struct {
+	gorm.Model
+	Username string
 }

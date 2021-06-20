@@ -7,9 +7,8 @@ import (
 
 type FollowRequest struct {
 
-	RequestID uint `json:"request_id"`
-	Request Request `json:"request" gorm:"foreignkey=RequestID"`
-	For string `json:"for"`
+	Request Request `json:"request" gorm:"embedded"`
+	ForWho string `json:"forWho"`
 
 }
 
@@ -38,22 +37,21 @@ func GetFollowRequests() FollowRequests {
 var followRequestList = []*FollowRequest{
 
 	{
-		RequestID: 2,
 		Request : Request{
 			//ID: 2,
 			SentBy : "wintzy",
 			Status: ACCEPTED,
 		},
-		For: "nikola123",
+		ForWho: "nikola123",
 
 	},
 	{
-		RequestID: 3,
+
 		Request : Request{
 			//ID: 3,
 			SentBy : "dani",
 			Status: INPROCESS,
 		},
-		For: "tomik333",
+		ForWho: "tomik333",
 	},
 }

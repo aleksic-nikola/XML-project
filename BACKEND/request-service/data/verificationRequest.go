@@ -7,8 +7,7 @@ import (
 
 type VerificationRequest struct {
 
-	RequestID uint `json:"request_id"`
-	Request   Request `json:"request" gorm:"foreignkey=RequestID"`
+	Request   Request `json:"request" gorm:"embedded"`
 	Category VerifiedType `json:"verifiedType"`
 	Image string `json:"image"`
 	Name string `json:"name"`
@@ -36,10 +35,9 @@ func GetVerificationRequests() VerificationRequests {
 }
 
 
-var  verificationRequestList = []*VerificationRequest{
-
+var  verificationRequestList = []*VerificationRequest{}
+/*
 	{
-		RequestID: 2,
 		Request : Request{
 			//ID: 2,
 			SentBy : "dani321",
@@ -65,3 +63,4 @@ var  verificationRequestList = []*VerificationRequest{
 		LastName: "Petrovic",
 	},
 }
+*/

@@ -148,7 +148,6 @@ func main() {
 	database.AutoMigrate(&data.Story{})
 	database.AutoMigrate(&data.Media{})
 	database.AutoMigrate(&data.Comment{})
-	database.AutoMigrate(&data.Location{})
 
 	// INCLUDE COMMENT, MEDIA, LOCATION repo, service, handler if needed
 	post_repo := initPostRepo(database)
@@ -168,9 +167,12 @@ func main() {
 	getRouter.HandleFunc("/getpostsbyuser/{username}", ph.GetPostsByUser)
 	getRouter.HandleFunc("/current/posts", ph.GetPostsForCurrentUser)
 	getRouter.HandleFunc("/current/stories", sh.GetStoriesForCurrentUser)
+	getRouter.HandleFunc("/current/likedposts", ph.GetLikedPostsByUser)
+	getRouter.HandleFunc("/current/dislikedposts", ph.GetDislikedPostsByUser)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)
+	postRouter.HandleFunc("/post/upload", ph.UploadPost)
 	postRouter.HandleFunc("/story/add", sh.CreateStory)
 
 	//CORS

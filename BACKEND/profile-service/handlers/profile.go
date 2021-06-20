@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"xml/profile-service/constants"
@@ -139,6 +141,159 @@ func (handler *ProfileHandler) EditProfileData(rw http.ResponseWriter, r *http.R
 }
 
 
+
+
+
+func (u *ProfileHandler) FollowAccount(rw http.ResponseWriter, r *http.Request){
+	fmt.Println("************** USLI U FOLLOW ******************")
+
+	//prvo proveravamo ko smo to mi
+	jwtToken := r.Header.Get("Authorization")
+	resp, err := UserCheck(jwtToken)
+	if err != nil {
+		u.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	reqBody, err2 := ioutil.ReadAll(r.Body)
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	reqBodyString := string(reqBody)
+	fmt.Println("DOBILI: ", reqBodyString)
+
+
+
+	bodyBytes, err1 := ioutil.ReadAll(resp.Body)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	bodyString := string(bodyBytes)
+	fmt.Println("***********************")
+	fmt.Println(bodyString)
+
+	var meDto dto.UsernameRoleDto
+
+	json.Unmarshal([]byte(bodyString), &meDto)
+
+	fmt.Println("Ulogovan je: ", meDto.Username)
+
+	//znamo ko smo mi, sada treba da pronadjemo koga treba da zapratimo
+
+	var profileToFollow dto.ProfileForFollow
+
+	json.Unmarshal([]byte(reqBodyString), &profileToFollow)
+
+	fmt.Println("Treba da zapratimo: ",profileToFollow.FollowToUsername)
+
+	//sada treba da izvucemo podatke o profilu preko username
+
+	myProfile, errNotFound := u.Service.GetProfileByUsername(meDto.Username)
+
+	if errNotFound!=nil{
+		fmt.Println("Not Found: ", meDto.Username)
+	}
+
+	profileForFollow, errNotFound := u.Service.GetProfileByUsername(profileToFollow.FollowToUsername)
+	if errNotFound!=nil{
+		fmt.Println("Not Found: ", meDto.Username)
+	}
+
+	fmt.Println("Profil koje treba da se zaprati je JAVAN: ")
+	fmt.Println(profileForFollow.PrivacySetting.IsPublic)
+	fmt.Println(profileForFollow.Username)
+
+	if(profileForFollow.PrivacySetting.IsPublic == true){
+		err = u.Service.FollowProfile(myProfile, profileForFollow)
+
+		if err!=nil{
+			http.Error(rw, "Error at Following profile", http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Println("Ja pratim: ")
+
+		fmt.Println("******************************************************")
+		fmt.Println(u.GetAllFollowingByUsername(myProfile.Username))
+
+		rw.WriteHeader(http.StatusOK)
+		return
+	}
+
+	err = SendFollowRequest(myProfile, profileForFollow)
+
+	if err!=nil{
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("Ja pratim: ")
+	fmt.Println(u.GetAllFollowingByUsername(myProfile.Username))
+
+}
+
+
+
+func SendFollowRequest(myProfile *data.Profile, profileToFollow *data.Profile) error {
+	client := &http.Client{}
+
+
+	var dto1 dto.FollowRequestDto
+
+	dto1.ForWho = profileToFollow.Username
+	dto1.Request.SentBy = myProfile.Username
+
+
+	json, err := json.Marshal(dto1)
+
+
+	if err!=nil{
+		return fmt.Errorf("Error unmarshaling request json")
+	}
+	url := "http://" + constants.REQUEST_SERVICE_URL + "/followReqs/add"
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
+
+	if err != nil{
+		return fmt.Errorf("Error sending to followService req")
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("Error sending to request req")
+	}
+	if res.StatusCode != http.StatusCreated{
+		return fmt.Errorf("Duplicate!")
+	}
+	return nil
+}
+
+func (u *ProfileHandler) GetAllFollowingByUsername(username string) []data.Profile{
+	followingProfiles :=  u.Service.GetAllFollowingByUsername(username)
+	fmt.Println(followingProfiles)
+
+	return followingProfiles
+}
+
+func (u *ProfileHandler) GetIdByUsername(username string) uint {
+	userId, err := u.Service.GetIdByUsername(username)
+
+	if err!=nil{
+		fmt.Errorf("Greska.....")
+		return 9999
+	}
+
+	return userId
+}
+
+
+func BodyToJson(body io.ReadCloser) (string, error) {
+	bodyBytes, err := ioutil.ReadAll(body)
+	if err != nil {
+		return "", fmt.Errorf("Error with reading body...")
+	}
+	return string(bodyBytes), nil
+}
+
 func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("creating profile")
 	var profile data.Profile
@@ -160,6 +315,100 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 	}
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")
+}
+
+
+func (u *ProfileHandler) GetAllFollowingUsernameBy(rw http.ResponseWriter, r *http.Request) {
+
+	jsonString, err := BodyToJson(r.Body)
+
+	if err!=nil{
+		fmt.Println("Error BodyToJson...")
+		return
+	}
+	var usernameDto dto.UsernameFollowerDto
+
+	err = json.Unmarshal([]byte(jsonString), &usernameDto)
+	if err != nil {
+		fmt.Println("Error at Unmarshal")
+		return
+	}
+
+	followingProfiles :=  u.Service.GetAllFollowingByUsername(usernameDto.Username)
+	followingProfilesJson, _ := json.Marshal(followingProfiles)
+
+	_, err1 := rw.Write(followingProfilesJson)
+	if err1!=nil{
+		fmt.Println("Error with Write!")
+		return
+	}
+}
+
+func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
+	jwtToken := r.Header.Get("Authorization")
+	resp, err := UserCheck(jwtToken)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	reqBody, err2 := ioutil.ReadAll(r.Body)
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	reqBodyString := string(reqBody)
+
+	bodyBytes, err1 := ioutil.ReadAll(resp.Body)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	bodyString := string(bodyBytes)
+
+	var meDto dto.UsernameRoleDto
+
+	err = json.Unmarshal([]byte(bodyString), &meDto)
+
+	if err!=nil{
+		http.Error(rw, "Can't unmarshal meDto body!", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("Ulogovan je: ", meDto.Username)
+
+	var profileToFollow dto.ProfileForFollow
+
+	err = json.Unmarshal([]byte(reqBodyString), &profileToFollow)
+
+	if err!=nil{
+		http.Error(rw, "Can't unmarshal body!", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("********** Treba da nam postane follower: ",profileToFollow.FollowToUsername)
+
+	myProfile, errNotFound := u.Service.GetProfileByUsername(meDto.Username)
+
+	if errNotFound!=nil{
+		fmt.Println("Not Found: ", meDto.Username)
+		http.Error(rw, "Not Found my profile", http.StatusBadRequest)
+		return
+	}
+
+	profileForFollow, errNotFound := u.Service.GetProfileByUsername(profileToFollow.FollowToUsername)
+	if errNotFound!=nil{
+		fmt.Println("Not Found: ", profileToFollow.FollowToUsername)
+		http.Error(rw, "Not Found follower's profile", http.StatusBadRequest)
+	}
+
+	fmt.Println("JA SAM: ", myProfile.Username)
+	fmt.Println("FOLLOWER MI POSTAJE: ", profileForFollow.Username)
+
+	err = u.Service.AcceptFollow(myProfile, profileForFollow)
+
+	if err!=nil{
+		http.Error(rw, "Error at Accepting profile for follow", http.StatusInternalServerError)
+		return
+	}
+
 }
 
 
@@ -317,7 +566,5 @@ func (handler *ProfileHandler) GetCurrent(rw http.ResponseWriter, r *http.Reques
 	rw.WriteHeader(http.StatusOK)
 
 }
-
-
 
 

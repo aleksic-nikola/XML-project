@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	gohandlers "github.com/gorilla/handlers"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +15,6 @@ import (
 	"xml/profile-service/handlers"
 	"xml/profile-service/repository"
 	"xml/profile-service/service"
-	gohandlers "github.com/gorilla/handlers"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -125,9 +125,14 @@ func main() {
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 
+	getRouter.HandleFunc("/getAllFollowing", ph.GetAllFollowingUsernameBy)
+
+
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/profile/create", ph.CreateProfile)
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
+	postRouter.HandleFunc("/follow", ph.FollowAccount)
+	postRouter.HandleFunc("/acceptFollow", ph.AcceptFollow)
 	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)

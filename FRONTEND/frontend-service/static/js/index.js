@@ -3,7 +3,6 @@ $(document).ready(function() {
 })
 
 function checkUser() {
-
     $.ajax({
         type:'GET',
         crossDomain: true,
@@ -27,7 +26,7 @@ function checkUser() {
 }
 
 function redirectToLoginPage() {
-    console.log('redirecting user to feed page')
+    console.log('redirecting user to login page')
     window.location.href = 'login.html'
 }
 
@@ -35,3 +34,4 @@ function redirectToFeedPage() {
     console.log('redirecting user to feed page')
     window.location.href = 'feed.html'
 }
+

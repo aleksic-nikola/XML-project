@@ -212,11 +212,6 @@ func (u *ProfileHandler) FollowAccount(rw http.ResponseWriter, r *http.Request){
 			return
 		}
 
-		fmt.Println("Ja pratim: ")
-
-		fmt.Println("******************************************************")
-		fmt.Println(u.GetAllFollowingByUsername(myProfile.Username))
-
 		rw.WriteHeader(http.StatusOK)
 		return
 	}
@@ -229,8 +224,6 @@ func (u *ProfileHandler) FollowAccount(rw http.ResponseWriter, r *http.Request){
 	}
 
 	fmt.Println("Ja pratim: ")
-	fmt.Println(u.GetAllFollowingByUsername(myProfile.Username))
-
 }
 
 
@@ -266,13 +259,6 @@ func SendFollowRequest(myProfile *data.Profile, profileToFollow *data.Profile) e
 		return fmt.Errorf("Duplicate!")
 	}
 	return nil
-}
-
-func (u *ProfileHandler) GetAllFollowingByUsername(username string) []data.Profile{
-	followingProfiles :=  u.Service.GetAllFollowingByUsername(username)
-	fmt.Println(followingProfiles)
-
-	return followingProfiles
 }
 
 func (u *ProfileHandler) GetIdByUsername(username string) uint {
@@ -319,22 +305,31 @@ func (handler *ProfileHandler) CreateProfile(rw http.ResponseWriter, r *http.Req
 }
 
 
-func (u *ProfileHandler) GetAllFollowingUsernameBy(rw http.ResponseWriter, r *http.Request) {
+func (u *ProfileHandler) GetAllFollowingByUsername(rw http.ResponseWriter, r *http.Request) {
 
-	jsonString, err := BodyToJson(r.Body)
+	rw.Header().Set("Content-Type", "application/json")
+
+	//jsonString, err := BodyToJson(r.Body)
+	rw.Header().Set("Content-Type", "application/json")
+	var usernameDto dto.UsernameDto
+
+	fmt.Println("JSON KOJI SMO DOBILI: ")
+	fmt.Println(r.Body)
+
+	err := usernameDto.FromJSON(r.Body)
 
 	if err!=nil{
-		fmt.Println("Error BodyToJson...")
+		fmt.Println("Error FromJSON...")
 		return
 	}
-	var usernameDto dto.UsernameFollowerDto
 
+	/*
 	err = json.Unmarshal([]byte(jsonString), &usernameDto)
 	if err != nil {
 		fmt.Println("Error at Unmarshal")
 		return
 	}
-
+*/
 	followingProfiles :=  u.Service.GetAllFollowingByUsername(usernameDto.Username)
 	followingProfilesJson, _ := json.Marshal(followingProfiles)
 
@@ -344,6 +339,46 @@ func (u *ProfileHandler) GetAllFollowingUsernameBy(rw http.ResponseWriter, r *ht
 		return
 	}
 }
+
+func (u *ProfileHandler) GetAllFollowersByUsername(rw http.ResponseWriter, r *http.Request) {
+
+	//jsonString, err := BodyToJson(r.Body)
+	rw.Header().Set("Content-Type", "application/json")
+	var usernameDto dto.UsernameDto
+
+	fmt.Println("JSON KOJI SMO DOBILI: ")
+	fmt.Println(r.Body)
+
+	err := usernameDto.FromJSON(r.Body)
+
+	if err!=nil{
+		fmt.Println("Error FromJSON...")
+		return
+	}
+	//var usernameDto dto.UsernameDto
+	//fmt.Println("DOBIOOO: ")
+	//fmt.Println(jsonString)
+	//err = json.Unmarshal([]byte(jsonString), &usernameDto)
+	//if err != nil {
+	//	fmt.Println("Error at Unmarshal")
+	//	http.Error(rw, "Error at Unmarshal", http.StatusBadRequest)
+	//	return
+	//}
+
+	followersProfiles :=  u.Service.GetAllFollowersByUsername(usernameDto.Username)
+	followersProfilesJson, _ := json.Marshal(followersProfiles)
+
+
+	_, err1 := rw.Write(followersProfilesJson)
+	if err1!=nil{
+		fmt.Println("Error with Write!")
+		return
+	}
+}
+
+
+
+
 
 func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 	jwtToken := r.Header.Get("Authorization")

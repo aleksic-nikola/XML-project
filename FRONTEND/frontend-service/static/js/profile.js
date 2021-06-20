@@ -1,35 +1,12 @@
+
+var myName = ""
+var myLastName = ""
+var myUsername = ""
+var allFollowers = []
+var allFollowing = []
+var generatedFollowers = false
+var generatedFollowing = false
 var loggedIn
-
-var post1 = {ID:"1",postedby:"dparip",timestamp:"2020-01-01T00:00:00Z",description:"opdaddsis",
-	comments:[{
-		postedby:  "lucyxz",
-		text:      "some text here",
-		timestamp : 'dont care',
-	},
-	{
-		postedby:  "ahaheagha",
-		text:      "someeayaeyaeyaweyea text here",
-		timestamp : 'dont care',
-	}],
-	medias:[{type:"IMAGE",path:"../img/avatar.png",location:{country:"Srbija",city:"BT"}}],
-	likes:[{Username:"gfgf"}],
-	dislikes:[{Username:"cas"},{Username:"aaaa"}]}
-
-var post2 = {ID:"2",postedby:"dparip",timestamp:"2020-01-01T00:00:00Z",description:"opdaddsis",comments:[
-	{
-		postedby:  "wintzyxz",
-		text:      "bravo text here",
-		timestamp : 'dont care',
-	},
-	{
-		postedby:  "danip",
-		text:      "some agaehahazhawe here",
-		timestamp : 'dont care',
-	}
-	],
-medias:[{type:"IMAGE",path:"../img/phones_image.png",location:{country:"Srbija",city:"BT"}}],likes:
-[{Username:"gfgf"}],
-dislikes:[{Username:"cas"},{Username:"aaaa"}]}
 
 var postList
 var this_is_me
@@ -37,6 +14,9 @@ var user_on_page
 
 $(document).ready(function() {
 
+    setFollowers()
+    getMyDatas1();
+  
     whoAmI()
     editprofmodal()
     fetchCurrentPageUser()
@@ -131,7 +111,8 @@ function fetchCurrentPageUser() {
     const name = urlParams.get('user')
     console.log(name);
     if (name == null) {
-        countdownToRedirect(3, "back")
+        //countdownToRedirect(3, "back")
+        console.log("....nestoo")
     } else {
         fetchUser(name)
     }
@@ -252,35 +233,111 @@ function getOtherProfile(name) {
     })
 }
 
-function checkUserPublicity() {
-            var user = user_on_page
-            alert(user.privacy_setting.is_public)
-            if (user.privacy_setting.is_public == true) {
-                console.log('profile is public')
-                showPhotosForNonLoggedInUser(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
-            } else {
-                $("#photos").css("visibility", "hidden")
-                $("#userprivate").html("User is private")
-            }     
-            //$("#maincontainer").css("visibility", "hidden")
-            //$("#userdoesntexist").html("User with that username doesn't exists")
+
+async function setFollowers(){
+
+    try{
+        const res = await getMyDatas1()
+
+    }catch(err){
+        console.log(err)
+    }
+
+     var obj = {
+        username : myUsername
+    }
+
+    console.log("USAOOO OVDEE")
+    console.log(JSON.stringify(obj))
+    $.ajax({
+        type:'POST',
+        crossDomain: true,
+        url: 'http://localhost:3030/getAllFollowers',
+        data : JSON.stringify(obj),
+        contentType : 'application/json',
+        //dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+           // console.log("UKUPNO FOLLOWERA: ")
+            $("#numberOfFollowers").text(data.length) 
+            allFollowers = data
+           // console.log(data.length)
+        },
+        error : function(xhr, status, data) {
+            console.log(status)
+            console.log(xhr)
+            console.log('Cant get followers data');
+        }
+    })
+
+
+    $.ajax({
+        type:'POST',
+        crossDomain: true,
+        url: 'http://localhost:3030/getAllFollowing',
+        data : JSON.stringify(obj),
+        contentType : 'application/json',
+        //dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            //console.log("UKUPNO FOLLOWERA: ")
+           // console.log(data)
+            $("#numberOfFollowing").text(data.length) 
+            allFollowing = data;
+            //console.log(data.length)
+        },
+        error : function(xhr, status, data) {
+            console.log(status)
+            console.log(xhr)
+            console.log('Cant get followers data');
+        }
+    })
 
 }
 
-/*
-function getMyDatas() {
+
+
+function checkUserPublicity() {
+    var user = user_on_page
+    alert(user.privacy_setting.is_public)
+    if (user.privacy_setting.is_public == true) {
+        console.log('profile is public')
+        showPhotosForNonLoggedInUser(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+    } else {
+        $("#photos").css("visibility", "hidden")
+        $("#userprivate").html("User is private")
+    }
+    //$("#maincontainer").css("visibility", "hidden")
+    //$("#userdoesntexist").html("User with that username doesn't exists")
+
+}
+
+
+
+
+
+
+
+function getMyDatas1() {
     // getdata from user
-    $.ajax({
+    return $.ajax({
         type:'GET',
         crossDomain: true,
         url: AUTH_SERVICE_URL + '/getdata',
         contentType : 'application/json',
         dataType: 'JSON',
+        //async: false,
         beforeSend: function (xhr) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success : function(data) {
             console.log(data)
+            myUsername = data.username
+            $("#myFullName").text(data.name + " " + data.lastname) 
         },
         error : function(xhr, status, data) {
             console.log(xhr)
@@ -288,24 +345,84 @@ function getMyDatas() {
         }
     })
 
-    // getdata from profile
-    $.ajax({
-        type:'GET',
-        crossDomain: true,
-        url: PROFILE_SERVICE_URL + '/getdata',
-        contentType : 'application/json',
-        dataType: 'JSON',
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
-        },
-        success : function(data) {
-            console.log(data)
-        },
-        error : function(xhr, status, data) {
-            console.log(xhr)
-            console.log('Cant get user data');
-        }
-    }) 
 }
-*/
+function showFollowers(){
+    if(generatedFollowers)
+        return
+
+    var allFollowersHtml = ''
+    allFollowersHtml += '<ul class="list-unstyled">' + '\n'
+
+    var n = allFollowers.length
+    for(let i = 0; i<n; i++){
+        console.log("Brojac:" + i)
+        var username = allFollowers[i].username
+        //var fullName = allFollowers[i].name + " " + allFollowers[i].lastname
+        var fullName = ""
+        console.log(username)
+
+        allFollowersHtml += '<li class="media">' + '\n'
+        allFollowersHtml += '<img src="./img/avatar.png" width="35" height="35" class="mr-3" alt="...">' + '\n'
+        allFollowersHtml += '<div class="media-body">' + '\n'
+        allFollowersHtml += '<h5 class="mt-0 mb-1">' + username + '</h5>' + '\n'
+        allFollowersHtml += '<p>' + fullName + '</p>' + '\n'
+        allFollowersHtml +=  '</div>' + '\n'
+        allFollowersHtml += '<span class="btnFollow">' + '\n'
+        allFollowersHtml += '<button type="button"' + '\n'
+        allFollowersHtml += 'class="btn btn-primary btn-lg btnFollow">Follow</button>' + '\n'
+        allFollowersHtml +=  '</span></li><hr>'
+        
+    }
+
+    if(n!=0)
+        allFollowersHtml = allFollowersHtml.slice(0, -4)
+
+    console.log(allFollowersHtml)   
+
+    allFollowersHtml += '</ul>'
+
+    $("#insertAllFollowers").after(allFollowersHtml)
+    generatedFollowers = true;
+
+}
+
+function showFollowing(){
+    if(generatedFollowing)
+        return
+
+    var allFollowersHtml = ''
+    allFollowersHtml += '<ul class="list-unstyled">' + '\n'
+
+    var n = allFollowing.length
+    for(let i = 0; i<n; i++){
+        console.log("Brojac:" + i)
+        var username = allFollowing[i].username
+        //var fullName = allFollowing[i].name + " " + allFollowing[i].lastname
+        var fullName = ""
+        console.log(username)
+
+        allFollowersHtml += '<li class="media">' + '\n'
+        allFollowersHtml += '<img src="./img/avatar.png" class="mr-3" width="35" height="35" alt="...">' + '\n'
+        allFollowersHtml += '<div class="media-body">' + '\n'
+        allFollowersHtml += '<h5 class="mt-0 mb-1">' +  username + '</h5>' + '\n'
+        allFollowersHtml += '<p>' + fullName + '</p>' + '\n'
+        allFollowersHtml +=  '</div>' + '\n'
+        allFollowersHtml += '<span class="btnFollow">' + '\n'
+        allFollowersHtml += '<button type="button"' + '\n'
+        allFollowersHtml += 'class="btn btn-primary btn-lg btnFollow">Follow</button>' + '\n'
+        allFollowersHtml +=  '</span></li><hr>'
+        
+    }
+    if(n!=0)
+        allFollowersHtml = allFollowersHtml.slice(0, -4)
+
+    console.log(allFollowersHtml)   
+
+    allFollowersHtml += '</ul>'
+
+    $("#insertAllFollowing").after(allFollowersHtml)
+    generatedFollowing = true;
+
+}
+
 

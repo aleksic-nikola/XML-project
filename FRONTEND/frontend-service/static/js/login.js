@@ -1,10 +1,10 @@
-const username = $('#username_field')
+const username1 = $('#username_field')
 const password = $('#password_field')
 
 function login() {
 
     var obj = {
-        username : username.val(),
+        username : username1.val(),
         password : password.val()
     }
     
@@ -35,4 +35,9 @@ function login() {
 function redirectMe() {
     console.log('redirecting user to feed page')
     window.location.href = 'feed.html'
+}
+
+function logout(){
+    localStorage.removeItem('myToken');
+    window.location.href = 'login.html';
 }

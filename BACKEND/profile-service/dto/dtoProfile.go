@@ -10,10 +10,18 @@ type UsernameRoleDto struct {
 	Role     string `json:"role"`
 }
 
-type UsernameFollowerDto struct{
+type UsernameDto struct{
 	Username string `json:"username"`
 
 }
+
+func (ur *UsernameDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ur)
+}
+
+
+
 
 type ProfileForFollow struct {
 	FollowToUsername string `json:"follow-to-username"`

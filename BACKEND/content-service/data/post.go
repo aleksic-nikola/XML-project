@@ -36,9 +36,10 @@ func GetPosts() Posts {
 	return postList
 }
 
-var postList = []*Post{}
+//var postList = []*Post{}
 
-	/*{
+var postList = []*Post{
+		{
 		//ID:          1,
 		PostedBy:    "lucyxz",
 		Timestamp:   time.Now(),
@@ -64,10 +65,10 @@ var postList = []*Post{}
 				},
 			},
 		},
-		Likes:    []string{"like1"},
-		Dislikes: []string{"dislike1"},
+		Likes:    []User{},
+		Dislikes: []User{},
 	},
-}*/
+}
 
 type User struct {
 	gorm.Model

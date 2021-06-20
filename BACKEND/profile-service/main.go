@@ -125,10 +125,12 @@ func main() {
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 
-	getRouter.HandleFunc("/getAllFollowing", ph.GetAllFollowingUsernameBy)
-
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
+
+	postRouter.HandleFunc("/getAllFollowing", ph.GetAllFollowingByUsername)
+	postRouter.HandleFunc("/getAllFollowers", ph.GetAllFollowersByUsername)
+
 	postRouter.HandleFunc("/profile/create", ph.CreateProfile)
 	postRouter.HandleFunc("/addprofile", ph.CreateProfile)
 	postRouter.HandleFunc("/follow", ph.FollowAccount)

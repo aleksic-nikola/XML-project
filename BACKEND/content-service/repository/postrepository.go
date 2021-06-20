@@ -30,7 +30,7 @@ func (repo *PostRepository) GetPostsByUser(user string) data.Posts {
 	return posts
 }
 
-func (repo *PostRepository) GetAllPostsForUser(username string) (data.Posts) {
+func (repo *PostRepository) GetAllPostsForUser(username string) data.Posts {
 	var posts data.Posts
 	repo.Database.Where("posted_by = ?", username).Find(&posts)
 	return posts

@@ -152,3 +152,9 @@ func (service *ProfileService) GetCurrentProfile(username string) *data.Profile 
 
 	return profile
 }
+
+func (service *ProfileService) GetAllFollowersByUsername(username string) []data.Profile   {
+	followers := service.Repo.GetAllFollowersByUsername(username)
+
+	return followers
+}

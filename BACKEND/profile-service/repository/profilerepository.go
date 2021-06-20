@@ -146,3 +146,12 @@ func(repo *ProfileRepository) UserExistsByUsername(username string) bool {
 	repo.Database.Where("username = ?", username).Find(&data.Profile{}).Count(&count)
 	return count != 0
 }
+
+func (repo *ProfileRepository) GetAllFollowersByUsername(username string) []data.Profile  {
+	var profile data.Profile
+	id, _ := repo.GetIdByUsername(username)
+
+	repo.Database.Preload("Followers").Find(&profile, id)
+
+	return profile.Followers
+}

@@ -34,3 +34,9 @@ function redirectMe() {
     console.log('redirecting user to feed page')
     window.location.href = 'feed.html'
 }
+
+function logout(){
+    console.log("*******************************************");
+    localStorage.removeItem('myToken');
+    window.location.href = 'login.html';
+}

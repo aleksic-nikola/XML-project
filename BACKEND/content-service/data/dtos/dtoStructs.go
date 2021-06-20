@@ -10,6 +10,11 @@ type UsernameRole struct {
 	Role     string `json:"role"`
 }
 
+type UsernameDto struct {
+	Username string `json:"username"`
+}
+
+
 func (ur *UsernameRole) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(ur)

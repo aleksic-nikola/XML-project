@@ -141,6 +141,8 @@ func main() {
 
 	postRouter.HandleFunc("/blockuser", ph.BlockUser)
 	postRouter.HandleFunc("/muteuser", ph.MuteUser)
+	postRouter.HandleFunc("/unblockuser", ph.UnblockUser)
+	postRouter.HandleFunc("/unmuteuser", ph.Unmute)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

@@ -649,7 +649,7 @@ func (handler *ProfileHandler) BlockUser(rw http.ResponseWriter, r *http.Request
 		return
 	}
 
-	profile, err := handler.Service.BlockProfile(blockdto.Username, blockdto.UsernameToBlockMute)
+	profile, err := handler.Service.BlockProfile(dto.Username, blockdto.UsernameToBlockMute)
 
 	if profile == nil {
 		fmt.Errorf("Error in blockprofile")
@@ -660,12 +660,13 @@ func (handler *ProfileHandler) BlockUser(rw http.ResponseWriter, r *http.Request
 	fmt.Println("AFTER SAVE PROFILE : ")
 	fmt.Println(profile)
 
-	fmt.Print("I AM //" + blockdto.Username + "// I BLOCK: //" + blockdto.UsernameToBlockMute + "//")
+	fmt.Print("I AM //" + dto.Username + "// I BLOCK: //" + blockdto.UsernameToBlockMute + "//")
 
 	blockdto.ToJSON(rw)
 
 	rw.WriteHeader(http.StatusOK)
 }
+
 
 func (handler *ProfileHandler) MuteUser(rw http.ResponseWriter, r *http.Request) {
 	var mutedto dto.BlockmuteDTO
@@ -693,7 +694,7 @@ func (handler *ProfileHandler) MuteUser(rw http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	profile, err := handler.Service.MuteProfile(mutedto.Username, mutedto.UsernameToBlockMute)
+	profile, err := handler.Service.MuteProfile(dto.Username, mutedto.UsernameToBlockMute)
 
 	if profile == nil {
 		fmt.Errorf("Error in muteprofile")
@@ -704,7 +705,84 @@ func (handler *ProfileHandler) MuteUser(rw http.ResponseWriter, r *http.Request)
 	fmt.Println("AFTER SAVE PROFILE : ")
 	fmt.Println(profile)
 
-	fmt.Print("I AM //" + mutedto.Username + "// I BLOCK: //" + mutedto.UsernameToBlockMute + "//")
+	fmt.Print("I AM //" + dto.Username + "// I BLOCK: //" + mutedto.UsernameToBlockMute + "//")
+
+	mutedto.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *ProfileHandler) UnblockUser(rw http.ResponseWriter, r *http.Request) {
+	var blockdto dto.BlockmuteDTO
+
+	// send whoami to auth service
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	fmt.Println(dto)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.Header().Set("Content-Type", "application/json")
+
+	error := blockdto.FromJSON(r.Body)
+
+	if error != nil {
+		fmt.Errorf("Error in unmarshaling blockdto")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	profile, err := handler.Service.UnblockProfile(dto.Username, blockdto.UsernameToBlockMute)
+
+	if profile == nil {
+		fmt.Errorf("Error in unblockprofile")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	blockdto.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *ProfileHandler) Unmute(rw http.ResponseWriter, r *http.Request) {
+	var mutedto dto.BlockmuteDTO
+
+	// send whoami to auth service
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.Header().Set("Content-Type", "application/json")
+
+	error := mutedto.FromJSON(r.Body)
+
+	if error != nil {
+		fmt.Errorf("Error in unmarshaling blockdto")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	profile, err := handler.Service.UnmuteProfile(dto.Username, mutedto.UsernameToBlockMute)
+
+	if profile == nil {
+		fmt.Errorf("Error in unblockprofile")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	mutedto.ToJSON(rw)
 

@@ -181,7 +181,7 @@ func (service *ProfileService) BlockProfile(profile_username string, blocked_pro
 		return nil, error
 	}
 
-	profile.PrivacySetting.Blacklist = append(profile.PrivacySetting.Blacklist, *prof_to_block)
+	profile.Blacklist = append(profile.Blacklist, *prof_to_block)
 
 	err = service.Repo.UpdateProfile(profile)
 
@@ -213,12 +213,94 @@ func (service *ProfileService) MuteProfile(profile_username string, muted_prof_u
 		return nil, error
 	}
 
-	profile.PrivacySetting.Graylist = append(profile.PrivacySetting.Graylist, *prof_to_mute)
+	profile.Graylist = append(profile.Graylist, *prof_to_mute)
 
 	err = service.Repo.UpdateProfile(profile)
 
 	if err != nil {
 		fmt.Errorf("Error while updating profile - Error in saving muted user")
+		return nil, err
+	}
+
+	return profile, nil
+}
+
+func (service *ProfileService) UnblockProfile(profile_username string, unblocked_prof_username string) (*data.Profile,error) {
+	profile ,err :=  service.Repo.GetProfileByUsername(profile_username)
+
+	if profile_username == unblocked_prof_username {
+		fmt.Errorf("You can't unblock yourself")
+		return nil, err
+	}
+
+	if err!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", profile_username)
+		return nil, err
+	}
+
+	prof_to_unblock, error := service.Repo.GetProfileByUsername(unblocked_prof_username)
+
+	if error!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", unblocked_prof_username)
+		return nil, error
+	}
+
+	var newBlackList []data.Profile
+
+	for _,blocked := range profile.Blacklist {
+		fmt.Println("BLOKIRAN USER:")
+		fmt.Println(blocked.ID)
+		if blocked.Username != prof_to_unblock.Username {
+			newBlackList = append(newBlackList, blocked)
+		}
+	}
+
+	err = service.Repo.ClearBlacklist(profile)
+	profile.Blacklist = newBlackList
+	err = service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in saving unblocked user")
+		return nil, err
+	}
+
+	return profile, nil
+}
+
+func (service *ProfileService) UnmuteProfile(profile_username string, unmuted_prof_username string) (*data.Profile,error) {
+	profile ,err :=  service.Repo.GetProfileByUsername(profile_username)
+
+	if profile_username == unmuted_prof_username {
+		fmt.Errorf("You can't unmute yourself")
+		return nil, err
+	}
+
+	if err!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", profile_username)
+		return nil, err
+	}
+
+	prof_to_unmute, error := service.Repo.GetProfileByUsername(unmuted_prof_username)
+
+	if error!=nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", unmuted_prof_username)
+		return nil, error
+	}
+
+	var newGrayList []data.Profile
+
+	for _,muted := range profile.Graylist {
+		if muted.Username != prof_to_unmute.Username {
+			newGrayList = append(newGrayList, muted)
+		}
+	}
+
+	err = service.Repo.ClearGrayList(profile)
+	profile.Graylist = newGrayList
+	err = service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in saving unmuted user")
 		return nil, err
 	}
 

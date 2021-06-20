@@ -27,7 +27,8 @@ func (repo *ProfileRepository) GetProfileByUsername(username string) (*data.Prof
 
 	var profile data.Profile
 
-	result := repo.Database.Where("username = ?", username).First(&profile)
+	result := repo.Database.Preload("Blacklist").Preload("Graylist").Preload("Following").
+		Preload("Followers").Preload("CloseFriends").Where("username = ?", username).First(&profile)
 
 	fmt.Println(profile)
 
@@ -171,4 +172,18 @@ func (repo *ProfileRepository) GetProfileByID(my_id uint) (*data.Profile, error)
 	}
 
 	return &profile, nil
+}
+
+func (repo *ProfileRepository) ClearBlacklist(profile *data.Profile) error {
+
+	repo.Database.Model(&profile).Association("Blacklist").Clear()
+
+	return nil
+}
+
+func (repo *ProfileRepository) ClearGrayList(profile *data.Profile) error {
+
+	repo.Database.Model(&profile).Association("Graylist").Clear()
+
+	return nil
 }

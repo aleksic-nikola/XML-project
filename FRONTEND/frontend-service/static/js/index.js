@@ -7,7 +7,7 @@ function checkUser() {
     $.ajax({
         type:'GET',
         crossDomain: true,
-        url: 'http://localhost:9090/whoami',
+        url: AUTH_SERVICE_URL + '/whoami',
         contentType : 'application/json',
         dataType: 'JSON',
         beforeSend: function (xhr) {

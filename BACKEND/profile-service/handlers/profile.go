@@ -41,6 +41,7 @@ func (u *ProfileHandler) GetProfiles(rw http.ResponseWriter, r *http.Request) {
 func (u *ProfileHandler) IsUserPublic(rw http.ResponseWriter, request *http.Request)  {
 	params := mux.Vars(request)
 	username := params["username"]
+	fmt.Println(username)
 
 	dto, err := u.Service.IsUserPublic(username)
 
@@ -567,6 +568,26 @@ func (handler *ProfileHandler) GetCurrent(rw http.ResponseWriter, r *http.Reques
 
 }
 
+func (u *ProfileHandler) GetUser(writer http.ResponseWriter, request *http.Request) {
+
+	params := mux.Vars(request)
+	username := params["username"]
+
+	profile, err := u.Service.GetProfileByUsername(username)
+	if err != nil {
+		http.Error(
+			writer,
+			fmt.Sprintf("Error fetching user from repo%s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	profile.ToJson(writer)
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+}
+
+
 func (handler *ProfileHandler) BlockUser(rw http.ResponseWriter, r *http.Request) {
 	var blockdto dto.BlockmuteDTO
 
@@ -654,6 +675,3 @@ func (handler *ProfileHandler) MuteUser(rw http.ResponseWriter, r *http.Request)
 
 	rw.WriteHeader(http.StatusOK)
 }
-
-
-

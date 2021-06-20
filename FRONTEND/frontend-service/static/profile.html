@@ -74,11 +74,11 @@
 
                     <div class="row">
                         <div class="form col-lg-12">
-                            <h2 class="myname">Pera Peric</h2>
-                            <button class="btn btn-secondary editprofbtn" data-target="#changeDataModal" data-toggle="modal" onclick="getMyDatas()">Edit profile</button>
+                            <h2 id="current_name" class="myname">Pera Peric</h2>
+                            <button class="btn btn-secondary editprofbtn" id="edit_profile_button" data-target="#changeDataModal" data-toggle="modal" onclick="getMyDatas()">Edit profile</button>
 
                             <!--NOTE: ADD THIS BUTTON ONLY TO OTHER USERS INSTEAD OF SETTINGS BUTTON-->
-                            <button class="btn btn-primary editprofbtn" >Follow</button>
+                            <button class="btn btn-primary editprofbtn" id="follow_button" >Follow</button>
                         </div>
 
                         <div class="form col-lg-12">
@@ -97,7 +97,16 @@
                                                        onclick="showFollowing()">following</a></label>
                             </div>
                         </div>
-
+                        <br>
+                        <br>
+                        
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div id="bio" class="offset-1 col-5">
+                            
+                        </div>
                     </div>
                 </div>
 

@@ -1,4 +1,4 @@
-function showPhotosForNonLoggedInUser() {
+function showPhotos() {
 	console.log('I am printing the images')
 	var posts = "";
 	console.log('post number is ' + postList.length)

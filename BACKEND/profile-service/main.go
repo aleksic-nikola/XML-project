@@ -121,7 +121,7 @@ func main() {
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
-
+	getRouter.HandleFunc("/getuser/{username}", ph.GetUser)
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 
@@ -138,6 +138,9 @@ func main() {
 	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
+
+	postRouter.HandleFunc("/blockuser", ph.BlockUser)
+	postRouter.HandleFunc("/muteuser", ph.MuteUser)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

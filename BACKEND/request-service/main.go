@@ -267,6 +267,7 @@ func main() {
 	postRouter.HandleFunc("/messReqs/add", mrh.CreateMessageRequest)
 	postRouter.HandleFunc("/monitorReportReqs/add", mrrh.CreateMonitorReportRequest)
 	postRouter.HandleFunc("/sensitiveContentReqs/add", scrrh.CreateSensitiveContentReportRequest)
+	postRouter.HandleFunc("/sensitiveContentReqs/create", scrrh.CreateSensitiveContentReport)
 	postRouter.HandleFunc("/verificationReqs/add", vrh.CreateVerificationRequest)
 
 

@@ -26,7 +26,7 @@ func (repo *PostRepository) PostExists(id uint) bool {
 
 func (repo *PostRepository) GetPostsByUser(user string) data.Posts {
 	var posts data.Posts
-	repo.Database.Where("posted_by = ?", user).Find(&posts)
+	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Where("posted_by = ?", user).Find(&posts)
 	return posts
 }
 

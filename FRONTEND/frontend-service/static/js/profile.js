@@ -1,17 +1,3 @@
-$(document).ready(function() {
-    
-    //ako nismo logovani
-    if(localStorage.getItem('myToken') == null){
-        window.location.href = 'login.html';
-    }
-
-    setFollowers()
-    getMyDatas();
-    getDataFromProfile()
-    editprofmodal();
-
-    
-})
 
 var myName = ""
 var myLastName = ""
@@ -20,26 +6,145 @@ var allFollowers = []
 var allFollowing = []
 var generatedFollowers = false
 var generatedFollowing = false
+var loggedIn
 
+var postList
+var this_is_me
+var user_on_page
+
+$(document).ready(function() {
+
+    setFollowers()
+    getMyDatas1();
+    getDataFromProfile()
+
+    whoAmI()
+    editprofmodal()
+    fetchCurrentPageUser()
+    printOriginVariables()
+    //checkUserPublicity()
+})
+
+function fetchCurrentUserPosts() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: CONTENT_SERVICE_URL + '/getpostsbyuser/' + user_on_page.username,
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log(data)
+            postList = data
+            console.log('post list is ')
+            console.log(data)
+            checkUserPublicity()
+        },
+        error : function() {
+            loggedIn = false
+            //IamNotLoggedIn
+            
+            
+        }
+    })
+
+}
+
+function whoAmI() {
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: AUTH_SERVICE_URL + '/whoami',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log(data)
+            this_is_me = data
+        },
+        error : function() {
+            loggedIn = false
+            //IamNotLoggedIn
+            
+            
+        }
+    })
+}
+
+function fetchUser(username) {
+    
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getuser/' + username,
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log('succesfully fetched user')
+            console.log(data)
+            user_on_page = data
+            fetchCurrentUserPosts()
+            
+        },
+        error : function() {
+            //alert('Could not fetch user')
+            $("#maincontainer").css("visibility", "hidden")
+            $("#userdoesntexist").html("User with that username doesn't exists")
+            
+        }
+    })
+}
+
+function fetchCurrentPageUser() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const name = urlParams.get('user')
+    console.log(name);
+    if (name == null) {
+        countdownToRedirect(3, "back")
+    } else {
+        fetchUser(name)
+    }
+}
 
 
 document.addEventListener("click", function(e) {
     if(e.target.classList.contains("gallery-item")) {
+
         const src = e.target.getAttribute("src");
-        console.log(src);
+            console.log(src);
 
         document.querySelector(".modal-img").src = src;
         const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
+        const post_id = e.target.getAttribute("id")
+        console.log(post_id)
+        showImageModal(post_id.split("-")[1], postList)
+        
 
-        /*
-        NAPOMENA:  ****************
-            - dodati da se i opis, komentari... se menjaju a ne samo slika.
-        */
-
-        myModal.show();
+        if (checkIfShowingPostIsAllowed()) {
+            myModal.show();
+        }
+        else {
+            alert("You must be logged in to view photo")
+        }
     }
 })
 
+function checkIfShowingPostIsAllowed() {
+
+    return this_is_me != undefined
+}
 
 var whoCanISee = "profile";
 
@@ -102,15 +207,37 @@ function editprofmodal() {
         $('#muteblockbody').show();
 
     })
-
 }
 
+function getOtherProfile(name) {
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: AUTH_SERVICE_URL + '/whoami',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log(data)
+            checkUserPublicity(name)
+        },
+        error : function() {
+            loggedIn = false
+            //IamNotLoggedIn
+            checkUserPublicity(name)
+            
+        }
+    })
+}
 
 
 async function setFollowers(){
 
     try{
-        const res = await getMyDatas()
+        const res = await getMyDatas1()
 
     }catch(err){
         console.log(err)
@@ -170,19 +297,37 @@ async function setFollowers(){
         }
     })
 
+}
 
 
+
+function checkUserPublicity() {
+    var user = user_on_page
+    alert(user.privacy_setting.is_public)
+    if (user.privacy_setting.is_public == true) {
+        console.log('profile is public')
+        showPhotosForNonLoggedInUser(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+    } else {
+        $("#photos").css("visibility", "hidden")
+        $("#userprivate").html("User is private")
+    }
+    //$("#maincontainer").css("visibility", "hidden")
+    //$("#userdoesntexist").html("User with that username doesn't exists")
 
 }
 
 
-function getMyDatas() {
-    
 
+
+
+
+
+function getMyDatas1() {
+    // getdata from user
     return $.ajax({
         type:'GET',
         crossDomain: true,
-        url: 'http://localhost:9090/getdata',
+        url: AUTH_SERVICE_URL + '/getdata',
         contentType : 'application/json',
         dataType: 'JSON',
         //async: false,
@@ -201,32 +346,6 @@ function getMyDatas() {
     })
 
 }
-
-
-function getDataFromProfile(){
-
-    $.ajax({
-        type:'GET',
-        crossDomain: true,
-        url: 'http://localhost:3030/getdata',
-        contentType : 'application/json',
-        dataType: 'JSON',
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
-        },
-        success : function(data) {
-            console.log(data)
-            
-        },
-        error : function(xhr, status, data) {
-            console.log(xhr)
-            console.log('Cant get user data');
-        }
-    })
-   
-}
-
-
 function showFollowers(){
     if(generatedFollowers)
         return

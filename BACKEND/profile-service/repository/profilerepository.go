@@ -147,11 +147,28 @@ func(repo *ProfileRepository) UserExistsByUsername(username string) bool {
 	return count != 0
 }
 
-func (repo *ProfileRepository) GetAllFollowersByUsername(username string) []data.Profile  {
+
+func (repo *ProfileRepository) GetAllFollowersByUsername(username string) []data.Profile {
 	var profile data.Profile
 	id, _ := repo.GetIdByUsername(username)
 
 	repo.Database.Preload("Followers").Find(&profile, id)
 
 	return profile.Followers
+}
+
+func (repo *ProfileRepository) GetProfileByID(my_id uint) (*data.Profile, error) {
+
+	var profile data.Profile
+
+	result := repo.Database.Where("id = ?", my_id).First(&profile)
+
+	fmt.Println(profile)
+
+	if result.RowsAffected != 1 {
+		error := fmt.Errorf("We didnt find any object with that username!");
+		return nil, error
+	}
+
+	return &profile, nil
 }

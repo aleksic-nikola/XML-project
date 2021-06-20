@@ -2,10 +2,12 @@
 // like_button_div like button
 // comments_body
 // post_comment_button_div
+// image_description
 const which_image = $('#which_image')
 const like_button_div = $('#like_button_div')
 const comments_body = $('#comments_body')
 const post_comment_button_div = $('#post_comment_button_div')
+const image_description = $('#image_description')
 
 
 function showImageModal(id, postList) {
@@ -57,6 +59,8 @@ function showImageModal(id, postList) {
 	 id="post_comment_btn-${post.ID}"
 	  onclick="postComment(this.id)"> Post </button>
 	`)
+
+	image_description.html(post.description)
 
 	//$('#gallery-modal').modal('show');
 }

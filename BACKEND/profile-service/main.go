@@ -121,7 +121,7 @@ func main() {
 	//getRouter.HandleFunc("/getadmins", adh.GetAdmins)
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
-
+	getRouter.HandleFunc("/getuser/{username}", ph.GetUser)
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 

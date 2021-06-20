@@ -31,27 +31,109 @@ medias:[{type:"IMAGE",path:"../img/phones_image.png",location:{country:"Srbija",
 [{Username:"gfgf"}],
 dislikes:[{Username:"cas"},{Username:"aaaa"}]}
 
-var postList = [post2, post1]
-
-
+var postList
+var this_is_me
+var user_on_page
 
 $(document).ready(function() {
 
-    editprofmodal();
-    myProfileOrOther();
+    whoAmI()
+    editprofmodal()
+    fetchCurrentPageUser()
     printOriginVariables()
-
+    //checkUserPublicity()
 })
 
-function myProfileOrOther() {
+function fetchCurrentUserPosts() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: CONTENT_SERVICE_URL + '/getpostsbyuser/' + user_on_page.username,
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log(data)
+            postList = data
+            console.log('post list is ')
+            console.log(data)
+            checkUserPublicity()
+        },
+        error : function() {
+            loggedIn = false
+            //IamNotLoggedIn
+            
+            
+        }
+    })
+
+}
+
+function whoAmI() {
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: AUTH_SERVICE_URL + '/whoami',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log(data)
+            this_is_me = data
+        },
+        error : function() {
+            loggedIn = false
+            //IamNotLoggedIn
+            
+            
+        }
+    })
+}
+
+function fetchUser(username) {
+    
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getuser/' + username,
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            loggedIn = true;
+            console.log('succesfully fetched user')
+            console.log(data)
+            user_on_page = data
+            fetchCurrentUserPosts()
+            
+        },
+        error : function() {
+            //alert('Could not fetch user')
+            $("#maincontainer").css("visibility", "hidden")
+            $("#userdoesntexist").html("User with that username doesn't exists")
+            
+        }
+    })
+}
+
+function fetchCurrentPageUser() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const name = urlParams.get('user')
     console.log(name);
     if (name == null) {
-        getMyDatas()
+        countdownToRedirect(3, "back")
     } else {
-        getOtherProfile(name)
+        fetchUser(name)
     }
 }
 
@@ -59,18 +141,17 @@ function myProfileOrOther() {
 document.addEventListener("click", function(e) {
     if(e.target.classList.contains("gallery-item")) {
 
-        if (loggedIn == true) {
-
-            const src = e.target.getAttribute("src");
+        const src = e.target.getAttribute("src");
             console.log(src);
 
-            document.querySelector(".modal-img").src = src;
-            const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
-            const post_id = e.target.getAttribute("id")
-            console.log(post_id)
-            showImageModal(post_id.split("-")[1], postList)
-            
+        document.querySelector(".modal-img").src = src;
+        const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
+        const post_id = e.target.getAttribute("id")
+        console.log(post_id)
+        showImageModal(post_id.split("-")[1], postList)
+        
 
+        if (checkIfShowingPostIsAllowed()) {
             myModal.show();
         }
         else {
@@ -79,8 +160,10 @@ document.addEventListener("click", function(e) {
     }
 })
 
+function checkIfShowingPostIsAllowed() {
 
-
+    return this_is_me != undefined
+}
 
 var whoCanISee = "profile";
 
@@ -169,28 +252,19 @@ function getOtherProfile(name) {
     })
 }
 
-function checkUserPublicity(name) {
-    $.ajax({
-        type: 'GET',
-        crossDomain: true,
-        url: PROFILE_SERVICE_URL + '/isuserpublic/' + name,
-        contentType: 'application/json',
-        dataType: 'JSON',
-        success : function(user) {
-            alert(user.ispublic)
-            if (user.ispublic == true) {
+function checkUserPublicity() {
+            var user = user_on_page
+            alert(user.privacy_setting.is_public)
+            if (user.privacy_setting.is_public == true) {
+                console.log('profile is public')
                 showPhotosForNonLoggedInUser(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
             } else {
                 $("#photos").css("visibility", "hidden")
                 $("#userprivate").html("User is private")
-            }
-        }, 
-        error : function() {                    
-            $("#maincontainer").css("visibility", "hidden")
-            $("#userdoesntexist").html("User with that username doesn't exists")
-            countdownToRedirect(3, "back")
-        }
-    })
+            }     
+            //$("#maincontainer").css("visibility", "hidden")
+            //$("#userdoesntexist").html("User with that username doesn't exists")
+
 }
 
 /*

@@ -26,6 +26,7 @@ function login() {
         error : function(xhr, status, data) {
             console.log(xhr)
             console.log('Error in login');
+            alert('Wrong credentials!')
         }
     })
 }

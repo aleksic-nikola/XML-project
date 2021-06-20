@@ -2,11 +2,14 @@ package handlers
 
 import (
 	"fmt"
+
 	"github.com/gorilla/mux"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"xml/content-service/constants"
-
 	"xml/content-service/data"
 	"xml/content-service/data/dtos"
 	"xml/content-service/service"
@@ -71,16 +74,7 @@ func (handler *PostHandler) GetPostsByUser(rw http.ResponseWriter, r *http.Reque
 
 func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Request) {
 	// send whoami to auth service
-	resp, err := UserCheck(r.Header.Get("Authorization"))
-	if err != nil {
-		p.L.Fatalln("There has been an error sending the /whoami request")
-		rw.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-	fmt.Println(resp.Status)
-	var dto dtos.UsernameRole
-	err = dto.FromJSON(resp.Body)
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
 	if err != nil {
 		
 		http.Error(
@@ -104,6 +98,55 @@ func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Req
 	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
 }
 
+func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseMultipartForm(200000) // grab the multipart form
+ 	if err != nil {
+ 		fmt.Fprintln(rw, err)
+ 		return
+ 	}
+	 formdata := r.MultipartForm // ok, no problem so far, read the Form data
+	//get the *fileheaders
+	files := formdata.File["multiplefiles"] // grab the filenames
+	fmt.Println(formdata.Value)
+	res := formdata.Value
+	id  := res["post_title"]
+	fmt.Println(res["description_part"])
+	fmt.Println(id)
+
+	path, _ := filepath.Abs("./") 
+    	fmt.Println(filepath.Join(path, "temp")	)
+    	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
+	for i, _ := range files { // loop through the files one by one
+		file, err := files[i].Open()
+		defer file.Close()
+		if err != nil {
+			fmt.Fprintln(rw, err)
+			return
+		}
+
+		out, err := os.Create(filepath.Join(path, "temp", files[i].Filename))
+
+		defer out.Close()
+		if err != nil {
+			fmt.Fprintf(rw, "Unable to create the file for writing. Check your write access privilege")
+			return
+		}
+
+		_, err = io.Copy(out, file) // file not files[i] !
+
+		if err != nil {
+			fmt.Fprintln(rw, err)
+			return
+		}
+
+		fmt.Fprintf(rw, "Files uploaded successfully : ")
+		fmt.Fprintf(rw, files[i].Filename+"\n")
+
+	}
+
+}
+
 func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
@@ -118,6 +161,23 @@ func UserCheck(tokenString string) (*http.Response, error) {
 	return client.Do(req)
 }
 
+func getCurrentUserCredentials(tokenString string) (dtos.UsernameRole, error) {
+
+	resp, err := UserCheck(tokenString)
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		//rw.WriteHeader(http.StatusInternalServerError)
+		return dtos.UsernameRole{}, fmt.Errorf("Error sending who am I request")
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
+	if err != nil {
+		fmt.Errorf("Error unmarshalling JSON from response body")
+	}
+	return dto, nil
+}
 
 func (p *PostHandler) GetLikedPostsByUser(rw http.ResponseWriter, r *http.Request) {
 	resp, err := UserCheck(r.Header.Get("Authorization"))
@@ -129,7 +189,6 @@ func (p *PostHandler) GetLikedPostsByUser(rw http.ResponseWriter, r *http.Reques
 	defer resp.Body.Close()
 	fmt.Println(resp.Status)
 	var dto dtos.UsernameRole
-	err = dto.FromJSON(resp.Body)
 	if err != nil {
 		http.Error(
 			rw,
@@ -148,8 +207,8 @@ func (p *PostHandler) GetLikedPostsByUser(rw http.ResponseWriter, r *http.Reques
 			http.StatusInternalServerError,
 		)
 	}
-	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(http.StatusOK)
 }
 
 func (p *PostHandler) GetDislikedPostsByUser(rw http.ResponseWriter, r *http.Request) {
@@ -181,6 +240,8 @@ func (p *PostHandler) GetDislikedPostsByUser(rw http.ResponseWriter, r *http.Req
 			http.StatusInternalServerError,
 		)
 	}
-	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(http.StatusOK)
+
 }
+

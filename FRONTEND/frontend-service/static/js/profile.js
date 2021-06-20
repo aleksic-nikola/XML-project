@@ -146,7 +146,7 @@ function getOtherProfile(name) {
                 success : function(user) {
                     alert(user.ispublic)
                     if (user.ispublic == true) {
-                        showPhotos()
+                        showPhotos()    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
                     } else {
                         $("#photos").css("visibility", "hidden")
                         $("#userprivate").html("User is private")
@@ -180,8 +180,9 @@ function showPhotos() {
     $("#postsHere").html(posts) 
 }
 
+/*
 function getMyDatas() {
-    
+    // getdata from user
     $.ajax({
         type:'GET',
         crossDomain: true,
@@ -200,7 +201,7 @@ function getMyDatas() {
         }
     })
 
-
+    // getdata from profile
     $.ajax({
         type:'GET',
         crossDomain: true,
@@ -217,7 +218,7 @@ function getMyDatas() {
             console.log(xhr)
             console.log('Cant get user data');
         }
-    })
-
-    
+    }) 
 }
+*/
+

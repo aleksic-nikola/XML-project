@@ -26,7 +26,7 @@ function getMyDatas() {
     $.ajax({
         type:'GET',
         crossDomain: true,
-        url: 'http://localhost:9090/getdata',
+        url: AUTH_SERVICE_URL + '/getdata',
         contentType : 'application/json',
         dataType: 'JSON',
         beforeSend: function (xhr) {
@@ -46,7 +46,7 @@ function getMyDatas() {
     $.ajax({
         type:'GET',
         crossDomain: true,
-        url: 'http://localhost:3030/getdata',
+        url: PROFILE_SERVICE_URL + '/getdata',
         contentType : 'application/json',
         dataType: 'JSON',
         beforeSend: function (xhr) {

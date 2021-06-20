@@ -11,7 +11,7 @@ function login() {
     $.ajax({
         type:'POST',
         crossDomain: true,
-        url: 'http://localhost:9090/login',
+        url: AUTH_SERVICE_URL + '/login',
         data : JSON.stringify(obj),
         contentType : 'application/json',
         //dataType: 'JSON',
@@ -26,7 +26,8 @@ function login() {
         error : function(xhr, status, data) {
             console.log(xhr)
             console.log('Error in login');
-            alert('Wrong credentials!')
+            //alert('Wrong credentials!')
+            showLoginError('Bad credentials', 'Please recheck your credentials.')
         }
     })
 }

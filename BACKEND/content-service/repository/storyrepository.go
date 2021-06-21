@@ -29,3 +29,21 @@ func (repo *StoryRepository) GetAllStoriesForUser(username string) (data.Stories
 	repo.Database.Where("posted_by = ?", username).Find(&stories)
 	return stories
 }
+
+func (repo *StoryRepository) GetAllStoriesForFeed(usernames []string) []data.Story {
+	var stories []data.Story
+	//repo.Database.Where("posted_by IN ?", usernames).Find(&posts)
+
+	//repo.Database.Preload("Medias", "posted_by IN ?", usernames).Find(&posts)
+	repo.Database.Preload("Media").Where("posted_by IN ?", usernames).Find(&stories)
+	//repo.Database.Preload("Followers").Find(&profile, id)
+
+	//db.Preload("Orders").Preload("Profile").Preload("Role").Find(&users)
+
+	fmt.Println("DOBILII POSTS: ")
+	fmt.Println(stories)
+	fmt.Println("\n\n******************************************************* ")
+
+
+	return stories
+}

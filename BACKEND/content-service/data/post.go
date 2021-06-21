@@ -40,6 +40,8 @@ type User struct {
 	Username string `json:"username"`
 }
 
+type Users []*User
+
 //var postList = []*Post{}
 
 var listLikes = []User{

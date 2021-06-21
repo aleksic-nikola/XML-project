@@ -118,7 +118,7 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 	userID := handler.Service.GetIDByUsername(user.Username)
 
 
-	err = os.Mkdir("../content-service/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
 	if err !=nil{
 		fmt.Println("Error at creating directory")
 		return

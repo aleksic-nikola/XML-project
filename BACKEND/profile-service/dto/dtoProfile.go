@@ -21,8 +21,6 @@ func (ur *UsernameDto) FromJSON(r io.Reader) error {
 }
 
 
-
-
 type ProfileForFollow struct {
 	FollowToUsername string `json:"follow-to-username"`
 }

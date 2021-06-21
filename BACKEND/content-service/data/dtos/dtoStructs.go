@@ -2,7 +2,8 @@ package dtos
 
 import (
 	"encoding/json"
-	"io")
+	"io"
+)
 
 
 type UsernameRole struct {
@@ -24,3 +25,9 @@ func (ur *UsernameRole) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(ur)
 }
+
+func (ur *UsernameDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ur)
+}
+

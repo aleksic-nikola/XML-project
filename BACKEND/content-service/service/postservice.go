@@ -56,3 +56,9 @@ func (service *PostService) GetDislikedPostsByUser(username string) data.Posts {
 	}
 	return dislikedPosts
 }
+
+
+func (service *PostService) GetAllPostsForFeed(usernames []string) []data.Post{
+	posts := service.Repo.GetAllPostsForFeed(usernames)
+	return posts
+}

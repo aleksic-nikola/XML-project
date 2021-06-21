@@ -6,7 +6,6 @@ import (
 )
 
 type BlockmuteDTO struct {
-	Username string `json:"username"`
 	UsernameToBlockMute string `json:"usernametoblockmute"`
 }
 

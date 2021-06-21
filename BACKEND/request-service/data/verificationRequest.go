@@ -34,7 +34,6 @@ func GetVerificationRequests() VerificationRequests {
 	return verificationRequestList
 }
 
-
 var  verificationRequestList = []*VerificationRequest{}
 /*
 	{

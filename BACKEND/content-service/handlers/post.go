@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/gorilla/mux"
 	"io"
@@ -117,8 +118,8 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println(id)
 
 	path, _ := filepath.Abs("./") 
-    	fmt.Println(filepath.Join(path, "temp")	)
-    	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
+	fmt.Println(filepath.Join(path, "temp")	)
+	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
 	for i, _ := range files { // loop through the files one by one
 		file, err := files[i].Open()
 		defer file.Close()
@@ -126,8 +127,18 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(rw, err)
 			return
 		}
-
-		out, err := os.Create(filepath.Join(path, "temp", files[i].Filename))
+		prepath, err:= os.Getwd()
+		finalpath := filepath.Join(prepath, "temp")
+		filepath :=  filepath.Join(prepath, "temp", files[i].Filename )
+		out, err := os.Create(filepath)
+		fmt.Println("final path is" + finalpath)
+		filez, err := ioutil.ReadDir(finalpath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, f := range filez {
+			fmt.Println(f.Name())
+		}
 
 		defer out.Close()
 		if err != nil {

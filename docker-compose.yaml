@@ -99,6 +99,9 @@ services:
       SEARCH_SERVICE_PORT : ${SEARCH_SERVICE_PORT}
       PORT: ${CONTENT_SERVICE_PORT}
       DOCKERIZED : ${DOCKERIZED}
+      CONTENT_DOCKER_STORAGE : ${CONTENT_DOCKER_STORAGE}
+    volumes:
+      - ./BACKEND/content-service/temp:/app/temp
     depends_on:
       - postgres
     networks:

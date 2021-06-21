@@ -16,8 +16,8 @@ var whoCanISee
 
 $(document).ready(function() {
     //commented cuz of database
-    //setFollowers()
-    //getMyDatas1();
+    setFollowers()
+    getMyDatas1();
   
     //whoAmI()
     editprofmodal()
@@ -358,7 +358,7 @@ async function setFollowers(){
 
 function checkUserPublicity() {
     var user = user_on_page
-    alert(user.privacy_setting.is_public)
+    //alert(user.privacy_setting.is_public)
     console.log(user)
     console.log(this_is_me)
     if (user.username == this_is_me.username) {

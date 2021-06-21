@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 
 	"github.com/gorilla/mux"
@@ -243,5 +245,107 @@ func (p *PostHandler) GetDislikedPostsByUser(rw http.ResponseWriter, r *http.Req
 	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(http.StatusOK)
 
+}
+
+func (h *PostHandler) GetAllPostsForFeedForCurrentUser(rw http.ResponseWriter, r *http.Request) {
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	//pronaci sve Following
+
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + constants.PROFILE_SERVICE_URL + "/getAllFollowing"
+	fmt.Println(url)
+
+	var usernameDto dtos.UsernameDto
+	usernameDto.Username = myUsernameRoleDto.Username
+
+	usernameDtoJson, err := json.Marshal(usernameDto)
+
+	if err!= nil{
+		fmt.Println("Unable to marsh usernameDto")
+		http.Error(rw, "Unable to marsh usernameDto", http.StatusBadRequest)
+		return
+	}
+
+
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(usernameDtoJson))
+	if err != nil {
+		//return nil, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", r.Header.Get("Authorization"))
+
+	resp, err = client.Do(req)
+	fmt.Println(resp.Body)
+
+	if err!=nil{
+		fmt.Println("Respond error!!!")
+		http.Error(rw, "Respond error getFollowing!!!", http.StatusInternalServerError)
+		return
+	}
+
+
+	fmt.Println("DOBILI: ")
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(string(b))
+
+	//allUsers := make([]dtos.Profile, 0)
+
+	var allUsers []dtos.UsernameDto
+	err1 := json.Unmarshal(b, &allUsers)
+	if err1!=nil{
+		fmt.Println("Error at unmarsal allFollowing")
+		return
+	}
+	fmt.Println("DOBIO FROMJSON: ")
+	fmt.Println(allUsers)
+
+	var allUsernames []string
+
+	for _, oneUser:= range allUsers{
+		allUsernames = append(allUsernames, oneUser.Username)
+	}
+	allUsernames = append(allUsernames, myUsernameRoleDto.Username)
+	fmt.Println(allUsernames)
+
+	allPosts := h.getAllPostsForFeed(allUsernames)
+
+	fmt.Println(allPosts)
+
+	allPostsJson, _ := json.Marshal(allPosts)
+
+	_, err = rw.Write(allPostsJson)
+	if err!=nil{
+		fmt.Println("Error with Write!")
+		return
+	}
+
+}
+
+func (h *PostHandler) getAllPostsForFeed(usernames []string) []data.Post {
+	allPosts := h.Service.GetAllPostsForFeed(usernames)
+
+	return allPosts
 }
 

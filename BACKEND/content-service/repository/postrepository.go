@@ -41,3 +41,21 @@ func (repo *PostRepository) GetAllPosts() data.Posts {
 	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Find(&posts)
 	return posts
 }
+
+func (repo *PostRepository) GetAllPostsForFeed(usernames []string) []data.Post {
+	var posts []data.Post
+	//repo.Database.Where("posted_by IN ?", usernames).Find(&posts)
+
+	//repo.Database.Preload("Medias", "posted_by IN ?", usernames).Find(&posts)
+	repo.Database.Preload("Medias").Preload("Likes").Preload("Dislikes").Preload("Comments").Where("posted_by IN ?", usernames).Find(&posts)
+	//repo.Database.Preload("Followers").Find(&profile, id)
+
+	//db.Preload("Orders").Preload("Profile").Preload("Role").Find(&users)
+
+	fmt.Println("DOBILII POSTS: ")
+	fmt.Println(posts)
+	fmt.Println("\n\n******************************************************* ")
+
+
+	return posts
+}

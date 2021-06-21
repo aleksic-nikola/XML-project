@@ -175,6 +175,7 @@ func main() {
 	postRouter.HandleFunc("/post/add", ph.CreatePost)
 	postRouter.HandleFunc("/post/upload", ph.UploadPost)
 	postRouter.HandleFunc("/story/add", sh.CreateStory)
+	postRouter.HandleFunc("/createDirForUser", ph.CreateDirectoryForUser)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

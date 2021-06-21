@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-
 	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"xml/content-service/constants"
 	"xml/content-service/data"
 	"xml/content-service/data/dtos"
@@ -101,8 +101,25 @@ func (p *PostHandler) GetPostsForCurrentUser(rw http.ResponseWriter, r *http.Req
 }
 
 func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("TOKEN: " + r.Header.Get("Authorization"))
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
 
-	err := r.ParseMultipartForm(200000) // grab the multipart form
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	userID, err := GetIDByUsername(dto.Username, r.Header.Get("Authorization"))
+	if err!=nil{
+		fmt.Println("ERROR GETTING ID.......")
+		return
+	}
+
+	err = r.ParseMultipartForm(200000) // grab the multipart form
  	if err != nil {
  		fmt.Fprintln(rw, err)
  		return
@@ -117,7 +134,7 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println(id)
 
 	path, _ := filepath.Abs("./") 
-    	fmt.Println(filepath.Join(path, "temp")	)
+	fmt.Println(filepath.Join(path, "temp/id-" + strconv.Itoa(int(userID))))
     	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
 	for i, _ := range files { // loop through the files one by one
 		file, err := files[i].Open()
@@ -163,8 +180,40 @@ func UserCheck(tokenString string) (*http.Response, error) {
 	return client.Do(req)
 }
 
-func getCurrentUserCredentials(tokenString string) (dtos.UsernameRole, error) {
+func GetIDByUsername(username string, tokenString string) (uint, error){
+	godotenv.Load()
+	client := &http.Client{}
+	url := "http://" + constants.AUTH_SERVICE_URL + "/getuserId/" + username
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return 0, fmt.Errorf("Error with the whoami request")
+	}
+	req.Header.Add("Authorization", tokenString)
+	resp, err := client.Do(req)
 
+	if err!=nil{
+		fmt.Println("GRESKA ZAHTEV!!!")
+		return 0, err
+	}
+
+	var userId dtos.UserIDDto
+
+	err = userId.FromJSON(resp.Body)
+	if err!=nil{
+		fmt.Println("Error unmarshaling!!!!")
+		return 0, err
+	}
+	return uint(userId.UserId), nil
+
+}
+
+
+
+
+func getCurrentUserCredentials(tokenString string) (dtos.UsernameRole, error) {
+	fmt.Println("OVO JE TOKEN: ")
+	fmt.Println(tokenString)
 	resp, err := UserCheck(tokenString)
 	if err != nil {
 		//p.L.Fatalln("There has been an error sending the /whoami request")
@@ -347,5 +396,27 @@ func (h *PostHandler) getAllPostsForFeed(usernames []string) []data.Post {
 	allPosts := h.Service.GetAllPostsForFeed(usernames)
 
 	return allPosts
+}
+
+func (handler *PostHandler) CreateDirectoryForUser(rw http.ResponseWriter, r *http.Request) {
+	var userID dtos.UserIDDto
+	err := userID.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	path, _ := filepath.Abs("./")
+	fmt.Println("************* PUTANJA **********************")
+	fmt.Println(filepath.Join(path, "temp" + strconv.Itoa(userID.UserId)))
+
+
+	err = os.Mkdir("temp/id-" + strconv.Itoa(userID.UserId), 0755)
+	if err !=nil{
+		fmt.Println("Error at creating directory")
+		return
+	}
+
 }
 

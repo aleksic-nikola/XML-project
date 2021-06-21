@@ -10,6 +10,16 @@ type UsernameRoleDto struct {
 	Role     string `json:"role"`
 }
 
+type UserIdDto struct {
+	UserId uint `json:"user_id"`
+}
+
+func (u *UserIdDto) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(u)
+}
+
+
 func (u *UsernameRoleDto) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(u)

@@ -80,9 +80,9 @@ func initAgentHandler(service *service.AgentService) *handlers.AgentHandler {
 	return &handlers.AgentHandler{L: l, Service: service}
 }
 
-func initVerifiedHandler(service *service.VerifiedService) *handlers.VerifiedHandler {
+func initVerifiedHandler(service *service.VerifiedService, profileService *service.ProfileService) *handlers.VerifiedHandler {
 	l := log.New(os.Stdout, "profile-service ", log.LstdFlags)
-	return &handlers.VerifiedHandler{L: l, Service: service}
+	return &handlers.VerifiedHandler{L: l, Service: service, ProfileService: profileService}
 }
 
 
@@ -106,12 +106,13 @@ func main() {
 	profile_repo := initProfileRepo(database)
 	profile_service := initProfileServices(profile_repo)
 	//agent_service := initAgentServices(repo)
-	//verified_service := initVerifiedServices(repo)
+	verified_repo := initVerifiedRepo(database)
+	verified_service := initVerifiedServices(verified_repo)
 
 	l := log.New(os.Stdout, "profile-service", log.LstdFlags)
 	ph := initProfileHandler(profile_service)
 	//agh := initAgentHandler(agent_service)
-	//vh := initVerifiedHandler(verified_service)
+	vh := initVerifiedHandler(verified_service, profile_service)
 
 	sm := mux.NewRouter()
 
@@ -138,6 +139,8 @@ func main() {
 	postRouter.HandleFunc("/editprofile", ph.EditProfileData)
 	postRouter.HandleFunc("/editprivacysettings", ph.EditProfilePrivacySettings)
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
+
+	postRouter.HandleFunc("/verified/create", vh.CreateVerified)
 
 	postRouter.HandleFunc("/blockuser", ph.BlockUser)
 	postRouter.HandleFunc("/muteuser", ph.MuteUser)

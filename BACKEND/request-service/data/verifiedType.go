@@ -5,7 +5,7 @@ const (
 	INFLUENCER VerifiedType = iota
 	SPORTS
 	MEDIA
-	BUISNESS
+	BUSINESS
 	BRAND
 	ORGANISAZION
 )

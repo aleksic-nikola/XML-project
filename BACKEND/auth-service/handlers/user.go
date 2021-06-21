@@ -4,15 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 	"xml/auth-service/constants"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
-
 
 	"xml/auth-service/security"
 	"xml/auth-service/service"
@@ -82,6 +83,9 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 	}
 	fmt.Println(user)
 	user.Password, err = security.HashPassword(user.Password)
+
+
+
 	err = handler.Service.CreateUser(&user)
 	if err != nil {
 		fmt.Println(err)
@@ -109,6 +113,15 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	if err != nil {
 		fmt.Errorf("Error while  creating new profile")
+	}
+
+	userID := handler.Service.GetIDByUsername(user.Username)
+
+
+	err = os.Mkdir("../content-service/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	if err !=nil{
+		fmt.Println("Error at creating directory")
+		return
 	}
 
 	rw.WriteHeader(http.StatusCreated)
@@ -307,4 +320,32 @@ func (handler *UserHandler) GetCurrent(rw http.ResponseWriter, r *http.Request) 
 	user.ToJSON(rw)
 
 	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *UserHandler) GetUserByUsername(writer http.ResponseWriter, request *http.Request) {
+
+	params := mux.Vars(request)
+	username := params["username"]
+	user := handler.Service.GetCurrentUser(username)
+	user.ToJSON(writer)
+
+	writer.WriteHeader(http.StatusOK)
+
+}
+
+func (handler *UserHandler) GetUserIdByUsername(wr http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+
+	userId := handler.Service.GetIDByUsername(username)
+
+	var dto dto.UserIdDto
+	dto.UserId = userId
+
+	err := dto.ToJSON(wr)
+	if err != nil{
+		http.Error(wr, "Error ToJson userID", http.StatusBadRequest)
+		return
+	}
+
 }

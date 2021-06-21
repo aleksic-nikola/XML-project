@@ -10,7 +10,7 @@ type VerifiedRepository struct {
 	Database *gorm.DB
 }
 
-func (repo *VerifiedRepository) CreateVerified(user *data.Profile) error {
+func (repo *VerifiedRepository) CreateVerified(user *data.Verified) error {
 	result := repo.Database.Create(user)
 	//TODO convert to logs
 	fmt.Println(result.RowsAffected)
@@ -22,3 +22,5 @@ func (repo *VerifiedRepository) VerifiedExists(id uint) bool {
 	repo.Database.Where("id = ?", id).Find(&data.Profile{}).Count(&count)
 	return count != 0
 }
+
+

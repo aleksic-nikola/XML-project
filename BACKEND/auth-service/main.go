@@ -82,6 +82,8 @@ func main() {
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/", uh.GetUsers)
 	getRouter.HandleFunc("/whoami", uh.WhoAmI)
+	getRouter.HandleFunc("/getuser/{username}", uh.GetUserByUsername)
+	getRouter.HandleFunc("/getuserId/{username}", uh.GetUserIdByUsername)
 	getRouter.Use(uh.AuthMiddleware)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()

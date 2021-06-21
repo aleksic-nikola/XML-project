@@ -91,3 +91,9 @@ func(service *UserService) GetCurrentUser(username string) *data.User {
 	return user
 }
 
+func (service *UserService) GetIDByUsername(username string) uint {
+	userId := service.Repo.FindIDByUsername(username)
+
+	return userId
+}
+

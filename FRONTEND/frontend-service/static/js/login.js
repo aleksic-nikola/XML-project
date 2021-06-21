@@ -19,7 +19,7 @@ function login() {
             console.log(data.token)
             console.log('your token is' + data.token)
             localStorage.setItem('myToken', data.token);
-            alert("Succesfully logged in")
+            //alert("Succesfully logged in")
             redirectMe()
             //alert(data.token)
         },

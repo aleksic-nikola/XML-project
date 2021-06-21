@@ -188,5 +188,6 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 		fmt.Println("Can't find req")
 		return
 	}
+
 	rw.WriteHeader(http.StatusOK)
 }

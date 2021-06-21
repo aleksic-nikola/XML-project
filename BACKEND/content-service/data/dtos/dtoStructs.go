@@ -15,6 +15,14 @@ type UsernameDto struct {
 	Username string `json:"username"`
 }
 
+type UserIDDto struct{
+	UserId int `json:"user_id"`
+}
+
+func (ur *UserIDDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ur)
+}
 
 func (ur *UsernameRole) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)

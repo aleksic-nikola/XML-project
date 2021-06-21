@@ -46,3 +46,11 @@ func(repo *UserRepository) UserExistsByUsername(username string) bool {
 	repo.Database.Where("username = ?", username).Find(&data.User{}).Count(&count)
 	return count != 0
 }
+
+func (repo *UserRepository) FindIDByUsername(username string) uint {
+	var user data.User
+	repo.Database.Where("username = ?", username).First(&user)
+
+	return user.ID
+
+}

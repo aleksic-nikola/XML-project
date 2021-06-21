@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 
 	"log"
@@ -307,4 +308,15 @@ func (handler *UserHandler) GetCurrent(rw http.ResponseWriter, r *http.Request) 
 	user.ToJSON(rw)
 
 	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *UserHandler) GetUserByUsername(writer http.ResponseWriter, request *http.Request) {
+
+	params := mux.Vars(request)
+	username := params["username"]
+	user := handler.Service.GetCurrentUser(username)
+	user.ToJSON(writer)
+
+	writer.WriteHeader(http.StatusOK)
+
 }

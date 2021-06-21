@@ -35,8 +35,21 @@ type Posts []*Post
 func GetPosts() Posts {
 	return postList
 }
+type User struct {
+	gorm.Model
+	Username string `json:"username"`
+}
 
 //var postList = []*Post{}
+
+var listLikes = []User{
+	{
+		Username: "ivancica1999",
+	},
+	{
+		Username: "nenad1234",
+	},
+}
 
 var postList = []*Post{
 		{
@@ -65,12 +78,8 @@ var postList = []*Post{
 				},
 			},
 		},
-		Likes:    []User{},
+		Likes:    listLikes,
 		Dislikes: []User{},
 	},
 }
 
-type User struct {
-	gorm.Model
-	Username string
-}

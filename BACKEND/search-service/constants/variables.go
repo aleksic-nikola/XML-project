@@ -20,7 +20,7 @@ var SEARCH_SERVICE_URL = GetVariable("SEARCH_SERVICE")
 func GetVariable(name string) string {
 
 	godotenv.Load()
-	if os.Getenv("dockerized") != "yes" {
+	if os.Getenv("DOCKERIZED") != "yes" {
 		// running locally
 		if name == "HOST" {
 			return "localhost"
@@ -63,14 +63,14 @@ func GetVariable(name string) string {
 
 	// running in docker container
 	if name == "HOST" {
-		return os.Getenv("HOST")
+		return os.Getenv("HOST_NAME")
 	}
 	if name == "PORT" {
-		return ":" + os.Getenv("AUTH_SERVICE_PORT")
+		return ":" + os.Getenv("SEARCH_SERVICE_PORT")
 	}
 
 	if name == "DOMAIN" {
-		return os.Getenv("AUTH_SERVICE_DOMAIN")
+		return os.Getenv("SEARCH_SERVICE_DOMAIN")
 	}
 
 	if name == "AUTH_SERVICE" {

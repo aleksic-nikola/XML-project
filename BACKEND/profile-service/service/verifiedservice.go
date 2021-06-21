@@ -9,13 +9,19 @@ type VerifiedService struct {
 	Repo *repository.VerifiedRepository
 }
 
-func (service *VerifiedService) CreateVerified(profile *data.Profile) error {
-	error := service.Repo.CreateVerified(profile)
-	return error
-}
-
 func (service *VerifiedService) VerifiedExists(id uint) (bool, error) {
 	
 	exists := service.Repo.VerifiedExists(id)
 	return exists, nil
+}
+
+func (service *VerifiedService) CreateNewVerified(profile *data.Profile, verifiedType data.VerifiedType) error {
+
+	var verified data.Verified
+	verified.Profile = *profile
+	verified.Category = verifiedType
+
+	err := service.Repo.CreateVerified(&verified)
+
+	return err
 }

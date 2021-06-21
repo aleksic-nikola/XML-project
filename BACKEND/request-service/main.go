@@ -255,7 +255,7 @@ func main() {
 
 	getRouter.HandleFunc("/influenceReqs", irh.GetInfluenceRequests)
 	getRouter.HandleFunc("/monitorReportReqs", mrrh.GetMonitorReportRequests)
-	getRouter.HandleFunc("/verificationReqs", vrh.GetVerificationRequests)
+	getRouter.HandleFunc("/verificationReqs", vrh.GetInProgressVerificationRequests)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 
@@ -269,6 +269,9 @@ func main() {
 	postRouter.HandleFunc("/sensitiveContentReqs/add", scrrh.CreateSensitiveContentReportRequest)
 	postRouter.HandleFunc("/sensitiveContentReqs/create", scrrh.CreateSensitiveContentReport)
 	postRouter.HandleFunc("/verificationReqs/add", vrh.CreateVerificationRequest)
+
+	postRouter.HandleFunc("/verificationReqs/create", vrh.CreateInProgressVerificationRequest)
+	postRouter.HandleFunc("/verificationReqs/update", vrh.UpdateVerificationRequest)
 
 
 	//CORS

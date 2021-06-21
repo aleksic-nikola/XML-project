@@ -7,17 +7,19 @@ var allFollowing = []
 var generatedFollowers = false
 var generatedFollowing = false
 var loggedIn
-
+var un
 var postList
-var this_is_me
+var this_is_me // username / role
+var this_is_my_profile // profile of currently logged in user
 var user_on_page
+var whoCanISee
 
 $(document).ready(function() {
-
-    setFollowers()
-    getMyDatas1();
+    //commented cuz of database
+    //setFollowers()
+    //getMyDatas1();
   
-    whoAmI()
+    //whoAmI()
     editprofmodal()
     fetchCurrentPageUser()
     printOriginVariables()
@@ -67,14 +69,34 @@ function whoAmI() {
             loggedIn = true;
             console.log(data)
             this_is_me = data
+            if (user_on_page.username == this_is_me.username) {
+                modifyForMyProfile()
+            }
+            else {
+                modifyForNotMyProfile()
+            }
+            fetchCurrentUserPosts()
+            
         },
         error : function() {
             loggedIn = false
+            fetchCurrentUserPosts()
             //IamNotLoggedIn
             
             
         }
     })
+}
+
+function modifyForMyProfile() {
+    console.log('hey this is my profile')
+    console.log('hide follow button')
+    $('#follow_button').hide()
+}
+
+function modifyForNotMyProfile() {
+    console.log('not my profile')
+    $('#edit_profile_button').hide()
 }
 
 function fetchUser(username) {
@@ -93,7 +115,13 @@ function fetchUser(username) {
             console.log('succesfully fetched user')
             console.log(data)
             user_on_page = data
-            fetchCurrentUserPosts()
+            if (data.biography == "")
+                $('#bio').html('This user has no biography')
+            else {
+                $('#bio').html(data.biography)
+            }
+            whoAmI()
+            //fetchCurrentUserPosts()
             
         },
         error : function() {
@@ -106,17 +134,44 @@ function fetchUser(username) {
 }
 
 function fetchCurrentPageUser() {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const name = urlParams.get('user')
-    console.log(name);
-    if (name == null) {
-        //countdownToRedirect(3, "back")
-        console.log("....nestoo")
+
+    const currurl = window.location.href
+
+    un = currurl.split('?')[1]
+    console.log(un);
+    if (un == "") {
+        countdownToRedirect(3, "back")    
     } else {
-        fetchUser(name)
+        getAuthInfoForPageUser(un)
+        fetchUser(un)
     }
 }
+
+function getAuthInfoForPageUser() {
+    console.log('getting auth info for ' + un)
+    // getdata from user
+    $.ajax({
+        type:'GET',
+        crossDomain: true,
+        url: AUTH_SERVICE_URL + '/getuser/' + un,
+        contentType : 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            console.log(data)
+            $('#current_name').html(data.name + ' ' + data.lastname)
+        },
+        error : function(xhr, status, data) {
+            console.log(xhr)
+            console.log('Cant get profile data');
+        }
+    })
+
+}
+
+
 
 
 document.addEventListener("click", function(e) {
@@ -146,7 +201,7 @@ function checkIfShowingPostIsAllowed() {
     return this_is_me != undefined
 }
 
-var whoCanISee = "profile";
+whoCanISee = "profile";
 
 function editprofmodal() {
 
@@ -252,7 +307,7 @@ async function setFollowers(){
     $.ajax({
         type:'POST',
         crossDomain: true,
-        url: 'http://localhost:3030/getAllFollowers',
+        url: PROFILE_SERVICE_URL + '/getAllFollowers',
         data : JSON.stringify(obj),
         contentType : 'application/json',
         //dataType: 'JSON',
@@ -276,7 +331,7 @@ async function setFollowers(){
     $.ajax({
         type:'POST',
         crossDomain: true,
-        url: 'http://localhost:3030/getAllFollowing',
+        url: PROFILE_SERVICE_URL + '/getAllFollowing',
         data : JSON.stringify(obj),
         contentType : 'application/json',
         //dataType: 'JSON',
@@ -304,9 +359,16 @@ async function setFollowers(){
 function checkUserPublicity() {
     var user = user_on_page
     alert(user.privacy_setting.is_public)
+    console.log(user)
+    console.log(this_is_me)
+    if (user.username == this_is_me.username) {
+        showPhotos()
+        return 
+    }
+
     if (user.privacy_setting.is_public == true) {
         console.log('profile is public')
-        showPhotosForNonLoggedInUser(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+        showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
     } else {
         $("#photos").css("visibility", "hidden")
         $("#userprivate").html("User is private")

@@ -14,7 +14,7 @@ COPY . .
 
 RUN go build
 
-EXPOSE 9090
+EXPOSE 8888
 
 CMD ["./auth-service"]
 

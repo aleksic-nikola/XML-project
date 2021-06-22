@@ -14,7 +14,7 @@ COPY . .
 
 RUN go build
 
-EXPOSE 9494
+EXPOSE 8888
 
 CMD ["./search-service"]
 

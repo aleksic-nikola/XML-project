@@ -14,7 +14,7 @@ COPY . .
 
 RUN go build
 
-EXPOSE 9211
+EXPOSE 8888
 
 CMD ["./request-service"]
 

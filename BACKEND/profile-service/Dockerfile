@@ -14,7 +14,7 @@ COPY . .
 
 RUN go build
 
-EXPOSE 3030
+EXPOSE 8888
 
 CMD ["./profile-service"]
 

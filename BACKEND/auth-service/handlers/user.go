@@ -100,8 +100,12 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 	rw.Header().Set("Content-Type", "application/json")
 	client := &http.Client{}
 	//url := "http://localhost:3030/addprofile"
+
 	url := "http://" + constants.PROFILE_SERVICE_URL + "/addprofile"
+
+	url1 := "http://profile-service:8888/addprofile"
 	fmt.Println(url)
+	fmt.Println(url1)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 	if err != nil {
 		fmt.Errorf("Error with creating new profile")
@@ -109,7 +113,10 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	//fmt.Printf("%s", r.Body)
 
-	_, err = client.Do(req)
+	resp, err := client.Do(req)
+
+	fmt.Println("STATUSSSSS: " + resp.Status)
+
 
 	if err != nil {
 		fmt.Errorf("Error while  creating new profile")
@@ -118,8 +125,11 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 	userID := handler.Service.GetIDByUsername(user.Username)
 
 
-	err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	//err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	err = os.MkdirAll("/temp/id-" + strconv.Itoa(int(userID)), 0755)
+
 	if err !=nil{
+		rw.WriteHeader(http.StatusInternalServerError)
 		fmt.Println("Error at creating directory")
 		return
 	}

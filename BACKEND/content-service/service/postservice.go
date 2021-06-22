@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"xml/content-service/data"
+	"xml/content-service/data/dtos"
 	"xml/content-service/repository"
 )
 
@@ -64,6 +65,7 @@ func (service *PostService) GetAllPostsForFeed(usernames []string) []data.Post{
 	return posts
 }
 
+
 func (service *PostService) LikePost(id string, username string) error {
 
 	post := service.Repo.GetPostByID(id)
@@ -97,5 +99,16 @@ func (service *PostService) DislikePost(id string, username string) error {
 
 	return err
 
+}
+
+func (service *PostService) GetPostsByIds(ids dtos.PostIdsDto) *data.Posts {
+
+	var posts data.Posts
+	for _, i := range ids.Ids {
+		post := service.Repo.GetPostById(i.Id)
+		posts = append(posts, &post)
+	}
+
+	return &posts
 }
 

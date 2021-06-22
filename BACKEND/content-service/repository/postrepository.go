@@ -61,6 +61,7 @@ func (repo *PostRepository) GetAllPostsForFeed(usernames []string) []data.Post {
 	return posts
 }
 
+
 func (repo *PostRepository) SavePost(post *data.Post) error {
 
 	err := repo.Database.Save(&post).Error
@@ -81,4 +82,10 @@ func (repo *PostRepository) GetPostByID(id string) *data.Post {
 	return &post
 }
 
+func (repo *PostRepository) GetPostById(id uint) data.Post {
+	var post data.Post
+
+	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Where("id = ?", id).First(&post)
+	return post
+}
 

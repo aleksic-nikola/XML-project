@@ -468,6 +468,55 @@ func (handler *PostHandler) CreateDirectoryForUser(rw http.ResponseWriter, r *ht
 
 }
 
+func (handler *PostHandler) GetFavouritePosts(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	collection := params["collection"]
+	fmt.Println(collection)
+
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	fmt.Println(userRoleDto)
+
+	var resp, err1 = GetFavouritePostsIds(r.Header.Get("Authorization"), collection)
+
+	if err1 != nil{
+		fmt.Println("Respond error!!!")
+		http.Error(rw, "Respond error getPOSTIDS!!!", http.StatusInternalServerError)
+		return
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(string(b))
+
+	var postIds dtos.PostIdsDto
+
+	err = json.Unmarshal(b, &postIds)
+	if err !=nil{
+		fmt.Println("Error at unmarsal allFollowing")
+		return
+	}
+	fmt.Println("DOBIO FROMJSON: ")
+	fmt.Println(postIds)
+
+	posts := handler.Service.GetPostsByIds(postIds)
+
+	err = posts.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
+}
+
 func (handler *PostHandler) LikePost(rw http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
@@ -548,3 +597,17 @@ func (handler *PostHandler) DislikePost(rw http.ResponseWriter, r *http.Request)
 
 }
 
+func GetFavouritePostsIds(tokenString string, collection string) (*http.Response, error) {
+	godotenv.Load()
+
+	client := &http.Client{}
+	url := "http://" + constants.PROFILE_SERVICE_URL + "/getFavouritePosts/" + collection
+	fmt.Println(url)
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("Error with creating new verified user")
+	}
+	req.Header.Add("Authorization", tokenString)
+	return client.Do(req)
+}

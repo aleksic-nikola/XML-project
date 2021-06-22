@@ -22,7 +22,7 @@ type UsernameRoleDto struct {
 }
 
 type ProfileForFollow struct {
-	FollowToUsername string `json:"follow-to-username"`
+	FollowToUsername string `json:"followToUsername"`
 }
 
 type VerificationRequestDto struct {

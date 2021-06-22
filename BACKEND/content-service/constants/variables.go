@@ -16,6 +16,7 @@ var MONOLIT_SERVICE_URL = GetVariable("MONOLIT_SERVICE")
 var PROFILE_SERVICE_URL = GetVariable("PROFILE_SERVICE")
 var REQUEST_SERVICE_URL = GetVariable("REQUEST_SERVICE")
 var SEARCH_SERVICE_URL = GetVariable("SEARCH_SERVICE")
+var STORAGE_URL = GetVariable("STORAGE")
 
 func GetVariable(name string) string {
 
@@ -57,6 +58,10 @@ func GetVariable(name string) string {
 			return os.Getenv("SEARCH_SERVICE_URL")
 		}
 
+		if name == "STORAGE" {
+			return os.Getenv("CONTENT_DOCKER_STORAGE")
+		}
+
 
 		return ""
 	}
@@ -96,6 +101,9 @@ func GetVariable(name string) string {
 	}
 	if name == "SEARCH_SERVICE" {
 		return "localhost:" + os.Getenv("SEARCH_SERVICE_PORT")
+	}
+	if name == "STORAGE" {
+		return "/BACKEND/content-service/temp"
 	}
 
 	return ""

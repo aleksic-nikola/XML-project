@@ -25,3 +25,9 @@ func (service *StoryService) GetAllStoriesForUser(username string) (data.Stories
 	stories := service.Repo.GetAllStoriesForUser(username)
 	return stories
 }
+
+func (service *StoryService) GetAllStoriesForFeed(usernames []string) []data.Story {
+
+	stories:= service.Repo.GetAllStoriesForFeed(usernames)
+	return stories
+}

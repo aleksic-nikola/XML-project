@@ -63,8 +63,10 @@
 
             <div class="col-sm-6">
                 <!-- STORY PART-->
-                <div class="story-part text-center">
-                    <h1>Stories will come here</h1>
+                <div class="story-part">
+                    <div class="scrollmenu" id="stories_here_plz">
+                        
+                    </div>
                 </div>
                 <!-- STORY PART END-->
                 <div id="insertFeedPosts"></div>
@@ -83,13 +85,13 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form enctype="multipart/form-data" action="http://localhost:8080/post/upload"
+                                <form id="post_form" enctype="multipart/form-data" action="ph"
                                     method="post">
                                     <div class="container">
                                         <div class="row">
                                             <div class="offset-5 col-3">
 
-                                                <select>
+                                                <select id="select_type">
                                                     <option>Post</option>
                                                     <option>Album</option>
                                                     <option>Story</option>
@@ -101,7 +103,7 @@
                                         <div class="row">
                                             <div class="offset-5  col-5">
                                                 <input type="text" name="post_title" id="post_title"
-                                                    placeholder="title">
+                                                    placeholder="location">
 
                                             </div>
                                         </div>
@@ -119,7 +121,7 @@
                                             <div class="offset-5 col-5">
 
                                                 <input type="file" name="multiplefiles" id="multiplefiles" multiple>
-                                                <input type="submit" value="upload" />
+                                                <input type="button" onclick="changeActionURL()" value="upload" />
                                             </div>
                                         </div>
                                         <br>

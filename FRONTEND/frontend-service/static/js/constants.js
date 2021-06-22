@@ -35,13 +35,38 @@ function getCorrectOrigin(name) {
 		if (name == 'request') {
 			return "http://localhost:9211"
 		}
-		if (name == 'service') {
+		if (name == 'search') {
 			return "http://localhost:9494"
 		}
 
 	}
 	// else return gateway 
-	return 'http://localhost:8888'
+	if (name == 'auth') {
+		return "http://localhost:8888/api/auth"
+	}
+	if (name == 'campaign') {
+		return "http://localhost:8888/api/campaign"
+	}
+	if (name == 'content') {
+		return "http://localhost:8888/api/content"
+	}
+	if (name == 'interaction') {
+		return "http://localhost:8888/api/interaction"
+	}
+	if (name == 'monolit') {
+		return "http://localhost:8888/api/monolit"
+	}
+	if (name == 'profile') {
+		return "http://localhost:8888/api/profile"
+	}
+	if (name == 'request') {
+		return "http://localhost:8888/api/request"
+	}
+	if (name == 'search') {
+		return "http://localhost:9494/api/search"
+	}
+
+	return "this should not be happening"
 }
 
 function printOriginVariables() {

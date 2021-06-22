@@ -146,3 +146,28 @@ tbody{
 .description_part {
     margin-top: -10px;
 }
+
+.scrollmenu {
+    background-color: #333;
+    overflow: auto;
+    white-space: nowrap;
+  }
+  
+.scrollmenu a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+  }
+  
+.scrollmenu a:hover {
+    background-color: #777;
+  }
+
+.story-css {
+    padding-right: 20px;
+    margin-right: 20px;
+    border: 5px white;
+    border-radius: 1000px;
+}

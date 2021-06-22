@@ -12,8 +12,7 @@ type Story struct {
 	gorm.Model
 	PostedBy  string    `json:"postedby"`
 	Timestamp time.Time `json:"timestamp"`
-	MediaID   uint      `json:"media_id"`
-	Media     Media     `json:"media" gorm:"foreignKey:MediaID"`
+	Media     Media     `json:"media" gorm:"embedded"`
 	//LocationID            uint      `json:"location_id"`
 	//Location              Location  `json:"location" gorm:"foreignKey:LocationID"`
 	IsForCloseFriendsOnly bool `json:"isforclosefriendsonly"`

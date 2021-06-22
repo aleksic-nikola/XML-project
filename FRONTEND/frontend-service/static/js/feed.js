@@ -1,8 +1,47 @@
 $(document).ready(function() {
     //alert("CONNECTED")
     loadFeedContent();
+    loadStories()
 })
 
+function loadStories() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: CONTENT_SERVICE_URL + '/current/getallstoriesforfeed',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+           console.log('stories')
+           console.log(data)
+           fillStories(data)
+        },
+        error : function() {
+            console.log("Erorr at ajax call!")
+            
+            
+        }
+    })
+}
+
+function fillStories(data) {
+
+    var stories_here = $('#stories_here_plz')
+    var html = ''
+    var story_url
+
+    data.forEach(function(s) {
+
+        story_url = '../' + s.media.path
+
+        html+= `<img class="card-img-center story-css" height="50px" src="${story_url}" alt="Card image cap"></img>`
+    })
+    stories_here.html(html)
+}
 
 function loadFeedContent(){
 
@@ -27,11 +66,37 @@ function loadFeedContent(){
 
 }
 
+/*
+<video width="320" height="240" controls>
+  <source src="movie.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+Your browser does not support the video tag.
+</video>
+*/
+
 
 function generatePostsHTML(allPosts){
     console.log(allPosts);
     var postsHTML = ''
+    var img_url
+    var media_string
     for(var i=0; i<allPosts.length;i++){
+        img_url = '../' + allPosts[i].medias[0].path
+        media_string = `<img class="card-img-center" src="${img_url}" alt="Card image cap">` + '\n'
+
+        if (allPosts[i].medias[0].path.split(".")[1] != 'jpg' && allPosts[i].medias[0].path.split(".")[1] != 'png') {
+            // then its a video
+            media_string = `
+                        <video width="100%" height="100%" controls>
+                            <source src="${img_url}" type="video/mp4">                       
+                            Your browser does not support the video tag.
+                        </video>`
+        }
+
+        console.log(img_url)
+        var img_url1 = '../../../BACKEND/content-service/temp/id-3/3d-render-banner-with-network-communications-low-poly-design.png'
+        //console.log(img_url)
+        // BACKEND/content-service/temp/id-3/3d-render-banner-with-network-communications-low-poly-design.png
         postsHTML += '<div class="one-feed text-center">' + '\n';
         postsHTML += '<div class="form-group">' + '\n';
         postsHTML += '<img src="img/avatar.png" class="profile_img">' + '\n';
@@ -41,7 +106,7 @@ function generatePostsHTML(allPosts){
 
         postsHTML += '<div class="card">' + '\n';
             //          ovde treba ici allPosts[i].medias[j].path,  ubaciti jos jednu for petlju, ali trenutno putanje nisu sredjene
-        postsHTML += '<img class="card-img-center" src="img/test.png" alt="Card image cap">' + '\n';
+        postsHTML += media_string
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';
         postsHTML += '<p class="text-left"></p>'

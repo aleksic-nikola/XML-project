@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
 	"github.com/gorilla/mux"
 	"io"
 	"log"
@@ -119,7 +120,7 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = r.ParseMultipartForm(200000) // grab the multipart form
+	err = r.ParseMultipartForm(2000000) // grab the multipart form
  	if err != nil {
  		fmt.Fprintln(rw, err)
  		return
@@ -130,12 +131,17 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println(formdata.Value)
 	res := formdata.Value
 	id  := res["post_title"]
+	desc := res["description_part"]
 	fmt.Println(res["description_part"])
 	fmt.Println(id)
 
-	path, _ := filepath.Abs("./") 
+	path, _ := filepath.Abs("./")
+	fmt.Println(filepath.Join(path, "temp")	)
+	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
 	fmt.Println(filepath.Join(path, "temp/id-" + strconv.Itoa(int(userID))))
-    	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
+    //tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
+	var medias []data.Media
+
 	for i, _ := range files { // loop through the files one by one
 		file, err := files[i].Open()
 		defer file.Close()
@@ -143,8 +149,11 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(rw, err)
 			return
 		}
-
-		out, err := os.Create(filepath.Join(path, "temp", files[i].Filename))
+		prepath, err:= os.Getwd()
+		finalpath := filepath.Join(prepath, "temp")
+		filepath :=  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), files[i].Filename )
+		out, err := os.Create(filepath)
+		fmt.Println("final path is" + finalpath)
 
 		defer out.Close()
 		if err != nil {
@@ -158,11 +167,43 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(rw, err)
 			return
 		}
+		// TODO: FIX THIS
+		var media data.Media
+		media.Path = "temp/id-" + strconv.Itoa(int(userID)) + "/" + files[i].Filename
+		var location data.Location
+		location.Country = "some country"
+		location.City = "some_city"
+		media.Location = location
+		media.Type = "IMAGE"
+		medias = append(medias, media)
 
-		fmt.Fprintf(rw, "Files uploaded successfully : ")
-		fmt.Fprintf(rw, files[i].Filename+"\n")
+		//fmt.Fprintf(rw, "Files uploaded successfully : ")
+		//fmt.Fprintf(rw, files[i].Filename+"\n")
 
 	}
+	// for is over
+	// create the actual post with uris
+
+	var post data.Post
+	post.Medias = medias
+	post.Description = desc[0]
+	post.PostedBy = dto.Username
+
+	err = p.Service.CreatePost(&post)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error creating POST %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+
+
 
 }
 
@@ -410,13 +451,20 @@ func (handler *PostHandler) CreateDirectoryForUser(rw http.ResponseWriter, r *ht
 	path, _ := filepath.Abs("./")
 	fmt.Println("************* PUTANJA **********************")
 	fmt.Println(filepath.Join(path, "temp" + strconv.Itoa(userID.UserId)))
-
-
-	err = os.Mkdir("temp/id-" + strconv.Itoa(userID.UserId), 0755)
+	wd, err := os.Getwd() // content-serivce
+	parent := filepath.Dir(wd) // BACKEND
+	parent = filepath.Dir(parent) // root
+	make_folder_here := filepath.Join(parent, "FRONTEND", "frontend-service", "temp/id-" + strconv.Itoa(userID.UserId))
+	fmt.Println(make_folder_here)
+	fmt.Println("*************")
+	/*
+	err = os.Mkdir(make_folder_here, 0755)
 	if err !=nil{
 		fmt.Println("Error at creating directory")
 		return
 	}
+	*/
+	rw.WriteHeader(http.StatusOK)
 
 }
 

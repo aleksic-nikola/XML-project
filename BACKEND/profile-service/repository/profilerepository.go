@@ -28,7 +28,7 @@ func (repo *ProfileRepository) GetProfileByUsername(username string) (*data.Prof
 	var profile data.Profile
 
 	result := repo.Database.Preload("Blacklist").Preload("Graylist").Preload("Following").
-		Preload("Followers").Preload("CloseFriends").Where("username = ?", username).First(&profile)
+		Preload("Followers").Preload("CloseFriends").Preload("Favourites.SavedPosts").Where("username = ?", username).First(&profile)
 
 	fmt.Println(profile)
 

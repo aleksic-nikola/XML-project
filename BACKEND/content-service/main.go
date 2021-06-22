@@ -179,6 +179,8 @@ func main() {
 	postRouter.HandleFunc("/story/add", sh.CreateStory)
 	postRouter.HandleFunc("/createDirForUser", ph.CreateDirectoryForUser)
 
+	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavouritePosts)
+
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

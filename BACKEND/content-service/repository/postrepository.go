@@ -59,3 +59,10 @@ func (repo *PostRepository) GetAllPostsForFeed(usernames []string) []data.Post {
 
 	return posts
 }
+
+func (repo *PostRepository) GetPostById(id uint) data.Post {
+	var post data.Post
+
+	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Where("id = ?", id).First(&post)
+	return post
+}

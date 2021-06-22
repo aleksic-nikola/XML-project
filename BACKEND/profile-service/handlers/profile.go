@@ -791,3 +791,79 @@ func (handler *ProfileHandler) Unmute(rw http.ResponseWriter, r *http.Request) {
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+func (handler *ProfileHandler) AddPostToFavourites(rw http.ResponseWriter, r *http.Request) {
+	var postToFavourites dto.PostToFavourites
+
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = postToFavourites.FromJSON(r.Body)
+
+	if err != nil {
+		fmt.Errorf("Error in unmarshaling postToFavourites")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = handler.Service.AddPostToFavourites(userRoleDto, postToFavourites)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf(err.Error()),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *ProfileHandler) GetFavourites(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	collection := params["collection"]
+	fmt.Println(collection)
+
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	postsIds, err := handler.Service.GetPostsIdsInCollection(collection, userRoleDto)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error getting posts IDS from repository", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	for _, p := range postsIds.Ids {
+		fmt.Println("POST:")
+		fmt.Println(p)
+	}
+
+	err = postsIds.ToJSON(rw)
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}

@@ -99,9 +99,10 @@ func main() {
 	defer sqlDB.Close()
 	// make migrations to the db if they're not already created
 	database.AutoMigrate(&data.Profile{})
-
 	database.AutoMigrate(&data.Agent{})
 	database.AutoMigrate(&data.Verified{})
+	database.AutoMigrate(&data.Favourite{})
+
 
 	profile_repo := initProfileRepo(database)
 	profile_service := initProfileServices(profile_repo)
@@ -126,7 +127,6 @@ func main() {
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 
-
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 
 	postRouter.HandleFunc("/getAllFollowing", ph.GetAllFollowingByUsername)
@@ -146,6 +146,10 @@ func main() {
 	postRouter.HandleFunc("/muteuser", ph.MuteUser)
 	postRouter.HandleFunc("/unblockuser", ph.UnblockUser)
 	postRouter.HandleFunc("/unmuteuser", ph.Unmute)
+
+	postRouter.HandleFunc("/addposttofavourites", ph.AddPostToFavourites)
+	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavourites)
+
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

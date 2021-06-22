@@ -39,3 +39,31 @@ func (ur *UsernameDto) FromJSON(r io.Reader) error {
 	return e.Decode(ur)
 }
 
+type PostIdsDto struct {
+	Ids []PostIdDto `json:"ids"`
+}
+
+type PostIdDto struct {
+	Id uint `json:"id"`
+}
+
+func (ptf *PostIdsDto) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(ptf)
+}
+
+func (ptf *PostIdsDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ptf)
+}
+
+func (ptf *PostIdDto) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(ptf)
+}
+
+func (ptf *PostIdDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ptf)
+}
+

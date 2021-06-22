@@ -306,3 +306,89 @@ func (service *ProfileService) UnmuteProfile(profile_username string, unmuted_pr
 
 	return profile, nil
 }
+
+func (service *ProfileService) AddPostToFavourites(roleDto dto.UsernameRole, favourites dto.PostToFavourites) error {
+
+	user, err := service.Repo.GetProfileByUsername(roleDto.Username)
+
+	if err != nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", roleDto.Username)
+		return err
+	}
+
+	fmt.Println("USER:")
+	fmt.Println(user)
+	fmt.Println("FAVORITI:")
+	fmt.Println(user.Favourites)
+
+	var newSave data.SavedPost
+	newSave.PostId = favourites.PostId
+
+	var collectionExist = false
+	for i,collection := range user.Favourites {
+		if collection.CollectionName == favourites.CollectionName {
+			fmt.Println("USAO OVDE")
+			for _, j := range collection.SavedPosts {
+				if j.PostId == newSave.PostId {
+					err1 := fmt.Errorf("POST ALREADY EXISTS IN THIS COLLECTION");
+					return err1
+				}
+			}
+			user.Favourites[i].SavedPosts = append(collection.SavedPosts, newSave)
+			fmt.Println(collection.SavedPosts)
+			collectionExist = true
+		}
+	}
+
+	if collectionExist == false {
+		var newFavourite data.Favourite
+		newFavourite.CollectionName = favourites.CollectionName
+		newFavourite.SavedPosts = append(newFavourite.SavedPosts, newSave)
+
+		user.Favourites = append(user.Favourites, newFavourite)
+	}
+
+	fmt.Println(user)
+	err = service.Repo.UpdateProfile(user)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in saving unmuted user")
+		return err
+	}
+
+	return nil
+}
+
+func (service *ProfileService) GetPostsIdsInCollection(collection string, user dto.UsernameRole) (dto.PostIdsDto,error) {
+	profile, err := service.Repo.GetProfileByUsername(user.Username)
+
+	if err != nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", user.Username)
+		return dto.PostIdsDto{}, err
+	}
+
+	var posts dto.PostIdsDto
+
+	for _,f := range profile.Favourites {
+		if f.CollectionName == collection {
+			for _,p := range f.SavedPosts {
+				fmt.Println("POSTOVI::::")
+				fmt.Println(p)
+				var post dto.PostIdDto
+				post.Id = p.PostId
+				posts.Ids = append(posts.Ids, post)
+			}
+		}
+	}
+
+	fmt.Println("**********************************")
+
+	for _, p := range posts.Ids {
+		fmt.Println("POST:")
+		fmt.Println(p.Id)
+	}
+	fmt.Println("**********************************")
+
+
+	return posts, nil
+}

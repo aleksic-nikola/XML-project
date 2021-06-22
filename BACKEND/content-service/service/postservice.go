@@ -2,6 +2,7 @@ package service
 
 import (
 	"xml/content-service/data"
+	"xml/content-service/data/dtos"
 	"xml/content-service/repository"
 )
 
@@ -61,4 +62,15 @@ func (service *PostService) GetDislikedPostsByUser(username string) data.Posts {
 func (service *PostService) GetAllPostsForFeed(usernames []string) []data.Post{
 	posts := service.Repo.GetAllPostsForFeed(usernames)
 	return posts
+}
+
+func (service *PostService) GetPostsByIds(ids dtos.PostIdsDto) *data.Posts {
+
+	var posts data.Posts
+	for _, i := range ids.Ids {
+		post := service.Repo.GetPostById(i.Id)
+		posts = append(posts, &post)
+	}
+
+	return &posts
 }

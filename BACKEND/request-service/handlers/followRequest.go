@@ -150,6 +150,7 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 	fmt.Println("ZA: (MENE): ", followReq.ForWho)
 
 	if followReq.SentBy == followReq.ForWho{
+
 		http.Error(rw, "Error request!", http.StatusBadRequest)
 		return
 	}
@@ -167,12 +168,15 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 	req, errReq := http.NewRequest("POST", url, bytes.NewBuffer(usernameJson))
 
 	if errReq != nil{
+
 		http.Error(rw, "Cant accept request", http.StatusBadRequest)
+		return
 	}
 	req.Header.Add("Authorization", jwtToken)
 	resp, err := client.Do(req)
 
 	if err != nil{
+		fmt.Println("OVDE PUCAA:::::")
 		http.Error(rw, "Error with sending request...", http.StatusBadRequest)
 		return
 	}
@@ -188,5 +192,6 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 		fmt.Println("Can't find req")
 		return
 	}
+
 	rw.WriteHeader(http.StatusOK)
 }

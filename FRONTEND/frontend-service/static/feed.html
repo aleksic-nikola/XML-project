@@ -31,16 +31,21 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#" onclick="showModalPost()"> + </a>
                     </li>
+
                     <li class="nav-item active">
                         <a class="nav-link" href="feed.html"> Home </a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="modal" data-target="#followReqsModal" href="#"> Follow Requests
+                            <span id="numOfFollowReqs"></span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"> Messages </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html"> Profile </a>
+                        <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
                     </li>
 
                     <li class="nav-item">
@@ -134,6 +139,66 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="modal fade" id="followReqsModal" tabindex="-1" aria-labelledby="followReqsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="followReqsModalLabel">Follow requests
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="insertAllFollowReqs"></div>
+
+                        <!-- <ul class="list-unstyled">
+                                    <li class="media">
+                                        <img src="#" class="mr-3" alt="...">
+                                        <div class="media-body">
+                                            <h5 class="mt-0 mb-1">aleksiic98</h5>
+                                            <p>Nikola Aleksic</p>
+                                        </div>
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-primary btn-lg btnFollow">Accept</button>
+                                        </span>
+                                        &nbsp&nbsp&nbsp
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-danger btn-lg btnFollow">Delete</button>
+                                        </span>
+                                    </li>
+        
+                                    <hr>
+                                    <li class="media">
+                                        <img src="#" class="mr-3" alt="...">
+                                        <div class="media-body">
+                                            <h5 class="mt-0 mb-1">aleksiic98</h5>
+                                            <p>Nikola Aleksic</p>
+                                        </div>
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-primary btn-lg btnFollow">Accept</button>
+                                        </span>
+                                        &nbsp&nbsp&nbsp
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-danger btn-lg btnFollow">Delete</button>
+                                        </span>
+                                    </li>
+        
+                                </ul> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -149,6 +214,7 @@
     <script src="js/postmodal.js"></script>
     <script src="js/login.js"></script>
     <script src="js/feed.js"></script>
+    <script src="js/followReqs.js"></script>
 </body>
 
 </html>

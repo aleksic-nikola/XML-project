@@ -393,6 +393,9 @@ func (u *ProfileHandler) AcceptFollow(rw http.ResponseWriter, r *http.Request) {
 	}
 	reqBodyString := string(reqBody)
 
+	fmt.Println("DOBIO OVDE OVAKAV JSON: ")
+	fmt.Println(reqBodyString)
+
 	bodyBytes, err1 := ioutil.ReadAll(resp.Body)
 	if err1 != nil {
 		log.Fatal(err1)

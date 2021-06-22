@@ -19,6 +19,10 @@ type UserIDDto struct{
 	UserId int `json:"user_id"`
 }
 
+type LikeDto struct {
+	PostID int `json:"post_id"`
+}
+
 func (ur *UserIDDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(ur)

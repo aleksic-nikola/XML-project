@@ -468,3 +468,83 @@ func (handler *PostHandler) CreateDirectoryForUser(rw http.ResponseWriter, r *ht
 
 }
 
+func (handler *PostHandler) LikePost(rw http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	post_id := params["post"]
+
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+
+	err = handler.Service.LikePost(post_id, myUsernameRoleDto.Username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error liking post %s", err),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
+func (handler *PostHandler) DislikePost(rw http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	post_id := params["post"]
+
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+
+	err = handler.Service.DislikePost(post_id, myUsernameRoleDto.Username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error disliking post %s", err),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+

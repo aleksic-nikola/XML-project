@@ -110,7 +110,9 @@ function generatePostsHTML(allPosts){
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';
         postsHTML += '<p class="text-left"></p>'
-        postsHTML += '<a href=""> Like &nbsp&nbsp&nbsp&nbsp</a></p><hr>' + '\n';
+        postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+        postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+        
         postsHTML += '<h5 class="text-left">Comments:</h5><hr>' + '\n';
         postsHTML += '<table class="table" id="mydatatable">'
         postsHTML += '<thead class="hideheader">'
@@ -135,7 +137,7 @@ function generatePostsHTML(allPosts){
                                                                     //ovaj id ce se verovatno menjati
         postsHTML += '<textarea class="form-control comment_textarea" id="insert_comment" rows="2"'
         postsHTML += 'placeholder="Add a comment..."></textarea>'
-        postsHTML += '<button class="btn btn-primary postcommentbtn" id="post_comment_btn"> Post </button>'
+        postsHTML += `<button class="btn btn-primary postcommentbtn" id="post_comment_btn-${allPosts[i].ID}"> Post </button>`
         postsHTML += '</div>'
         postsHTML += '</div>'
         postsHTML += '</div>'
@@ -146,8 +148,5 @@ function generatePostsHTML(allPosts){
 
     $("#insertFeedPosts").after(postsHTML)
 
-    
-
-
-
 }
+

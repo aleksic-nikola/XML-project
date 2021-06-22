@@ -178,7 +178,8 @@ func main() {
 	postRouter.HandleFunc("/post/upload", ph.UploadPost)
 	postRouter.HandleFunc("/story/add", sh.CreateStory)
 	postRouter.HandleFunc("/createDirForUser", ph.CreateDirectoryForUser)
-
+	postRouter.HandleFunc("/like/{post}", ph.LikePost)
+	postRouter.HandleFunc("/dislike/{post}", ph.DislikePost)
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

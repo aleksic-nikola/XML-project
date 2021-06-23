@@ -375,7 +375,7 @@ function checkUserPublicity() {
     console.log(user)
     console.log(this_is_me)
     if (user.username == this_is_me.username) {
-        showPhotos()
+        showPhotos(postList)
         return
     }
 

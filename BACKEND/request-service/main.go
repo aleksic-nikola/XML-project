@@ -3,11 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	gohandlers "github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"os"
@@ -19,6 +14,12 @@ import (
 	"xml/request-service/handlers"
 	"xml/request-service/repository"
 	"xml/request-service/service"
+
+	gohandlers "github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func initDB() *gorm.DB {
@@ -51,32 +52,31 @@ func initFollowRequestRepository(database *gorm.DB) *repository.FollowRequestRep
 	return &repository.FollowRequestRepository{Database: database}
 }
 
-func initAgentRegistrationRequestRepository(database *gorm.DB) *repository.AgentRegistrationRequestRepository{
+func initAgentRegistrationRequestRepository(database *gorm.DB) *repository.AgentRegistrationRequestRepository {
 	return &repository.AgentRegistrationRequestRepository{Database: database}
 }
 
-func initInfluenceRequestRepository(database *gorm.DB) *repository.InfluenceRequestRepository{
+func initInfluenceRequestRepository(database *gorm.DB) *repository.InfluenceRequestRepository {
 	return &repository.InfluenceRequestRepository{Database: database}
 }
 
-func initMessageRequestRepository(database *gorm.DB) *repository.MessageRequestRepository{
+func initMessageRequestRepository(database *gorm.DB) *repository.MessageRequestRepository {
 	return &repository.MessageRequestRepository{Database: database}
 }
 
-func initMonitorReportRequestRepository(database *gorm.DB) *repository.MonitorReportRequestRepository{
+func initMonitorReportRequestRepository(database *gorm.DB) *repository.MonitorReportRequestRepository {
 	return &repository.MonitorReportRequestRepository{Database: database}
 }
 
-func initSensitiveContentReportRequestRepository(database *gorm.DB) *repository.SensitiveContentReportRequestRepository{
+func initSensitiveContentReportRequestRepository(database *gorm.DB) *repository.SensitiveContentReportRequestRepository {
 	return &repository.SensitiveContentReportRequestRepository{Database: database}
 }
 
-func initVerificationRequestRepository(database *gorm.DB) *repository.VerificationRequestRepository{
+func initVerificationRequestRepository(database *gorm.DB) *repository.VerificationRequestRepository {
 	return &repository.VerificationRequestRepository{Database: database}
 }
+
 //-------------------------------------------------------
-
-
 
 //Services
 
@@ -109,7 +109,6 @@ func initVerificationRequestService(repo *repository.VerificationRequestReposito
 }
 
 //------------------------------------------------------------
-
 
 //Handlers
 
@@ -148,10 +147,8 @@ func initVerificationRequestHandler(service *service.VerificationRequestService)
 	return &handlers.VerificationRequestHandler{L: l, Service: service}
 }
 
-
-
-func authorized(h http.HandlerFunc) http.HandlerFunc{
-	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request){
+func authorized(h http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		jwtToken := r.Header.Get("Authorization")
 		fmt.Println("BIOOO OVDEEE")
 		resp, err := handlers.UserCheck(jwtToken)
@@ -163,19 +160,15 @@ func authorized(h http.HandlerFunc) http.HandlerFunc{
 			rw.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-		if(resp.StatusCode != 200){ //biće 401 ako je greska, nije dobar token
+		if resp.StatusCode != 200 { //biće 401 ako je greska, nije dobar token
 			http.Error(rw, "Token error, unauthorized!", http.StatusUnauthorized)
 			return
 		}
 		//code before
-		h.ServeHTTP(rw,r)
+		h.ServeHTTP(rw, r)
 		//code after
 	})
 }
-
-
-
-
 
 func main() {
 
@@ -194,7 +187,6 @@ func main() {
 	database.AutoMigrate(&data.SensitiveContentReportRequest{})
 	database.AutoMigrate(&data.VerificationRequest{})
 	database.AutoMigrate(&data.InfluenceRequest{})
-
 
 	//
 	followRequestRepo := initFollowRequestRepository(database)
@@ -216,8 +208,7 @@ func main() {
 	sensitiveContentReportRequestService := initSensitiveContentReportRequestService(sensitiveContentReportRequestRepo)
 
 	verificationRequestRepo := initVerificationRequestRepository(database)
-	verificationRequestService :=initVerificationRequestService(verificationRequestRepo)
-
+	verificationRequestService := initVerificationRequestService(verificationRequestRepo)
 
 	//handlers
 
@@ -229,10 +220,7 @@ func main() {
 	scrrh := initSensitiveContentReportRequestHandler(sensitiveContentReportRequestService)
 	vrh := initVerificationRequestHandler(verificationRequestService)
 
-
-
 	fmt.Println("Hello, world.")
-
 
 	//rh := handlers.NewRequest(l)
 	//mrh := handlers.NewMessageRequest(l)
@@ -251,7 +239,7 @@ func main() {
 	getRouter.HandleFunc("/sensitiveContentReqs", scrrh.GetSensitiveContentReportRequests)
 	getRouter.HandleFunc("/agentRegistrationReqs", arrh.GetAgentRegistrationRequests)
 	getRouter.HandleFunc("/followReqs", frh.GetFollowRequests)
-	getRouter.HandleFunc("/followReqs/getMy", authorized(frh.GetMyFollowRequests))
+	getRouter.HandleFunc("/followReqs/getMy", frh.GetMyFollowRequests)
 
 	getRouter.HandleFunc("/influenceReqs", irh.GetInfluenceRequests)
 	getRouter.HandleFunc("/monitorReportReqs", mrrh.GetMonitorReportRequests)
@@ -273,27 +261,25 @@ func main() {
 	postRouter.HandleFunc("/verificationReqs/create", vrh.CreateInProgressVerificationRequest)
 	postRouter.HandleFunc("/verificationReqs/update", vrh.UpdateVerificationRequest)
 
-
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),
 		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Access-Control-Allow-Origin", "Content-Type", "Authorization"}))
 
+	l := log.New(os.Stdout, "request-service ", log.LstdFlags)
 
-	l := log.New(os.Stdout, "request-service ", log.LstdFlags )
-
-	s := http.Server {
-		Addr: constants.PORT, // configure the bind address
-		Handler: ch(sm),  // set the default handler
-		ErrorLog: l, // set the logger for the server
-		ReadTimeout: 5 * time.Second, // max time to read request from the client
-		WriteTimeout: 10 * time.Second, // max time to write response to the client
-		IdleTimeout: 120 * time.Second, // max time for connections using TCP Keep-Alive
+	s := http.Server{
+		Addr:         constants.PORT,    // configure the bind address
+		Handler:      ch(sm),            // set the default handler
+		ErrorLog:     l,                 // set the logger for the server
+		ReadTimeout:  5 * time.Second,   // max time to read request from the client
+		WriteTimeout: 10 * time.Second,  // max time to write response to the client
+		IdleTimeout:  120 * time.Second, // max time for connections using TCP Keep-Alive
 	}
 
 	go func() {
 		l.Println("Starting server on port 9211")
-		err :=  s.ListenAndServe()
+		err := s.ListenAndServe()
 		if err != nil {
 			l.Printf("Error starting server: %s\n", err)
 			os.Exit(1)

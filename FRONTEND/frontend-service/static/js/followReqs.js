@@ -17,6 +17,7 @@ function loadAllFollowReqs() {
         dataType: 'JSON',
         beforeSend: function (xhr) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+            console.log("OVO SALJEM: " + localStorage.getItem('myToken'))
         },
         success: function (data) {
             console.log(data)

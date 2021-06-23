@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	_ "encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,10 +13,12 @@ import (
 	"xml/request-service/data"
 	dtoRequest "xml/request-service/dto"
 	"xml/request-service/service"
+
+	"github.com/joho/godotenv"
 )
 
 type FollowRequestHandler struct {
-	L *log.Logger
+	L       *log.Logger
 	Service *service.FollowRequestService
 }
 
@@ -47,8 +48,6 @@ func (handler *FollowRequestHandler) CreateFollowRequest(rw http.ResponseWriter,
 	rw.Header().Set("Content-Type", "application/json")
 }
 
-
-
 func BodyToJson(body io.ReadCloser) (string, error) {
 	bodyBytes, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -56,9 +55,6 @@ func BodyToJson(body io.ReadCloser) (string, error) {
 	}
 	return string(bodyBytes), nil
 }
-
-
-
 
 func (p *FollowRequestHandler) GetFollowRequests(rw http.ResponseWriter, r *http.Request) {
 	p.L.Println("Handle GET Request")
@@ -72,19 +68,19 @@ func (p *FollowRequestHandler) GetFollowRequests(rw http.ResponseWriter, r *http
 	}
 }
 
-
 func (p *FollowRequestHandler) GetMyFollowRequests(rw http.ResponseWriter, r *http.Request) {
 	p.L.Println("Handle GET Request")
 
 	jwtToken := r.Header.Get("Authorization")
 	resp, err := UserCheck(jwtToken)
 	if err != nil {
+		fmt.Println("GRESKA U AUTORIZACJI!!!")
 		rw.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	jsonString, err := BodyToJson(resp.Body)
 
-	if err!=nil{
+	if err != nil {
 		fmt.Println("Error BodyToJson...")
 		return
 	}
@@ -111,16 +107,16 @@ func (p *FollowRequestHandler) GetMyFollowRequests(rw http.ResponseWriter, r *ht
 
 func UserCheck(tokenString string) (*http.Response, error) {
 	err := godotenv.Load()
-	if err!=nil{
+	if err != nil {
 		fmt.Println("Error at loading env vars\n")
-		return nil,err
+		return nil, err
 	}
 
 	client := &http.Client{}
-	url := "http://localhost:9090/whoami"
+	url := "http://" + constants.AUTH_SERVICE_URL + "/whoami"
 	req, errReq := http.NewRequest("GET", url, nil)
 
-	if errReq != nil{
+	if errReq != nil {
 		return nil, fmt.Errorf("Error with the whoami request")
 	}
 	req.Header.Add("Authorization", tokenString)
@@ -128,13 +124,11 @@ func UserCheck(tokenString string) (*http.Response, error) {
 
 }
 
-
-
 func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *http.Request) {
 	p.L.Println("Handle POST Request")
 
 	jsonString, err := BodyToJson(r.Body)
-	if err!=nil{
+	if err != nil {
 		fmt.Println("Error BodyToJson...")
 		return
 	}
@@ -149,7 +143,7 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 	fmt.Println("OD: ", followReq.SentBy)
 	fmt.Println("ZA: (MENE): ", followReq.ForWho)
 
-	if followReq.SentBy == followReq.ForWho{
+	if followReq.SentBy == followReq.ForWho {
 
 		http.Error(rw, "Error request!", http.StatusBadRequest)
 		return
@@ -163,11 +157,10 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 
 	usernameJson, err := json.Marshal(dtoUsername)
 
-
-	url := "http://" + constants.PROFILE_SERVICE_URL + "/acceptFollow"    //-------------> Adding new profile to my Followers and me to his Following
+	url := "http://" + constants.PROFILE_SERVICE_URL + "/acceptFollow" //-------------> Adding new profile to my Followers and me to his Following
 	req, errReq := http.NewRequest("POST", url, bytes.NewBuffer(usernameJson))
 
-	if errReq != nil{
+	if errReq != nil {
 
 		http.Error(rw, "Cant accept request", http.StatusBadRequest)
 		return
@@ -175,13 +168,13 @@ func (p *FollowRequestHandler) AcceptFollowRequest(rw http.ResponseWriter, r *ht
 	req.Header.Add("Authorization", jwtToken)
 	resp, err := client.Do(req)
 
-	if err != nil{
+	if err != nil {
 		fmt.Println("OVDE PUCAA:::::")
 		http.Error(rw, "Error with sending request...", http.StatusBadRequest)
 		return
 	}
 
-	if resp.StatusCode!=200 {
+	if resp.StatusCode != 200 {
 		fmt.Println(resp.StatusCode)
 		http.Error(rw, "Cant accept follow --> profileService", http.StatusInternalServerError)
 		return

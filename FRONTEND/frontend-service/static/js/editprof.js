@@ -89,7 +89,7 @@ function fillProfileDataFromProfile(data) {
         console.log("GENDER = 1")
         $("#genderid").val('2');
     }
-    gender.val(data.gender)
+    //gender.val(data.gender)
 
     // ?????  why undefined 
     //console.log(data.date_of_birth)

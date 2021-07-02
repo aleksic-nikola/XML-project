@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"xml/content-service/data"
 	"xml/content-service/data/dtos"
 	"xml/content-service/repository"
@@ -64,6 +65,42 @@ func (service *PostService) GetAllPostsForFeed(usernames []string) []data.Post{
 	return posts
 }
 
+
+func (service *PostService) LikePost(id string, username string) error {
+
+	post := service.Repo.GetPostByID(id)
+
+	for _, user := range post.Likes {
+		if user.Username == username {
+			fmt.Println("Already likes this post")
+			return fmt.Errorf("Already likes this post")
+		}
+	}
+
+	post.Likes = append(post.Likes, data.User{Username: username})
+	err := service.Repo.SavePost(post)
+
+	return err
+}
+
+func (service *PostService) DislikePost(id string, username string) error {
+
+	post := service.Repo.GetPostByID(id)
+
+	for _, user := range post.Dislikes {
+		if user.Username == username {
+			fmt.Println("Already dislikes this post")
+			return fmt.Errorf("Already dislikes this post")
+		}
+	}
+
+	post.Dislikes = append(post.Dislikes, data.User{Username: username})
+	err := service.Repo.SavePost(post)
+
+	return err
+
+}
+
 func (service *PostService) GetPostsByIds(ids dtos.PostIdsDto) *data.Posts {
 
 	var posts data.Posts
@@ -74,3 +111,16 @@ func (service *PostService) GetPostsByIds(ids dtos.PostIdsDto) *data.Posts {
 
 	return &posts
 }
+
+func (service *PostService) PostComment(id string, text string, username string) error {
+
+	post := service.Repo.GetPostByID(id)
+	post.Comments = append(post.Comments, data.Comment{Text : text, PostedBy: username})
+
+
+	err := service.Repo.SavePost(post)
+
+	return err
+
+}
+

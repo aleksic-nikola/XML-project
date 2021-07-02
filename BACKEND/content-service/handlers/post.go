@@ -517,6 +517,133 @@ func (handler *PostHandler) GetFavouritePosts(rw http.ResponseWriter, r *http.Re
 	rw.WriteHeader(http.StatusOK)
 }
 
+func (handler *PostHandler) LikePost(rw http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	post_id := params["post"]
+
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+
+	err = handler.Service.LikePost(post_id, myUsernameRoleDto.Username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error liking post %s", err),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
+func (handler *PostHandler) DislikePost(rw http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	post_id := params["post"]
+
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+
+	err = handler.Service.DislikePost(post_id, myUsernameRoleDto.Username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error disliking post %s", err),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
+func (handler *PostHandler) Comment(rw http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	post_id := params["post"]
+
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	var dto dtos.CommentDto
+	err = dto.FromJSON(r.Body)
+	if err != nil {
+		handler.L.Println(err)
+			rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = handler.Service.PostComment(post_id, dto.Text, myUsernameRoleDto.Username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error posting comment %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
 func GetFavouritePostsIds(tokenString string, collection string) (*http.Response, error) {
 	godotenv.Load()
 
@@ -531,4 +658,3 @@ func GetFavouritePostsIds(tokenString string, collection string) (*http.Response
 	req.Header.Add("Authorization", tokenString)
 	return client.Do(req)
 }
-

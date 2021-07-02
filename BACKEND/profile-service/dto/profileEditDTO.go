@@ -3,7 +3,6 @@ package dto
 import (
 	"encoding/json"
 	"io"
-	"time"
 )
 
 type ProfileEditDTO struct {
@@ -13,7 +12,7 @@ type ProfileEditDTO struct {
 	LastName string `json:"lastname"`
 	Phone string `json:"phone"`
 	Gender int `json:"gender"`
-	DateOfBirth time.Time `json:"dateofbirth"`
+	DateOfBirth string `json:"dateofbirth"`
 	Website string `json:"website"`
 	Biography string `json:"biography"`
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"strconv"
 	"xml/content-service/data"
 
 	"gorm.io/gorm"
@@ -60,9 +61,33 @@ func (repo *PostRepository) GetAllPostsForFeed(usernames []string) []data.Post {
 	return posts
 }
 
+
+func (repo *PostRepository) SavePost(post *data.Post) error {
+
+	err := repo.Database.Save(&post).Error
+	return err
+
+}
+
+func (repo *PostRepository) GetPostByID(id string) *data.Post {
+
+	var post data.Post
+	u64, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		fmt.Println(err)
+	}
+	wd := uint(u64)
+	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Comments").Find(&post, wd)
+
+	return &post
+}
+
 func (repo *PostRepository) GetPostById(id uint) data.Post {
 	var post data.Post
 
 	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Where("id = ?", id).First(&post)
 	return post
 }
+
+
+

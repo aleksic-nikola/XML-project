@@ -39,6 +39,7 @@ $('#select_type').change(function() {
 	}
 	else {
 		console.log('Album')
+		submit_endpoint = '/post/upload'
 	}
 })
 

@@ -51,3 +51,33 @@ function dislikePost(id) {
 
 	console.log('here')
 }
+
+function postComment(id) {
+
+	var split = id.split("-")[1]
+	var field = $('#insert_comment-' + split)
+    
+	console.log('post is ' + split)
+	console.log(field.val())
+    
+	$.ajax({
+		type: 'POST',
+		crossDomain: true,
+		url: CONTENT_SERVICE_URL + '/comment/' + split,
+		contentType: 'application/json',
+		data : JSON.stringify({"text" : field.val()}),
+		beforeSend: function (xhr) {
+		    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+		},
+		success: function (data) {
+		    alert('successfully posted comment')
+		},
+		error: function () {
+		    alert('cant post this tntntntn')
+	
+	
+		}
+	    })
+    
+    }
+    

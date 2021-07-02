@@ -180,6 +180,7 @@ func main() {
 	postRouter.HandleFunc("/createDirForUser", ph.CreateDirectoryForUser)
 	postRouter.HandleFunc("/like/{post}", ph.LikePost)
 	postRouter.HandleFunc("/dislike/{post}", ph.DislikePost)
+	postRouter.HandleFunc("/comment/{post}", ph.Comment)
 
 	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavouritePosts)
 

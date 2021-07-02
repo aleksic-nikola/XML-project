@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"time"
 	"xml/profile-service/data"
 	"xml/profile-service/dto"
 	"xml/profile-service/repository"
@@ -90,7 +91,11 @@ func (service *ProfileService) EditProfileData(dto dto.ProfileEditDTO, oldUserna
 	} else {
 		profile.Gender = 1
 	}
-	profile.DateOfBirth = dto.DateOfBirth
+	layoutISO := "2006-01-02"
+	//date := "1999-12-31"
+	t, _ := time.Parse(layoutISO, dto.DateOfBirth)
+
+	profile.DateOfBirth = t
 	profile.Website = dto.Website
 	profile.Biography = dto.Biography
 

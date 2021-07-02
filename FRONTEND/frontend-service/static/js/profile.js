@@ -43,9 +43,11 @@ function fetchCurrentUserPosts() {
         success: function (data) {
             loggedIn = true;
             console.log(data)
+            console.log('FETCHED POSTS FOR USER')
             postList = data
             console.log('post list is ')
             console.log(data)
+            $('#num_of_posts').html(data.length)
             // checkUserPublicity()
         },
         error: function () {

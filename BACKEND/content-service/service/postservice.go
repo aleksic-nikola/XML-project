@@ -112,3 +112,15 @@ func (service *PostService) GetPostsByIds(ids dtos.PostIdsDto) *data.Posts {
 	return &posts
 }
 
+func (service *PostService) PostComment(id string, text string, username string) error {
+
+	post := service.Repo.GetPostByID(id)
+	post.Comments = append(post.Comments, data.Comment{Text : text, PostedBy: username})
+
+
+	err := service.Repo.SavePost(post)
+
+	return err
+
+}
+

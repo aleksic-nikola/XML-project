@@ -23,6 +23,15 @@ type LikeDto struct {
 	PostID int `json:"post_id"`
 }
 
+type CommentDto struct {
+	Text string `json:"text"`
+}
+
+func (c *CommentDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(c)
+}
+
 func (ur *UserIDDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(ur)

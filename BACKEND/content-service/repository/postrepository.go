@@ -77,7 +77,7 @@ func (repo *PostRepository) GetPostByID(id string) *data.Post {
 		fmt.Println(err)
 	}
 	wd := uint(u64)
-	repo.Database.Preload("Likes").Preload("Dislikes").Find(&post, wd)
+	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Comments").Find(&post, wd)
 
 	return &post
 }
@@ -88,4 +88,6 @@ func (repo *PostRepository) GetPostById(id uint) data.Post {
 	repo.Database.Preload("Likes").Preload("Dislikes").Preload("Medias").Preload("Comments").Where("id = ?", id).First(&post)
 	return post
 }
+
+
 

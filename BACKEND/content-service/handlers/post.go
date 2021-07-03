@@ -149,11 +149,19 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(rw, err)
 			return
 		}
-		prepath, err:= os.Getwd()
-		finalpath := filepath.Join(prepath, "temp")
-		filepath :=  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), files[i].Filename )
-		out, err := os.Create(filepath)
-		fmt.Println("final path is" + finalpath)
+		//prepath, err:= os.Getwd()
+		//finalpath := filepath.Join(prepath, "temp")
+		finalPath := ""
+		if os.Getenv("DOCKERIZED")== "yes" {
+			fmt.Println("USAO DA JE DOKERIZED!")
+			finalPath = "./temp/id-" + strconv.Itoa(int(userID)) + "/" + files[i].Filename
+		} else{
+			finalPath =  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), files[i].Filename )
+		}
+		
+		out, err := os.Create(finalPath)
+
+		fmt.Println("final path is" + finalPath)
 
 		defer out.Close()
 		if err != nil {

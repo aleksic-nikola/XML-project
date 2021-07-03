@@ -24,7 +24,7 @@ function register() {
     $.ajax({
         type:'POST',
         crossDomain: true,
-        url: 'http://localhost:9090/register',
+        url: AUTH_SERVICE_URL + '/register',
         //headers: { 'Content-Type': 'application/json' },
         contentType : 'application/json',
         data: JSON.stringify(obj),

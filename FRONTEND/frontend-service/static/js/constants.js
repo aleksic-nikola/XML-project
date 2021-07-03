@@ -63,7 +63,7 @@ function getCorrectOrigin(name) {
 		return "http://localhost:8888/api/request"
 	}
 	if (name == 'search') {
-		return "http://localhost:9494/api/search"
+		return "http://localhost:8888/api/search"
 	}
 
 	return "this should not be happening"

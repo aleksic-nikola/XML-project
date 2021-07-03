@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +12,9 @@ import (
 	"xml/auth-service/constants"
 	"xml/auth-service/data"
 	"xml/auth-service/dto"
+
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 
 	"xml/auth-service/security"
 	"xml/auth-service/service"
@@ -63,9 +64,9 @@ func (handler *UserHandler) Login(rw http.ResponseWriter, r *http.Request) {
 	retToken := dto.TokenDto{Token: token}
 	retToken.ToJSON(rw)
 
-	rw.Header().Set("Authorization", "Bearer " + token)
+	rw.Header().Set("Authorization", "Bearer "+token)
 	rw.WriteHeader(http.StatusOK)
-	
+
 }
 
 // deserializes the body object into a json
@@ -84,8 +85,6 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 	fmt.Println(user)
 	user.Password, err = security.HashPassword(user.Password)
 
-
-
 	err = handler.Service.CreateUser(&user)
 	if err != nil {
 		fmt.Println(err)
@@ -94,14 +93,18 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	// Create also profile with creating user
 	requestBody, err := json.Marshal(map[string]string{
-		"Username" : user.Username,
+		"Username": user.Username,
 	})
 
 	rw.Header().Set("Content-Type", "application/json")
 	client := &http.Client{}
 	//url := "http://localhost:3030/addprofile"
+
 	url := "http://" + constants.PROFILE_SERVICE_URL + "/addprofile"
+
+	url1 := "http://profile-service:8888/addprofile"
 	fmt.Println(url)
+	fmt.Println(url1)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 	if err != nil {
 		fmt.Errorf("Error with creating new profile")
@@ -109,7 +112,9 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	//fmt.Printf("%s", r.Body)
 
-	_, err = client.Do(req)
+	resp, err := client.Do(req)
+
+	fmt.Println("STATUSSSSS: " + resp.Status)
 
 	if err != nil {
 		fmt.Errorf("Error while  creating new profile")
@@ -117,9 +122,16 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	userID := handler.Service.GetIDByUsername(user.Username)
 
+	if os.Getenv("DOCKERIZED") != "yes" {
+		err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	} else {
+		err = os.MkdirAll("./temp/id-"+strconv.Itoa(int(userID)), 0755)
+	}
 
-	err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
-	if err !=nil{
+	//err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	//err = os.MkdirAll("./temp/id-"+strconv.Itoa(int(userID)), 0755)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
 		fmt.Println("Error at creating directory")
 		return
 	}
@@ -142,7 +154,7 @@ func (u *UserHandler) GetUsers(rw http.ResponseWriter, r *http.Request) {
 
 func (u *UserHandler) WhoAmI(rw http.ResponseWriter, r *http.Request) {
 
-	var dto = dto.UsernameRoleDto{Username : r.Header.Get("username"),Role : r.Header.Get("role")}
+	var dto = dto.UsernameRoleDto{Username: r.Header.Get("username"), Role: r.Header.Get("role")}
 	err := dto.ToJSON(rw)
 	fmt.Println("dto is" + dto.Username + " " + dto.Role)
 	u.L.Println(dto)
@@ -182,7 +194,6 @@ func (u *UserHandler) AuthMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-
 func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("updating user data")
 	var dto dto.UserEditDTO
@@ -214,8 +225,8 @@ func (handler *UserHandler) EditUserData(rw http.ResponseWriter, r *http.Request
 		fmt.Print(oldUsername + " +++++ " + user.Password)
 
 		requestBody, err := json.Marshal(map[string]string{
-			"Username" : dto.Username,
-			"Password" : user.Password,
+			"Username": dto.Username,
+			"Password": user.Password,
 		})
 
 		rw.Header().Set("Content-Type", "application/json")
@@ -265,7 +276,6 @@ func (handler *UserHandler) ChangePassowrd(rw http.ResponseWriter, r *http.Reque
 	rw.Header().Set("Content-Type", "application/json")
 }
 
-
 func UserCheck(tokenString string) (*http.Response, error) {
 
 	godotenv.Load()
@@ -279,7 +289,6 @@ func UserCheck(tokenString string) (*http.Response, error) {
 	req.Header.Add("Authorization", tokenString)
 	return client.Do(req)
 }
-
 
 func getCurrentUserCredentials(tokenString string) (dto.UsernameRoleDto, error) {
 
@@ -343,7 +352,7 @@ func (handler *UserHandler) GetUserIdByUsername(wr http.ResponseWriter, r *http.
 	dto.UserId = userId
 
 	err := dto.ToJSON(wr)
-	if err != nil{
+	if err != nil {
 		http.Error(wr, "Error ToJson userID", http.StatusBadRequest)
 		return
 	}

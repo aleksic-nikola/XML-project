@@ -1,4 +1,4 @@
-const DOCKERIZED = 'yes'	
+const DOCKERIZED = 'no'	
 const AUTH_SERVICE_URL = getCorrectOrigin('auth')
 const CAMPAIGN_SERVICE_URL = getCorrectOrigin('campaign')
 const CONTENT_SERVICE_URL = getCorrectOrigin('content')

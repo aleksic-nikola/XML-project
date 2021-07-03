@@ -122,8 +122,14 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 
 	userID := handler.Service.GetIDByUsername(user.Username)
 
+	if os.Getenv("DOCKERIZED") != "yes" {
+		err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
+	} else {
+		err = os.MkdirAll("./temp/id-"+strconv.Itoa(int(userID)), 0755)
+	}
+
 	//err = os.Mkdir("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
-	err = os.MkdirAll("./temp/id-"+strconv.Itoa(int(userID)), 0755)
+	//err = os.MkdirAll("./temp/id-"+strconv.Itoa(int(userID)), 0755)
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 		fmt.Println("Error at creating directory")

@@ -22,7 +22,7 @@ function showPhotos(postList) {
 			<div class="col-md-6 col-lg-4">
 				<div class="card border-0 transform-on-hover">
 					<a class="lightbox">
-						<video width="100%" height="100%" controls id="post-${post.ID}" class="card-img-top gallery-item">
+						<video width="100%" height="100%" id="post-${post.ID}" class="card-img-top gallery-item">
 							<source src="${post.medias[0].path}"  type="video/mp4">                       
 							Your browser does not support the video tag.
 						</video>

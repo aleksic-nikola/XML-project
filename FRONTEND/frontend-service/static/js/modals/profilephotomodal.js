@@ -24,13 +24,33 @@ function showImageModal(id, postList) {
 		}
 	})
 	var media = post.medias[0].path
-	which_image.html(`
+
+	if (post.medias[0].path.split(".")[1] != 'jpg' && post.medias[0].path.split(".")[1] != 'png') {
+		// then its a video
+
+		which_image.html(`
+
+		<video width="100%" height="100%" controls alt="Card image cap" class="card-img-top modal-img">
+			<source src="${media}" type="video/mp4">                       
+			Your browser does not support the video tag.
+		</video>
+		
+		`)
+
+	} else {
+		// it's a picture
+
+		which_image.html(`
 	
-	<img 
-	class="card-img-center modal-img" 
-	src="${media}" 
-	alt="Card image cap">	
-	`)
+		<img 
+			class="card-img-top modal-img" 
+			src="${media}" 
+			alt="Card image cap">	
+
+		`)
+	}
+
+
 	console.log('give me image ' + post.medias[0])
 	// like button id looks like  like-ID e.g. like-1 current user likes current post
 

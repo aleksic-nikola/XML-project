@@ -45,6 +45,7 @@ function register() {
             } else {
                 // to be checked in the future why after successfull reg drops error...
                 alert('Successfull error registration, please log in')
+
                 clearRegFields();
                 redirectToLogin();
 

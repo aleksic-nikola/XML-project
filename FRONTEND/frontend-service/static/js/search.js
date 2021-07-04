@@ -36,9 +36,14 @@ function who_am_I() {
 
 function authenticatedSearch() {
 	getAllPublicProfiles()
-	getAllAllowedProfiles()
 	getAllPublicPosts()
+	getAllAllowedProfiles()
 	getAllAllowedPosts()
+	createFinalProfileList()
+}
+
+function createFinalProfileList() {
+	
 }
 
 function nonAuthenticatedSearch() {

@@ -89,27 +89,31 @@ function setGlobalPostToSave(id) {
 
 function savePost() {
 
-	console.log("Save post" + postForSave)
-	console.log($("#collection_field").val())
+	collectionName = $("#collection_field").val()
+
+	var obj = {
+        collection_name: collectionName,
+        post_id : parseInt(postForSave)
+    }
+
+	console.log(obj)
 	
-	/*$.ajax({
+	$.ajax({
 	    type: 'POST',
 	    crossDomain: true,
-	    url: CONTENT_SERVICE_URL + '/like/' + split,
+	    url: PROFILE_SERVICE_URL + '/addposttofavourites',
 	    contentType: 'application/json',
+		data: JSON.stringify(obj),
 	    beforeSend: function (xhr) {
-		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+			xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
 	    },
-	    success: function (data) {
-		alert('successfully liked')
+	    success: function () {
+			alert('successfully saved post to favourites')
 	    },
 	    error: function () {
-		alert('cant like this tntntntn')
-    
-    
+			alert('cant save post to favourites')
 	    }
-	})*/
+	})
 
-	console.log('here')
 }
     

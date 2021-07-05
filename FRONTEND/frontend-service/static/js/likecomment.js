@@ -1,3 +1,5 @@
+var postForSave
+
 function likePost(id) {
 
 	var split = id.split("-")[1]
@@ -77,7 +79,37 @@ function postComment(id) {
 	
 	
 		}
-	    })
+	})    
+}
+
+function setGlobalPostToSave(id) {
+	postForSave = id
+}
+
+
+function savePost() {
+
+	console.log("Save post" + postForSave)
+	console.log($("#collection_field").val())
+	
+	/*$.ajax({
+	    type: 'POST',
+	    crossDomain: true,
+	    url: CONTENT_SERVICE_URL + '/like/' + split,
+	    contentType: 'application/json',
+	    beforeSend: function (xhr) {
+		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+	    },
+	    success: function (data) {
+		alert('successfully liked')
+	    },
+	    error: function () {
+		alert('cant like this tntntntn')
     
-    }
+    
+	    }
+	})*/
+
+	console.log('here')
+}
     

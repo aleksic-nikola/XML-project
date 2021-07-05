@@ -27,6 +27,8 @@ $(document).ready(function () {
     printOriginVariables()
     //checkUserPublicity()
 
+    getMyDatas()
+
 })
 
 function fetchCurrentUserPosts() {
@@ -42,11 +44,11 @@ function fetchCurrentUserPosts() {
         },
         success: function (data) {
             loggedIn = true;
-            console.log(data)
-            console.log('FETCHED POSTS FOR USER')
+            //console.log(data)
+            //console.log('FETCHED POSTS FOR USER')
             postList = data
-            console.log('post list is ')
-            console.log(data)
+            //console.log('post list is ')
+            //console.log(data)
             $('#num_of_posts').html(data.length)
             // checkUserPublicity()
         },
@@ -72,7 +74,7 @@ function whoAmI() {
         },
         success: function (data) {
             loggedIn = true;
-            console.log(data)
+            //console.log(data)
             this_is_me = data
 
             //prebaceno ovde zbog sinhronizacije
@@ -100,13 +102,13 @@ function whoAmI() {
 }
 
 function modifyForMyProfile() {
-    console.log('hey this is my profile')
-    console.log('hide follow button')
+    //console.log('hey this is my profile')
+    //console.log('hide follow button')
     $('#follow_button').hide()
 }
 
 function modifyForNotMyProfile() {
-    console.log('not my profile')
+    //console.log('not my profile')
     $('#edit_profile_button').hide()
 }
 
@@ -123,8 +125,8 @@ function fetchUser(username) {
         },
         success: function (data) {
             loggedIn = true;
-            console.log('succesfully fetched user')
-            console.log(data)
+            //console.log('succesfully fetched user')
+            //console.log(data)
             user_on_page = data
             if (data.biography == "")
                 $('#bio').html('This user has no biography')
@@ -149,7 +151,7 @@ function fetchCurrentPageUser() {
     const currurl = window.location.href
 
     un = currurl.split('?')[1]
-    console.log(un);
+    //console.log(un);
     if (un == "") {
         countdownToRedirect(3, "back")
     } else {
@@ -159,7 +161,7 @@ function fetchCurrentPageUser() {
 }
 
 function getAuthInfoForPageUser() {
-    console.log('getting auth info for ' + un)
+    //console.log('getting auth info for ' + un)
     // getdata from user
     $.ajax({
         type: 'GET',
@@ -171,12 +173,12 @@ function getAuthInfoForPageUser() {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            console.log(data)
+            //console.log(data)
             $('#current_name').html(data.name + ' ' + data.lastname)
         },
         error: function (xhr, status, data) {
-            console.log(xhr)
-            console.log('Cant get profile data');
+            //console.log(xhr)
+            //console.log('Cant get profile data');
         }
     })
 
@@ -189,12 +191,12 @@ document.addEventListener("click", function (e) {
     if (e.target.classList.contains("gallery-item")) {
 
         const src = e.target.getAttribute("src");
-        console.log(src);
+        //console.log(src);
 
         document.querySelector(".modal-img").src = src;
         const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
         const post_id = e.target.getAttribute("id")
-        console.log(post_id)
+        //console.log(post_id)
         showImageModal(post_id.split("-")[1], postList)
 
 
@@ -287,7 +289,7 @@ function getOtherProfile(name) {
         },
         success: function (data) {
             loggedIn = true;
-            console.log(data)
+            //console.log(data)
             checkUserPublicity(name)
         },
         error: function () {
@@ -306,15 +308,15 @@ async function setFollowers() {
         const res = await getMyDatas1()
 
     } catch (err) {
-        console.log(err)
+        //console.log(err)
     }
 
     var obj = {
         username: user_on_page.username
     }
 
-    console.log("USAOOO OVDEE")
-    console.log(JSON.stringify(obj))
+    //console.log("USAOOO OVDEE")
+    //console.log(JSON.stringify(obj))
     $.ajax({
         type: 'POST',
         crossDomain: true,
@@ -326,18 +328,18 @@ async function setFollowers() {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            console.log("PRVO SE OVO ZAVRSILO SET FOLLOWERS")
-            // console.log("UKUPNO FOLLOWERA: ")
+            //console.log("PRVO SE OVO ZAVRSILO SET FOLLOWERS")
+            // //console.log("UKUPNO FOLLOWERA: ")
             $("#numberOfFollowers").text(data.length)
             allFollowers = data
-            // console.log(data.length)
+            // //console.log(data.length)
             checkIfAlreadyFollowed()    //this change Follow button to disable if user already follow some profile
             checkUserPublicity()
         },
         error: function (xhr, status, data) {
-            console.log(status)
-            console.log(xhr)
-            console.log('Cant get followers data');
+            //console.log(status)
+            //console.log(xhr)
+            //console.log('Cant get followers data');
         }
     })
 
@@ -353,17 +355,17 @@ async function setFollowers() {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            console.log("PRVO SE OVO ZAVRSILO SET FOLLOWING")
-            //console.log("UKUPNO FOLLOWERA: ")
-            // console.log(data)
+            //console.log("PRVO SE OVO ZAVRSILO SET FOLLOWING")
+            ////console.log("UKUPNO FOLLOWERA: ")
+            // //console.log(data)
             $("#numberOfFollowing").text(data.length)
             allFollowing = data;
-            //console.log(data.length)
+            ////console.log(data.length)
         },
         error: function (xhr, status, data) {
-            console.log(status)
-            console.log(xhr)
-            console.log('Cant get followers data');
+            //console.log(status)
+            //console.log(xhr)
+            //console.log('Cant get followers data');
         }
     })
 
@@ -374,21 +376,21 @@ async function setFollowers() {
 function checkUserPublicity() {
     var user = user_on_page
     //alert(user.privacy_setting.is_public)
-    console.log(user)
-    console.log(this_is_me)
+    //console.log(user)
+    //console.log(this_is_me)
     if (user.username == this_is_me.username) {
         showPhotos(postList)
         return
     }
 
     if (user.privacy_setting.is_public == true) {
-        console.log('profile is public')
+        //console.log('profile is public')
         showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
     } else {
-        console.log("NA DUGMETU TRENUTNO: ")
-        console.log($("#follow_button").text())
+        //console.log("NA DUGMETU TRENUTNO: ")
+        //console.log($("#follow_button").text())
         if ($("#follow_button").text() === "Following") {   //znaci da ga vec prati
-            console.log("USPEO DA UDJEM U IF")
+            //console.log("USPEO DA UDJEM U IF")
             showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
             return
         }
@@ -422,15 +424,15 @@ function getMyDatas1() {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            console.log("PRVO SE OVO ZAVRSILO getMyDatas")
+            //console.log("PRVO SE OVO ZAVRSILO getMyDatas")
 
-            console.log(data)
+            //console.log(data)
             myUsername = data.username
             $("#myFullName").text(data.name + " " + data.lastname)
         },
         error: function (xhr, status, data) {
-            console.log(xhr)
-            console.log('Cant get profile data');
+            //console.log(xhr)
+            //console.log('Cant get profile data');
         }
     })
 
@@ -444,11 +446,11 @@ function showFollowers() {
 
     var n = allFollowers.length
     for (let i = 0; i < n; i++) {
-        console.log("Brojac:" + i)
+        //console.log("Brojac:" + i)
         var username = allFollowers[i].username
         //var fullName = allFollowers[i].name + " " + allFollowers[i].lastname
         var fullName = ""
-        console.log(username)
+        //console.log(username)
 
         allFollowersHtml += '<li class="media">' + '\n'
         allFollowersHtml += '<img src="./img/avatar.png" width="35" height="35" class="mr-3" alt="...">' + '\n'
@@ -466,7 +468,7 @@ function showFollowers() {
     if (n != 0)
         allFollowersHtml = allFollowersHtml.slice(0, -4)
 
-    console.log(allFollowersHtml)
+    //console.log(allFollowersHtml)
 
     allFollowersHtml += '</ul>'
 
@@ -484,11 +486,11 @@ function showFollowing() {
 
     var n = allFollowing.length
     for (let i = 0; i < n; i++) {
-        console.log("Brojac:" + i)
+        //console.log("Brojac:" + i)
         var username = allFollowing[i].username
         //var fullName = allFollowing[i].name + " " + allFollowing[i].lastname
         var fullName = ""
-        console.log(username)
+        //console.log(username)
 
         allFollowersHtml += '<li class="media">' + '\n'
         allFollowersHtml += '<img src="./img/avatar.png" class="mr-3" width="35" height="35" alt="...">' + '\n'
@@ -505,7 +507,7 @@ function showFollowing() {
     if (n != 0)
         allFollowersHtml = allFollowersHtml.slice(0, -4)
 
-    console.log(allFollowersHtml)
+    //console.log(allFollowersHtml)
 
     allFollowersHtml += '</ul>'
 
@@ -514,8 +516,8 @@ function showFollowing() {
 }
 
 $("#follow_button").click(function () {
-    console.log("TREBA DA ZAPRATIM: ")
-    console.log(user_on_page.username)
+    //console.log("TREBA DA ZAPRATIM: ")
+    //console.log(user_on_page.username)
 
     var obj = {
         followToUsername: user_on_page.username
@@ -532,12 +534,12 @@ $("#follow_button").click(function () {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function () {
-            console.log("USPESNO ZAPRAĆENO")
+            //console.log("USPESNO ZAPRAĆENO")
             $("#follow_button").text("SENT REQUEST")
         },
         error: function () {
             alert("You already sent follow request to this account!")
-            console.log("Erorr at ajax call FOLLOW!!!")
+            //console.log("Erorr at ajax call FOLLOW!!!")
 
 
         }
@@ -550,15 +552,15 @@ $("#follow_button").click(function () {
 
 
 function checkIfAlreadyFollowed() {
-    console.log("USAO U FUNKCIJA CHECK IF ALREADY!!!")
-    console.log("DUZINA: ", allFollowers.length)
+    //console.log("USAO U FUNKCIJA CHECK IF ALREADY!!!")
+    //console.log("DUZINA: ", allFollowers.length)
 
     for (var i = 0; i < allFollowers.length; i++) {
-        console.log(allFollowers[i].username)
-        console.log(this_is_me.username)
-        console.log("*******************************")
+        //console.log(allFollowers[i].username)
+        //console.log(this_is_me.username)
+        //console.log("*******************************")
         if (allFollowers[i].username === this_is_me.username) {
-            console.log("NASAO SAM SEBE!!!")
+            //console.log("NASAO SAM SEBE!!!")
             $('#follow_button').text("Following")
             $('#follow_button').attr("disabled", 'true')
             return

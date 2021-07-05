@@ -33,15 +33,44 @@ function fillStories(data) {
     var stories_here = $('#stories_here_plz')
     var html = ''
     var story_url
-
+    console.log("PODACI IZ STORija: ")
+    console.log(data)
     data.forEach(function(s) {
 
         story_url = '../' + s.media.path
+        postedBy = s.postedby
+        console.log("SVE IZ S:")
+        console.log(s)
+        
 
-        html+= `<img class="card-img-center story-css" height="50px" src="${story_url}" alt="Card image cap"></img>`
+        html+= `<img class="card-img-center story-css" onClick="showStory('${story_url}', '${postedBy}')" height="80px" src="${story_url}" alt="Card image cap"></img>`
     })
     stories_here.html(html)
 }
+
+
+function showStory(imgPath, postedBy){
+    console.log("Pogodjena funckija!!")
+    console.log(imgPath)
+    console.log(postedBy)
+    //$("#insertStory").remove();
+   // $("#forAddingDiv").after('<div id="insertStory"></div>')
+
+    htmlStory = '<div id="insertStory">'
+    htmlStory += `<img class="img-responsive" src="${imgPath}" style="max-height:500px; width=100%;" alt="Not found" >`
+    htmlStory += `<p> <i> Posted by</i>:  <a href="profile.html?${postedBy}"><b> ${postedBy}</b></a>  </p>`
+    htmlStory += '</div>'
+
+    $("#insertStory").replaceWith(htmlStory)
+
+    $("#btnTriggerStory").click();
+
+}
+
+
+
+
+
 
 function loadFeedContent(){
 

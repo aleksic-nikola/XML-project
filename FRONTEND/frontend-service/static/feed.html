@@ -62,10 +62,11 @@
         <div class="row">
 
             <div class="col-sm-6">
-                <!-- STORY PART-->
+                <!--                        STORY PART-->
                 <div class="story-part">
+
                     <div class="scrollmenu" id="stories_here_plz">
-                        
+
                     </div>
                 </div>
                 <!-- STORY PART END-->
@@ -85,8 +86,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="post_form" enctype="multipart/form-data" action="ph"
-                                    method="post">
+                                <form id="post_form" enctype="multipart/form-data" action="ph" method="post">
                                     <div class="container">
                                         <div class="row">
                                             <div class="offset-5 col-3">
@@ -193,6 +193,27 @@
                 </div>
             </div>
         </div>
+        <button id="btnTriggerStory" hidden data-toggle="modal" data-target="#storyModal"></button>
+
+        <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="storyModalLabel">Story
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="storyModalWindow">
+                        <div id="insertStory"></div>
+
+                        <a href=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 

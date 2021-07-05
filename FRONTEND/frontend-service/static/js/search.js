@@ -4,11 +4,13 @@ var allowed_profiles = []
 var public_names = {}
 var allowed_names = {}
 var final_profiles = []
+var final_profiles_with_private = [] // profiles + private followless profiles
 var final_posts = []
 var current_input = 'valjda_nece_ovo_nikad_upisati13151q6161q67'
 const profile_list = $('#profile_list')
 var location_counter = 0
 var tag_counter = 0
+var authenticated = false
 
 
 
@@ -48,7 +50,7 @@ function filterUsers() {
 	const searchInput = search_field.val().toLowerCase().trim();
 	const searchString = searchInput.replaceAll('@', '').trim()
 	//console.log(searchString)
-	const filtered_users = final_profiles.filter((profile) => {
+	const filtered_users = final_profiles_with_private.filter((profile) => {
 		return (
 			profile.username.toLowerCase().includes(searchString)
 			);
@@ -122,7 +124,9 @@ function who_am_I() {
 		},
 		success: function (data) {
 		    console.log('using authenticated search..')
-		    authenticatedSearch(data)
+		    authenticated = true
+            authenticatedSearch()
+            
 		},
 		error: function () {
 		    console.log('using non authenticated search..')
@@ -133,11 +137,45 @@ function who_am_I() {
 }
 
 function authenticatedSearch() {
-	getAllPublicProfiles()
-	getAllPublicPosts()
+    console.log('authenticated search in progress..')
+	//getAllPublicProfiles()
 	getAllAllowedProfiles()
-	getAllAllowedPosts()
-	createFinalProfileList()
+	//getAllAllowedPosts()
+	//createFinalProfileList()
+}
+
+function getAllAllowedProfiles() {
+
+    console.log('getAllAllowedProfiles')
+
+    $.ajax({
+		type: 'GET',
+		crossDomain: true,
+		url: PROFILE_SERVICE_URL + '/allowedprofiles',
+		contentType: 'application/json',
+		dataType: 'JSON',
+		beforeSend: function (xhr) {
+		    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+		},
+		success: function (data) {
+		    //console.log(data)
+			if (data.length > 0) {
+                console.log('getAllAllowedProfiles size is > 0')
+                data.forEach(function(d) {
+                    if (final_profiles.filter(e => e.username == d.username).length == 0) {
+                        final_profiles.push(d)
+                    }		  
+                })
+            } 
+			//console.log('Size of final_profiles is ' + final_posts.length)
+			//public_profiles.push.apply(public_profiles, data)
+			getAllPublicProfiles()
+		},
+		error: function () {
+		    alert('error')
+		}
+	})
+
 }
 
 function createFinalProfileList() {
@@ -167,10 +205,17 @@ function getAllPublicProfiles() {
 					final_profiles.push(d)
 				}		  
 			})
-			console.log('Size of final_profiles is ' + final_posts.length)
+			//console.log('Size of final_profiles is ' + final_posts.length)
 			//public_profiles.push.apply(public_profiles, data)
-			fillColumnsProfiles(final_profiles)
-		    getAllPublicPosts(data)
+            getAllPublicPosts(final_profiles)
+            final_profiles_with_private.push.apply(final_profiles_with_private, final_profiles)
+
+            if (authenticated) {
+                getPrivateNonFollowed()
+            }
+            else {
+                fillColumnsProfiles(final_profiles)
+            }
 		},
 		error: function () {
 		    alert('error')
@@ -179,6 +224,36 @@ function getAllPublicProfiles() {
 
 }
 
+// get all private profiles that the current user does nto follow
+function getPrivateNonFollowed() {
+
+    $.ajax({
+		type: 'GET',
+		crossDomain: true,
+		url: PROFILE_SERVICE_URL + '/followlessprivateprofiles',
+		contentType: 'application/json',
+		dataType: 'JSON',
+		beforeSend: function (xhr) {
+		    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+		},
+		success: function (data) {
+		    console.log('using authenticated search..')
+            data.forEach(function(d) {
+				if (final_profiles_with_private.filter(e => e.username == d.username).length == 0) {
+					final_profiles_with_private.push(d)
+				}		  
+			})
+            fillColumnsProfiles(final_profiles_with_private)
+		},
+		error: function () {
+		    console.log('using non authenticated search..')
+		    nonAuthenticatedSearch()
+		}
+	})
+
+}
+
+// gets all public posts (only public for non logged in and public + followed for logged in)
 function getAllPublicPosts(profiles) {
 	console.log('profiles is')
 	console.log(profiles)
@@ -207,9 +282,6 @@ function getAllPublicPosts(profiles) {
 
 }
 
-function getAllAllowedProfiles() {
-
-}
 
 function getAllAllowedPosts() {
 

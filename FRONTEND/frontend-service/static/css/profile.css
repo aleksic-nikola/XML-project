@@ -176,16 +176,4 @@ tbody {
   height: auto;
 }
 
-.moreactionbtn {
-  margin-top: 25px;
-  margin-left: 25px;
-  float: left;
-  width: 10px;
-  margin-bottom: -6px;
-}
 
-.moreactionbtn {
-  float: left;
-  width : 100%;
-  margin-left: -2px;
-}

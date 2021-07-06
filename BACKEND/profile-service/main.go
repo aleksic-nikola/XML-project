@@ -152,6 +152,7 @@ func main() {
 
 	postRouter.HandleFunc("/addposttofavourites", ph.AddPostToFavourites)
 	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavourites)
+	getRouter.HandleFunc("/getallcollections", ph.GetAllFavourites)
 
 
 	//CORS

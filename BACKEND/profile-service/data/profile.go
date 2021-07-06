@@ -38,6 +38,16 @@ type SavedPost struct {
 	PostId uint `json:"post_id"`
 }
 
+func (f *Favourties) ToJson(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(f)
+}
+
+func (f *Favourties) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(f)
+}
+
 func (u *Profile) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(u)
@@ -66,6 +76,8 @@ func (u*Profile) ToJson(w io.Writer) error {
 type Profiles []*Profile
 
 type SavedPosts []*SavedPost
+
+type Favourties []*Favourite
 
 func GetProfiles() Profiles {
 	return profileList

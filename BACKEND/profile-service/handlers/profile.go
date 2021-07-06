@@ -949,3 +949,35 @@ func (handler *ProfileHandler) GetAllNonFollowedPrivateProfiles(rw http.Response
 	rw.WriteHeader(http.StatusOK)
 }
 
+func (handler *ProfileHandler) GetAllFavourites(rw http.ResponseWriter, r *http.Request) {
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	collections, err := handler.Service.GetFavouritPostsIds(userRoleDto)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error getting posts IDS from repository", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = collections.ToJSON(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+

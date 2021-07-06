@@ -442,3 +442,24 @@ func (service *ProfileService) GetAllNonFollowedPrivateProfiles(username string)
 
 	return err, retList
 }
+
+func (service *ProfileService) GetFavouritPostsIds(roleDto dto.UsernameRole) (dto.Collection, error) {
+	profile, err := service.Repo.GetProfileByUsername(roleDto.Username)
+
+	if err != nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", roleDto.Username)
+		return dto.Collection{}, err
+	}
+
+	var collections dto.Collection
+
+	for _, f := range profile.Favourites {
+		collections.Name = append(collections.Name, f.CollectionName)
+	}
+
+	for _, cn := range collections.Name {
+		fmt.Println(cn)
+	}
+
+	return collections, nil
+}

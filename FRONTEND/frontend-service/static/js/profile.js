@@ -208,6 +208,16 @@ document.addEventListener("click", function (e) {
         else {
             alert("You must be logged in to view photo")
         }
+
+        //Rendering unsaved button
+
+        if (currentPill == "saved") {
+            $("#removeFromCollection").show()
+            var c = select_group.children(":selected").attr("id");
+            $("#removeFromCollection").html("Remove " + post_id + " from " + c)
+        } else {
+            $("#removeFromCollection").hide()
+        }
     }
 })
 
@@ -381,19 +391,19 @@ function checkUserPublicity() {
     console.log(user)
     console.log(this_is_me)
     if (user.username == this_is_me.username) {
-        showPhotos(postList)
+        showPhotos(postList, "postsHere")
         return
     }
 
     if (user.privacy_setting.is_public == true) {
         console.log('profile is public')
-        showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+        showPhotos(postList, "postsHere")    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
     } else {
         console.log("NA DUGMETU TRENUTNO: ")
         console.log($("#follow_button").text())
         if ($("#follow_button").text() === "Following") {   //znaci da ga vec prati
             console.log("USPEO DA UDJEM U IF")
-            showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+            showPhotos(postList, "postsHere")    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
             return
         }
         else {
@@ -572,3 +582,6 @@ function checkIfAlreadyFollowed() {
 }
 
 
+//Dropdown sa nazivima kolekcija
+//Klik na tab, poziva se da se vrati lista naziva kolekcija(profile service), popuniti dropdown (1. vrednost prazna)
+//Kad se odabere stavka iz dd, 

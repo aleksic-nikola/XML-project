@@ -18,3 +18,17 @@ func (b *BlockmuteDTO) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(b)
 }
+
+type ListWhoBlockedMeDTO struct {
+	ListWhoBlockedMe []string `json:"listwhoblockedme"`
+}
+
+func (b *ListWhoBlockedMeDTO) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(b)
+}
+
+func (b *ListWhoBlockedMeDTO) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(b)
+}

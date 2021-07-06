@@ -114,6 +114,24 @@ function modifyForNotMyProfile() {
     $('#liked-tab').addClass('disabled')
     $('#disliked-tab').addClass('disabled')
     $('#saved-tab').addClass('disabled')
+
+    var visitedUsername = location.href.split("?")[1];
+
+    checkIfUserBlockedMeAndRestrict();
+
+    if(currentprofileObj.blacklist == undefined) {
+        return
+    } else {
+
+    currentprofileObj.blacklist.forEach(function(b) {
+        if(visitedUsername == b.username) {
+            //console.log("profile is blocked - do not show the profile");
+            showBlockedUserModal();
+        }
+    })
+    }
+
+
 }
 
 function fetchUser(username) {
@@ -573,4 +591,46 @@ function checkIfAlreadyFollowed() {
 
 }
 
+function showBlockedUserModal() {
+    $('#blockedUserModal').modal('show'); 
+}
+
+function redirectOnPrevPage() {
+    history.go(-1);
+}
+
+function checkIfUserBlockedMeAndRestrict() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getuserwhoblockedme',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+            console.log(data)
+            checkIfImInHisBlacklist(data)
+        },
+        error: function () {
+            alert("Error in getUsersWhoBlockedMeAndRestricTheirProfile")
+        }
+    })
+
+}
+
+function checkIfImInHisBlacklist(data) {
+    data.listwhoblockedme.forEach(function(p) {
+
+        var visitedUsername = location.href.split("?")[1];
+        //console.log(p)
+
+        if(visitedUsername == p) {
+            $("#maincontainer").css("visibility", "hidden")
+            $("#userdoesntexist").html("User with that username doesn't exists")
+        }
+    })
+}
 

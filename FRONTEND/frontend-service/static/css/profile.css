@@ -176,4 +176,13 @@ tbody {
   height: auto;
 }
 
+.moreactionbtn {
+  float: left;
+  width : 100%;
+  margin-left: -2px;
+}
 
+.insidetablebtn {
+  margin-top: -3px;
+  margin-left: 80px;
+}

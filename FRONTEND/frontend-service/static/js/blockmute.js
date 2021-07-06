@@ -168,3 +168,85 @@ function unmuteUser() {
     })
     
 }
+
+function unmuteUserWithParam(username) {
+
+    var obj = {
+        "usernametoblockmute" : username
+    }
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/unmuteuser',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function () {
+            alert('Succesfully unmuted user: ' + username)
+            window.location.reload();
+
+        },
+        error: function () {
+            alert('Error while unmuting user: ' + username)
+        }
+    })
+    
+}
+
+function unblockUser() {
+    var usernameToUnblock = location.href.split("?")[1]
+
+    var obj = {
+        "usernametoblockmute" : usernameToUnblock
+    }
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/unblockuser',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function () {
+            alert('Succesfully unblocked user: ' + usernameToUnblock)
+            window.location.reload();
+
+        },
+        error: function () {
+            alert('Error while unblocking user: ' + usernameToUnblock)
+        }
+    })
+    
+}
+
+function unblockUserWithParam(username) {
+
+    var obj = {
+        "usernametoblockmute" : username
+    }
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/unblockuser',
+        contentType: 'application/json',
+        data: JSON.stringify(obj),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function () {
+            alert('Succesfully unblocked user: ' + username)
+            window.location.reload();
+
+        },
+        error: function () {
+            alert('Error while unblocking user: ' + username)
+        }
+    })
+    
+}

@@ -61,6 +61,8 @@ function getMyDatas() {
 
             currentprofileObj = data
             checkIfUserIsMutedOrBlocked()
+            fillUnMuteTable(currentprofileObj)
+            fillUnBlockTable(currentprofileObj)
         },
         error : function(xhr, status, data) {
             //console.log(xhr)
@@ -153,4 +155,40 @@ function fillNotifSettings(data) {
     } else {  
         $(function(){ $('#tagnotif_id').bootstrapToggle('off') });
     }
+}
+
+function fillUnMuteTable(currentprofileObj) {
+    var table = document.getElementById('muteTableBody')
+
+    table.innerHTML = ''
+    for(let i = 0; i < currentprofileObj.graylist.length; i++ ) {
+
+        var usernameToUnmute = currentprofileObj.graylist[i].username
+
+        var row = `<tr>
+                        <td>${currentprofileObj.graylist[i].username}</td>
+                        <td><button class="btn btn-dark insidetablebtn" id="`+ usernameToUnmute +`"  onclick='unmuteUserWithParam(this.id)'>Unmute</button></td>
+                    </tr>`
+
+        table.innerHTML += row
+    }
+
+}
+
+function fillUnBlockTable(currentprofileObj) {
+    var table2 = document.getElementById('blockTableBody')
+    table2.innerHTML = ''
+
+    for(let i = 0; i < currentprofileObj.blacklist.length; i++ ) {
+
+        var usernameToUnblock = currentprofileObj.blacklist[i].username
+
+        var row = `<tr>
+                        <td>${currentprofileObj.blacklist[i].username}</td>
+                        <td><button class="btn btn-dark insidetablebtn" id="`+ usernameToUnblock +`"  onclick='unblockUserWithParam(this.id)'>Unblock</button></td>
+                    </tr>`
+
+        table2.innerHTML += row
+    }
+
 }

@@ -981,3 +981,80 @@ func (handler *ProfileHandler) GetAllFavourites(rw http.ResponseWriter, r *http.
 	rw.WriteHeader(http.StatusOK)
 }
 
+func (handler *ProfileHandler) DeleteCollection(rw http.ResponseWriter, r *http.Request) {
+	var postToFavourites dto.PostToFavourites
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = postToFavourites.FromJSON(r.Body)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error in unmarshaling postToFavourites"),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = handler.Service.DeleteCollection(userRoleDto.Username, postToFavourites.CollectionName)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error in deleting collection"),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *ProfileHandler) DeletePostFromCollection(rw http.ResponseWriter, r *http.Request) {
+	var postToFavourites dto.PostToFavourites
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	err = postToFavourites.FromJSON(r.Body)
+
+	fmt.Println(postToFavourites)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error in unmarshaling postToFavourites"),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = handler.Service.DeletePostFromCollection(userRoleDto.Username, postToFavourites)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf(err.Error()),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}

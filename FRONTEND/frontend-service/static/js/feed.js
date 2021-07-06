@@ -21,9 +21,7 @@ function loadStories() {
            fillStories(data)
         },
         error : function() {
-            console.log("Erorr at ajax call!")
-            
-            
+            console.log("Erorr at ajax call!")    
         }
     })
 }

@@ -1,4 +1,5 @@
 var postForSave
+const tableCollection = $("#tableInsert")
 
 function likePost(id) {
 
@@ -84,6 +85,24 @@ function postComment(id) {
 
 function setGlobalPostToSave(id) {
 	postForSave = id
+	$.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getallcollections',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+			if (data.name != null) {
+            	fillTable(data)
+			}
+        },
+        error : function() {
+            console.log("Erorr at ajax call!")
+        }
+    })
 }
 
 
@@ -114,6 +133,17 @@ function savePost() {
 			alert('cant save post to favourites')
 	    }
 	})
+}
 
+function fillTable(collections) {
+	
+	tableCollection.html("")
+    var insertHtml = ""
+
+    collections.name.forEach(function(col) {
+        insertHtml += `<tr><td class="collectionTable">${col}</td></tr>`
+    })
+
+    tableCollection.html(insertHtml)
 }
     

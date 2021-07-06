@@ -1,7 +1,13 @@
+var currentUserFeed;
+
 $(document).ready(function() {
     //alert("CONNECTED")
     loadFeedContent();
     loadStories()
+
+    // pozovem fju gde uzimam trenutnog usera - izvadim mu liste (blacklist, graylist)
+    // varijable globalna za usera --> currentUserFeed
+    // kad to uzmem, u success --> loadStories, LoadFeedContent --> postedby na contentu i continue ako je u nekoj listi(mute/block) i tjt
 })
 
 function loadStories() {
@@ -226,6 +232,8 @@ function generatePostsHTML1(allPosts){
 
         postsHTML += `</div>`
 
+        if(allPosts[i].medias.length > 1) {
+
         postsHTML += `
                             <a class="carousel-control-prev" href="#demo-${i}" data-slide="prev">
                                 <span class="carousel-control-prev-icon"  style="background-color: black; border: 1px white;"></span>
@@ -235,6 +243,8 @@ function generatePostsHTML1(allPosts){
                             </a>`
 
         postsHTML += `</div>`
+        }
+        
             // CAROUSEL END --> card-body mi treba isti
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';

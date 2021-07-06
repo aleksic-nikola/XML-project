@@ -73,8 +73,10 @@
                             <div class="form col-lg-12">
                                 <h2 id="current_name" class="myname">Pera Peric</h2>
                                 <button class="btn btn-secondary editprofbtn" id="edit_profile_button"
-                                    data-target="#changeDataModal" data-toggle="modal" onclick="getMyDatas()">Edit
+                                    data-target="#changeDataModal" data-toggle="modal" onclick="">Edit
                                     profile</button>
+
+                                <button class="btn btn-primary editprofbtn" id="blockmutePart" data-target="#blockmutereportModal" data-toggle="modal">...</button>
 
                                 <!--NOTE: ADD THIS BUTTON ONLY TO OTHER USERS INSTEAD OF SETTINGS BUTTON-->
                                 <button class="btn btn-primary editprofbtn" id="follow_button">Follow</button>
@@ -309,7 +311,7 @@
                                             <button class="btn btn btn-outline-secondary editdatabtn" type="button"
                                                 id="editnotif">Notification properties</button>
                                             <button class="btn btn btn-outline-secondary editdatabtn" type="button"
-                                                id="muteandblock">Mute/Block</button>
+                                                id="muteandblock">Unmute/Unblock</button>
                                         </form>
                                     </nav>
 
@@ -429,8 +431,48 @@
                                     <div id="muteblockbody" style="display: none">
 
                                         <div class="form-inline editprofform">
-                                            <label>MUTED/BLOCKED PROFILES: --> unmute/unblock </label>
+                                            <h5>Blocked users: </h5>
+                                        </div>
 
+                                        <br>
+                                        <div class="form-inline editprofform">
+  
+                                            <table class="table" id="blockDataTable">
+                                                <tbody id="blockTableBody">
+                                                    <tr>
+                                                        <td>Otto</td>
+                                                        <td><button class="btn btn-dark insidetablebtn" id="">Unblock</button></td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td>Thornton</td>
+                                                        <td><button class="btn btn-dark insidetablebtn" id="">Unblock</button></td>
+                                                    </tr>
+                                                </tbody>
+                                              </table>
+                                        </div>
+
+                                        <hr> 
+
+                                        <div class="form-inline editprofform">
+                                            <h5>Muted users: </h5>
+                                        </div>
+
+                                        <br>
+
+                                        <div class="form-inline editprofform">
+  
+                                            <table class="table" id="muteDataTable">
+                                                <tbody id="muteTableBody">
+                                                  <tr>
+                                                    <td>Otto</td>
+                                                    <td><button class="btn btn-dark insidetablebtn" id="">Unmute</button></td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>Thornton</td>
+                                                    <td><button class="btn btn-dark insidetablebtn" id="">Unmute</button></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
                                         </div>
 
                                     </div>
@@ -602,6 +644,59 @@
         </div>
 
 
+                <!-- moreaction-BLOCK/MUTE/REPROT MODAL-->
+
+                <div class="container" id="blockmutereportDiv">
+                    <div class="row">
+                        <div class="col-xs-6">
+        
+                            <div class="modal fade" data-keyboard="false" data-backdrop="static" id="blockmutereportModal"
+                                tabindex="-1">
+                                <div class="modal-dialog modal-xs">
+                                    <div class="modal-content">
+        
+                                        <div class="modal-header">
+                                            <button class="close" data-dismiss="modal">&times;</button>
+        
+                                        </div>
+        
+                                        <div class="modal-body">
+        
+
+                                            <div id="editprofbody">
+                                                <div class="form-group ">
+                                                    <button class="btn btn-outline-danger moreactionbtn" id="blockuserBtn" onclick="blockUser()">Block this user</button>
+                                                </div>
+        
+                                                <div class="form-group">
+                                                    <button class="btn btn-outline-danger moreactionbtn" id="muteuserBtn" onclick="muteUser()">Mute this user</button>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <button class="btn btn-outline-danger moreactionbtn" id="umuteuserBtn" onclick="unmuteUser()">Unmute this user</button>
+                                                </div>
+        
+                                            </div>
+    
+                                        </div>
+        
+                                        <div class="modal-footer">
+                                            <button class="btn btn-dark modalbtns" id="closeBtn"
+                                                data-dismiss="modal">Cancel</button>
+
+                                        </div>
+        
+                                    </div>
+                                </div>
+                            </div>
+        
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- END OF moreaction(mute/block/reporty) MODAL-->
+
+
 
 
     </div>
@@ -638,6 +733,7 @@
     <script src="js/login.js"></script>
     <script src="js/saveprof.js"></script>
     <script src="js/followReqs.js"></script>
+    <script src="js/blockmute.js"></script>
 </body>
 
 </html>

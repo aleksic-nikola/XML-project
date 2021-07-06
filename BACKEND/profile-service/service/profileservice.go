@@ -442,3 +442,4 @@ func (service *ProfileService) GetAllNonFollowedPrivateProfiles(username string)
 
 	return err, retList
 }
+

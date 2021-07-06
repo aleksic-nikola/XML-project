@@ -125,7 +125,7 @@ func (repo *ProfileRepository) IsUserPublic(username string) (dto.ProfilePublic,
 
 func(repo *ProfileRepository) FindProfileByUsername(username string) *data.Profile {
 	var profile data.Profile
-	repo.Database.Where("username =?", username).First(&profile)
+	repo.Database.Preload("Graylist").Preload("Blacklist").Where("username =?", username).First(&profile)
 	return &profile
 }
 

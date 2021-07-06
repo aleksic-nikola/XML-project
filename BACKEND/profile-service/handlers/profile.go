@@ -697,6 +697,7 @@ func (handler *ProfileHandler) MuteUser(rw http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	fmt.Println("USER TO BLOCK: " + mutedto.UsernameToBlockMute)
 	profile, err := handler.Service.MuteProfile(dto.Username, mutedto.UsernameToBlockMute)
 
 	if profile == nil {

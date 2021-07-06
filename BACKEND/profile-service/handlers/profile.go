@@ -950,3 +950,49 @@ func (handler *ProfileHandler) GetAllNonFollowedPrivateProfiles(rw http.Response
 	rw.WriteHeader(http.StatusOK)
 }
 
+func (handler *ProfileHandler) GetUsersWhoBlockedMe(rw http.ResponseWriter, r *http.Request) {
+	var retlist dto.ListWhoBlockedMeDTO
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err ,usersListWhoBlockedMe := handler.Service.GetUsersWhoBlockedMe(dto.Username)
+
+	fmt.Print("------------------------------------")
+	fmt.Println(len(usersListWhoBlockedMe))
+
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error getting users who blocked me"),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	retlist.ListWhoBlockedMe = usersListWhoBlockedMe
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error marshaling usersListWhoBlockedMe"),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	rw.Header().Set("Content-Type", "application/json")
+
+	retlist.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+

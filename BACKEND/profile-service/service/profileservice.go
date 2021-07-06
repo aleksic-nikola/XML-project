@@ -443,3 +443,30 @@ func (service *ProfileService) GetAllNonFollowedPrivateProfiles(username string)
 	return err, retList
 }
 
+func (service *ProfileService) GetUsersWhoBlockedMe(myusername string) (error, []string) {
+
+	var listOfUsersWhoBlockedMe []string
+	var listOfAllProfiles data.Profiles
+
+	err, listOfAllProfiles :=  service.Repo.GetAllProfiles()
+
+	fmt.Println("============================")
+	fmt.Println(len(listOfAllProfiles))
+
+	if err != nil{
+		fmt.Errorf("Can't get allprofiles")
+		return err, nil
+	}
+
+	for _,p := range listOfAllProfiles {
+
+		for _,b := range p.Blacklist {
+			if b.Username == myusername {
+				listOfUsersWhoBlockedMe = append(listOfUsersWhoBlockedMe, p.Username)
+			}
+		}
+	}
+
+	return err, listOfUsersWhoBlockedMe
+}
+

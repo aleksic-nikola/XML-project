@@ -644,46 +644,87 @@
         </div>
 
 
-                <!-- moreaction-BLOCK/MUTE/REPROT MODAL-->
+        <!-- moreaction-BLOCK/MUTE/REPROT MODAL-->
 
-                <div class="container" id="blockmutereportDiv">
+        <div class="container" id="blockmutereportDiv">
+            <div class="row">
+                <div class="col-xs-6">
+
+                    <div class="modal fade" data-keyboard="false" data-backdrop="static" id="blockmutereportModal"
+                        tabindex="-1">
+                        <div class="modal-dialog modal-xs">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <button class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+
+                                <div class="modal-body">
+
+
+                                    <div id="editprofbody">
+                                        <div class="form-group ">
+                                            <button class="btn btn-outline-danger moreactionbtn" id="blockuserBtn" onclick="blockUser()">Block this user</button>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button class="btn btn-outline-danger moreactionbtn" id="muteuserBtn" onclick="muteUser()">Mute this user</button>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <button class="btn btn-outline-danger moreactionbtn" id="umuteuserBtn" onclick="unmuteUser()">Unmute this user</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-dark modalbtns" id="closeBtn"
+                                        data-dismiss="modal">Cancel</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOCKED USER MODAL START-->
+
+                <div class="container" id="blockedUserModalDiv">
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-xs-12">
         
-                            <div class="modal fade" data-keyboard="false" data-backdrop="static" id="blockmutereportModal"
+                            <div class="modal fade" data-keyboard="false" data-backdrop="static" id="blockedUserModal"
                                 tabindex="-1">
-                                <div class="modal-dialog modal-xs">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
         
                                         <div class="modal-header">
-                                            <button class="close" data-dismiss="modal">&times;</button>
-        
+
                                         </div>
         
                                         <div class="modal-body">
         
-
+        
                                             <div id="editprofbody">
                                                 <div class="form-group ">
-                                                    <button class="btn btn-outline-danger moreactionbtn" id="blockuserBtn" onclick="blockUser()">Block this user</button>
-                                                </div>
-        
-                                                <div class="form-group">
-                                                    <button class="btn btn-outline-danger moreactionbtn" id="muteuserBtn" onclick="muteUser()">Mute this user</button>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <button class="btn btn-outline-danger moreactionbtn" id="umuteuserBtn" onclick="unmuteUser()">Unmute this user</button>
+                                                    <h5 class="text-center">You can't get blocked users profile, you can unblock the user in your profile settings</h5>
                                                 </div>
         
                                             </div>
-    
+        
                                         </div>
         
                                         <div class="modal-footer">
                                             <button class="btn btn-dark modalbtns" id="closeBtn"
-                                                data-dismiss="modal">Cancel</button>
-
+                                                onclick="redirectOnPrevPage()">Back</button>
+        
                                         </div>
         
                                     </div>
@@ -694,9 +735,7 @@
                     </div>
                 </div>
         
-                <!-- END OF moreaction(mute/block/reporty) MODAL-->
-
-
+                <!-- BLOCKED USER MODAL END -->
 
 
     </div>

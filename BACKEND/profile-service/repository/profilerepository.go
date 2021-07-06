@@ -187,3 +187,28 @@ func (repo *ProfileRepository) ClearGrayList(profile *data.Profile) error {
 
 	return nil
 }
+
+func (repo *ProfileRepository) GetAllPublicProfiles() (error, data.Profiles) {
+
+	var profiles data.Profiles
+	err := repo.Database.Where("is_public = ?", true).Find(&profiles)
+
+	if err.Error != nil {
+		fmt.Println(err.Error)
+		return fmt.Errorf("there has been an error retrieving public profiles"), nil
+	}
+	return nil, profiles
+}
+
+func (repo *ProfileRepository) GetAllPrivateProfiles(username string) (error, data.Profiles) {
+
+	var profiles data.Profiles
+
+	err := repo.Database.Where("is_public = ? AND username != ?", false, username).Find(&profiles)
+
+	if err.Error != nil {
+		fmt.Println(err.Error)
+		return fmt.Errorf("there has been an error retrieving public profiles"), nil
+	}
+	return nil, profiles
+}

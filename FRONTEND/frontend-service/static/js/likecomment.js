@@ -1,3 +1,5 @@
+var postForSave
+
 function likePost(id) {
 
 	var split = id.split("-")[1]
@@ -77,7 +79,41 @@ function postComment(id) {
 	
 	
 		}
-	    })
-    
+	})    
+}
+
+function setGlobalPostToSave(id) {
+	postForSave = id
+}
+
+
+function savePost() {
+
+	collectionName = $("#collection_field").val()
+
+	var obj = {
+        collection_name: collectionName,
+        post_id : parseInt(postForSave)
     }
+
+	console.log(obj)
+	
+	$.ajax({
+	    type: 'POST',
+	    crossDomain: true,
+	    url: PROFILE_SERVICE_URL + '/addposttofavourites',
+	    contentType: 'application/json',
+		data: JSON.stringify(obj),
+	    beforeSend: function (xhr) {
+			xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+	    },
+	    success: function () {
+			alert('successfully saved post to favourites')
+	    },
+	    error: function () {
+			alert('cant save post to favourites')
+	    }
+	})
+
+}
     

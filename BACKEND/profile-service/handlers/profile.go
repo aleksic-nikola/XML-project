@@ -868,3 +868,85 @@ func (handler *ProfileHandler) GetFavourites(rw http.ResponseWriter, r *http.Req
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+func (handler *ProfileHandler) GetAllPublicProfiles(rw http.ResponseWriter, r *http.Request) {
+
+	err, profiles := handler.Service.GetAllPublicProfiles()
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf(err.Error()),
+			http.StatusInternalServerError,
+		)
+	}
+	err = profiles.ToJson(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf(err.Error()),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+// gets all profiles that are private but this user follows them
+func (handler *ProfileHandler) GetAllowedProfiles(rw http.ResponseWriter, r *http.Request) {
+
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	profiles := handler.Service.GetAllAllowedProfiles(dto.Username)
+
+	err = profiles.ToJson(rw)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error serializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+
+func (handler *ProfileHandler) GetAllNonFollowedPrivateProfiles(rw http.ResponseWriter, r *http.Request) {
+
+	dto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err, profiles := handler.Service.GetAllNonFollowedPrivateProfiles(dto.Username)
+
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error fetching private non followed users  %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	profiles.ToJson(rw)
+	rw.WriteHeader(http.StatusOK)
+}
+

@@ -398,6 +398,48 @@ func (service *ProfileService) GetPostsIdsInCollection(collection string, user d
 	return posts, nil
 }
 
+func (service *ProfileService) GetAllPublicProfiles() (error, data.Profiles) {
 
+	err, profiles := service.Repo.GetAllPublicProfiles()
+	return err, profiles
+}
 
+// gets all profiles the user follows but are not public
+func (service *ProfileService) GetAllAllowedProfiles(username string) (data.Profiles) {
+	profiles := service.Repo.GetAllFollowingByUsername(username)
+	var filtered_profiles data.Profiles
+	for _, p := range profiles {
+		fmt.Println("POST:")
+		if p.PrivacySetting.IsPublic == true {
+			continue
+		}
+		// private profile
+		filtered_profiles = append(filtered_profiles, &p)
+	}
+
+	return filtered_profiles
+}
+
+func (service *ProfileService) GetAllNonFollowedPrivateProfiles(username string) (error, data.Profiles){
+
+	following := service.Repo.GetAllFollowingByUsername(username)
+	err, private := service.Repo.GetAllPrivateProfiles(username)
+	var retList data.Profiles
+	for _, p := range private {
+		isFollowing := false
+		for _, f := range following {
+			if f.Username == p.Username {
+				isFollowing = true
+				continue
+			}
+		}
+		if isFollowing {
+			continue
+		}
+		// not following add it
+		retList = append(retList, p)
+	}
+
+	return err, retList
+}
 

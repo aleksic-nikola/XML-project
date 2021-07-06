@@ -1,7 +1,13 @@
+var currentUserFeed;
+
 $(document).ready(function() {
     //alert("CONNECTED")
     loadFeedContent();
     loadStories()
+
+    // pozovem fju gde uzimam trenutnog usera - izvadim mu liste (blacklist, graylist)
+    // varijable globalna za usera --> currentUserFeed
+    // kad to uzmem, u success --> loadStories, LoadFeedContent --> postedby na contentu i continue ako je u nekoj listi(mute/block) i tjt
 })
 
 function loadStories() {

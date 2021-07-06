@@ -241,7 +241,7 @@ function generatePostsHTML1(allPosts){
         postsHTML += '<p class="text-left"></p>'
         postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
         postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
-        
+        postsHTML += `<button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
         postsHTML += '<h5 class="text-left">Comments:</h5><hr>' + '\n';
         postsHTML += '<table class="table" id="mydatatable">'
         postsHTML += '<thead class="hideheader">'

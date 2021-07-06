@@ -126,6 +126,9 @@ func main() {
 	getRouter.HandleFunc("/getuser/{username}", ph.GetUser)
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
+	getRouter.HandleFunc("/publicprofiles", ph.GetAllPublicProfiles)
+	getRouter.HandleFunc("/allowedprofiles", ph.GetAllowedProfiles)
+	getRouter.HandleFunc("/followlessprivateprofiles", ph.GetAllNonFollowedPrivateProfiles)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 

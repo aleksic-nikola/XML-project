@@ -108,6 +108,10 @@ function modifyForMyProfile() {
 function modifyForNotMyProfile() {
     console.log('not my profile')
     $('#edit_profile_button').hide()
+    // disable liked disliked saved pills
+    $('#liked-tab').addClass('disabled')
+    $('#disliked-tab').addClass('disabled')
+    $('#saved-tab').addClass('disabled')
 }
 
 function fetchUser(username) {

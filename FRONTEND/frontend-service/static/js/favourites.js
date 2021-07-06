@@ -71,6 +71,7 @@ function findPostsByCollection(collection) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success : function(data) {
+            postListSaved = data
             showPhotos(data, "postsHereSaved")
         },
         error : function() {

@@ -9,10 +9,12 @@ var generatedFollowing = false
 var loggedIn
 var un
 var postList
+var postListSaved   // menja se u zavisnosti od selektovane kolekcije
 var this_is_me // username / role
 var this_is_my_profile // profile of currently logged in user
 var user_on_page
 var whoCanISee
+var currentOpenedPost
 
 $(document).ready(function () {
 
@@ -199,7 +201,6 @@ document.addEventListener("click", function (e) {
         const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
         const post_id = e.target.getAttribute("id")
         console.log(post_id)
-        showImageModal(post_id.split("-")[1], postList)
 
 
         if (checkIfShowingPostIsAllowed()) {
@@ -211,12 +212,17 @@ document.addEventListener("click", function (e) {
 
         //Rendering unsaved button
 
+        // todo: za sve pillove posebne liste showovati
         if (currentPill == "saved") {
             $("#removeFromCollection").show()
             var c = select_group.children(":selected").attr("id");
             $("#removeFromCollection").html("Remove " + post_id + " from " + c)
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postListSaved)
         } else {
             $("#removeFromCollection").hide()
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postList)
         }
     }
 })

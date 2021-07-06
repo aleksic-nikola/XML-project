@@ -237,9 +237,22 @@ function generatePostsHTML1(allPosts){
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';
         postsHTML += '<p class="text-left"></p>'
-        postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
-        postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
-        postsHTML += `<button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+
+        postsHTML += `<div class="row">
+            <div class="col">
+                <button class="btn btn-success" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>
+            </div>
+            <div class="col">
+                <button class="btn btn-danger" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>
+            </div>
+            <div class="col">
+                <button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>
+            </div>
+        </div>`
+
+        //postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+        //postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+        //postsHTML += `<button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
         postsHTML += '<h5 class="text-left">Comments:</h5><hr>' + '\n';
         postsHTML += '<table class="table" id="mydatatable">'
         postsHTML += '<thead class="hideheader">'

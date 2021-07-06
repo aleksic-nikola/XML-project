@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/navbar.css">
     <link rel="stylesheet" type="text/css" href="css/profile.css">
-
+    <link rel="stylesheet" type="text/css" href="css/savePost.css">
 
     <title></title>
 </head>
@@ -215,11 +215,23 @@
                                             <div id="like_button_div">
                                                 <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
                                             </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <button id="like" class="btn btn-success" onclick="likePost(this.id)">&nbsp&nbspLike&nbsp&nbsp</button>
+                                                </div>
+                                                <div class="col">
+                                                    <button id="dislike" class="btn btn-danger" onclick="dislikePost(this.id)">&nbsp&nbspDislike&nbsp&nbsp</button>
+                                                </div>
+                                                <div class="col">
+                                                    <button id="save" class="btn btn-warning" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbspSave&nbsp&nbsp</button>
+                                                </div>
+                                                <div class="col">
+                                                    <button id="removeFromCollection" class="btn btn-primary" onclick="removePostFromCollection()"></button>
+                                                </div>
+                                            </div>
                                             </p>
                                             <hr>
                                             <!--DUGME ZA BRISANJE IZ SAVED-->
-                                            <button id="removeFromCollection" class="btn btn-primary" onclick="removePostFromCollection()"></button>
-
 
 
                                             <h5 class="text-left">Comments:</h5>
@@ -626,6 +638,42 @@
             </div>
         </div>
 
+        <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="saveModalLabel">Save photo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <table class="table text-center">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">
+                                            Your collections
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableInsert" class="text-center">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="text" id="collection_field" class="form-control" placeholder="Collection name">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-warning" id="save" onclick="savePost()" data-toggle="modal" data-target="#saveModal-${allPosts[i].ID}">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 
@@ -664,6 +712,8 @@
     <script src="js/saveprof.js"></script>
     <script src="js/followReqs.js"></script>
     <script src="js/favourites.js"></script>
+    <script src="js/likecomment.js"></script>
+
 </body>
 
 </html>

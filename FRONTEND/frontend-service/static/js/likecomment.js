@@ -5,6 +5,11 @@ function likePost(id) {
 
 	var split = id.split("-")[1]
 	console.log("I like post " + split)
+
+	if (window.location.href.includes("profile")) {
+		// na profilu smo
+		split = currentOpenedPost.split("-")[1]
+	}
     
 	$.ajax({
 	    type: 'POST',
@@ -33,6 +38,11 @@ function dislikePost(id) {
 
 	var split = id.split("-")[1]
 	console.log("I like post " + split)
+
+	if (window.location.href.includes("profile")) {
+		// na profilu smo
+		split = currentOpenedPost.split("-")[1]
+	}
     
 	$.ajax({
 	    type: 'POST',

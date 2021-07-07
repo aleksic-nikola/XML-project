@@ -223,16 +223,21 @@
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <!-- <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5> -->
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body" id="image_modal_body">
                                 <!-- CONTENT OF MODAL WHEN CLICKING ON PICTURE -->
-                                <div class="one-feed text-center">
+                                <div class="one-feed text-center"> 
+                                    <div>
+                                        <img src="img/avatar.png" class="user_img">
+                                        <a class="postedby" id="user_posted_by">User</a>
+                                        <button class="btn btn-secondary" style="float: right;" id="report" onclick="setGlobalPostToReport(this.id)" data-toggle="modal" data-target="#reportModal">&nbsp&nbsp&nbsp&nbsp Report &nbsp&nbsp&nbsp&nbsp</button>
+                                    </div>
+                                    <br>
 
-                                    <div class="card">
+                                    <div class="card" style="width: 100%;">
                                         <!-- IMAGE OF POST-->
                                         <div id="which_image" style="width: auto; height: auto !important;">
                                             <img class="card-img-center modal-img"  src="img/test2.png"
@@ -846,6 +851,29 @@
             </div>
         </div>
 
+        <!--MODAL ZA SENSITIVE CONTENT REPORT-->
+
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="reportModalLabel">Sensitive content report</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">      
+                        <div class="form-group">
+                            <input type="text" id="note" class="form-control" placeholder="Reason">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" id="save" onclick="createSensitiveReport()">&nbsp&nbsp&nbsp&nbsp Send report &nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -876,6 +904,8 @@
     <script src="js/likecomment.js"></script>
     <script src="js/likeddislikedposts.js"></script>
     <script src="js/blockmute.js"></script>
+    <script src="js/sensitivereport.js"></script>
+
 </body>
 
 </html>

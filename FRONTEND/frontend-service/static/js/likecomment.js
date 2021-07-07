@@ -9,6 +9,8 @@ function likePost(id) {
 	if (window.location.href.includes("profile")) {
 		// na profilu smo
 		split = currentOpenedPost.split("-")[1]
+	} else if (window.location.href.includes("search")) {
+		split = currentOpenedPost.split("-")[1]
 	}
     
 	$.ajax({
@@ -41,6 +43,8 @@ function dislikePost(id) {
 
 	if (window.location.href.includes("profile")) {
 		// na profilu smo
+		split = currentOpenedPost.split("-")[1]
+	} else if (window.location.href.includes("search")) {
 		split = currentOpenedPost.split("-")[1]
 	}
     
@@ -98,6 +102,8 @@ function setGlobalPostToSave(id) {
 
 	if (window.location.href.includes("profile")) {
 		// na profilu smo
+		postForSave = currentOpenedPost.split("-")[1]
+	} else if (window.location.href.includes("search")) {
 		postForSave = currentOpenedPost.split("-")[1]
 	}
 

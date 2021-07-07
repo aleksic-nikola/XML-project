@@ -11,12 +11,14 @@ const profile_list = $('#profile_list')
 var location_counter = 0
 var tag_counter = 0
 var authenticated = false
-
+var currentUserSearch
 
 
 $(document).ready(function() {
 
 	who_am_I()
+
+
 }) 
 
 /*
@@ -125,7 +127,9 @@ function who_am_I() {
 		success: function (data) {
 		    console.log('using authenticated search..')
 		    authenticated = true
-            authenticatedSearch()
+            //authenticatedSearch()
+			getCurrentUserInformationSearch()
+			$("#myProfileHref").attr('href', "profile.html?" + data.username);
             
 		},
 		error: function () {
@@ -211,7 +215,10 @@ function getAllPublicProfiles() {
 			})
 			//console.log('Size of final_profiles is ' + final_posts.length)
 			//public_profiles.push.apply(public_profiles, data)
-			filterBlockedAndMutedUsers(final_profiles, false)
+			if(authenticated) {
+				filterBlockedAndMutedUsers(final_profiles, false)
+			}
+
             getAllPublicPosts(final_profiles)
             final_profiles_with_private.push.apply(final_profiles_with_private, final_profiles)
 
@@ -249,7 +256,12 @@ function getPrivateNonFollowed() {
 				}		  
 			})
             //fillColumnsProfiles(final_profiles_with_private)
-			filterBlockedAndMutedUsers(final_profiles_with_private, true)
+			if(authenticated) {
+				filterBlockedAndMutedUsers(final_profiles_with_private, true)
+			}
+
+			searchquery()
+			
 		},
 		error: function () {
 		    console.log('using non authenticated search..')
@@ -278,6 +290,11 @@ function getAllPublicPosts(profiles) {
 			    console.log(data)
 			    fillColumnsLocation(data, true)
 				fillColumnsTags(data, false)
+
+				if(!authenticated) {
+					searchquery()
+				}
+
 			},
 			error: function () {
 			    alert('error')
@@ -323,7 +340,24 @@ function fillColumnsLocation(pics, sentByAjax) {
 		column = "#column-right-" + location_counter % 4
 		location_counter = location_counter + 1
 		coldiv = $(column)
-		coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
+
+		if (pics[i].medias[0].path.split(".")[1] != 'jpg' && pics[i].medias[0].path.split(".")[1] != 'png') {
+			//coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
+
+			coldiv.append(`
+			
+			<video width="100%" height="100%" id="post-${pics[i].ID}" class="card-img-top gallery-item">
+			<source src="${pics[i].medias[0].path}"  type="video/mp4">                       
+			Your browser does not support the video tag.
+			</video>
+			
+			
+			`)
+		} else {
+			coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
+		}
+
+
 		//coldiv.append(testList[i])
 	}
 
@@ -343,8 +377,24 @@ function fillColumnsTags(pics, sentByAjax) {
 		column = "#column-left-" + tag_counter % 4
 		tag_counter = tag_counter + 1
 		coldiv = $(column)
-		coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
+		//coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
 		//coldiv.append(testList[i])
+
+		if (pics[i].medias[0].path.split(".")[1] != 'jpg' && pics[i].medias[0].path.split(".")[1] != 'png') {
+			//coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
+
+			coldiv.append(`
+			
+			<video width="100%" height="100%" id="post-${pics[i].ID}" class="card-img-top gallery-item">
+			<source src="${pics[i].medias[0].path}"  type="video/mp4">                       
+			Your browser does not support the video tag.
+			</video>
+			
+			
+			`)
+		} else {
+			coldiv.append(`<img src="${pics[i].medias[0].path}" id="post-${pics[i].ID}">`)
+		}
 
 		console.log()
 	}
@@ -576,19 +626,35 @@ function redirectToUserProf(idprof) {
 
 function filterBlockedAndMutedUsers(mylist, filterForUsers) {
 	
+	console.log(final_profiles_with_private)
+
 	var filteredlist = [];
 	var filteredblockedlist = [];
+	//var allowedlistgray = [];
+	var allowedlistblack = [];
+	
+	mylist.forEach(function(a) {
+
+		if(a.blacklist == undefined) {
+			allowedlistblack.push(a)
+			return
+		}
+
+		if(a.blacklist.filter(e => e.username == currentUserSearch.username).length == 0) {
+			allowedlistblack.push(a)
+		}
+	})
 
 	// isfiltriraj blacklistovane korisnike
-	mylist.forEach(function(d) {
-		if(currentUserFeed.blacklist.filter(e => e.username == d.username).length == 0) {
+	allowedlistblack.forEach(function(d) {
+		if(currentUserSearch.blacklist.filter(e => e.username == d.username).length == 0) {
 			filteredblockedlist.push(d)
 		}		
 	})
 
 	// isfiltriraj u graylistovane
 	filteredblockedlist.forEach(function(b) {
-		if(currentUserFeed.graylist.filter(e => e.username == b.username).length == 0) {
+		if(currentUserSearch.graylist.filter(e => e.username == b.username).length == 0) {
 			filteredlist.push(b)
 		}	
 	})
@@ -604,4 +670,70 @@ function filterBlockedAndMutedUsers(mylist, filterForUsers) {
 
 	final_profiles = filteredlist
 
+}
+
+function checkIfUserBlockedMeAndRestrictSearch() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getuserwhoblockedme',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+            //console.log(data)
+            checkIfImInHisBlacklistSearch(data)
+        },
+        error: function () {
+            alert("Error in getUsersWhoBlockedMeAndRestricTheirProfile")
+        }
+    })
+
+}
+
+var listwhoblockedMe = []
+function checkIfImInHisBlacklistSearch(data) {
+    data.listwhoblockedme.forEach(function(p) {
+		listwhoblockedMe.append(p.username)
+    })
+}
+
+function getCurrentUserInformationSearch() {
+    // getdata from profile
+    $.ajax({
+        type:'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getdata',
+        contentType : 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+
+            currentUserSearch = data
+            //loadFeedContent();
+            //loadStories();
+			authenticatedSearch();
+
+        },
+        error : function(xhr, status, data) {
+             alert('Error in getCurrentUserInformationSearch')
+        }
+    })
+}
+
+function searchquery() {
+
+	var query = localStorage.getItem("query")
+
+	console.log(query)
+	if(query != "undefined") {
+		search_field.val(query)
+		localStorage.setItem("query", undefined)
+		search_field.keyup()
+	}
 }

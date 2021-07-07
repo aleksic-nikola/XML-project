@@ -19,7 +19,7 @@
     <!-- NAVBAR START-->
     <nav class="navbar sticky-top navbar-expand-md navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand brand" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
+            <a class="navbar-brand brand" id="navbarid" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
 
             <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
 
@@ -37,9 +37,7 @@
                             <span id="numOfFollowReqs"></span>
                         </a>
                     </li>
-                    <li class="nav-item" id="msgnav">
-                        <a class="nav-link" href="#"> Messages </a>
-                    </li>
+
 
                     <li class="nav-item" id="profnav">
                         <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
@@ -65,6 +63,7 @@
         <div class="column-left pl-2" style="background-color:#aaa;">
             <br>
             <h6 class="text-center">Posts by tags</h6>
+            <hr>
             <div class="row2">
                 <div class="column2" id="column-left-0">
                   
@@ -87,7 +86,7 @@
         <div class="column-mid" style="background-color:#bbb;">
           <br>
           <h6 class="text-center">Profiles</h6>
-
+          <hr>
           <div class="card" style="width: 100%">
             <ul class="list-group list-group-flush" id="profile_list">
               
@@ -99,6 +98,7 @@
         <div class="column-right" id="column-right" style="background-color:#ccc;">
             <br>
             <h6 class="text-center">Posts by location</h6>
+            <hr>
             <div class="row2">
                 <div class="column2" id="column-right-0">
              

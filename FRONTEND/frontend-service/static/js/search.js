@@ -745,9 +745,10 @@ function showActualNavs() {
 	} else {
 		$("#feednav").hide()
 		$("#reqsnav").hide()
-		$("#msgnav").hide()
 		$("#profnav").hide()
 		$("#logoutnav").hide()
+
+		$("#navbarid").attr('href', '#');
 	}
 
 }

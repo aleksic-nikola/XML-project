@@ -289,6 +289,7 @@ func (p *PostHandler) GetLikedPostsByUser(rw http.ResponseWriter, r *http.Reques
 	defer resp.Body.Close()
 	fmt.Println(resp.Status)
 	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
 	if err != nil {
 		http.Error(
 			rw,
@@ -476,55 +477,6 @@ func (handler *PostHandler) CreateDirectoryForUser(rw http.ResponseWriter, r *ht
 
 }
 
-func (handler *PostHandler) GetFavouritePosts(rw http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	collection := params["collection"]
-	fmt.Println(collection)
-
-	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
-	if err != nil {
-
-		http.Error(
-			rw,
-			fmt.Sprintf("Error deserializing JSON %s", err),
-			http.StatusInternalServerError,
-		)
-		return
-	}
-
-	fmt.Println(userRoleDto)
-
-	var resp, err1 = GetFavouritePostsIds(r.Header.Get("Authorization"), collection)
-
-	if err1 != nil{
-		fmt.Println("Respond error!!!")
-		http.Error(rw, "Respond error getPOSTIDS!!!", http.StatusInternalServerError)
-		return
-	}
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(string(b))
-
-	var postIds dtos.PostIdsDto
-
-	err = json.Unmarshal(b, &postIds)
-	if err !=nil{
-		fmt.Println("Error at unmarsal allFollowing")
-		return
-	}
-	fmt.Println("DOBIO FROMJSON: ")
-	fmt.Println(postIds)
-
-	posts := handler.Service.GetPostsByIds(postIds)
-
-	err = posts.ToJSON(rw)
-
-	rw.WriteHeader(http.StatusOK)
-}
-
 func (handler *PostHandler) LikePost(rw http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
@@ -650,6 +602,55 @@ func (handler *PostHandler) Comment(rw http.ResponseWriter, r *http.Request) {
 
 	rw.WriteHeader(http.StatusOK)
 
+}
+
+func (handler *PostHandler) GetFavouritePosts(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	collection := params["collection"]
+	fmt.Println(collection)
+
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	fmt.Println(userRoleDto)
+
+	var resp, err1 = GetFavouritePostsIds(r.Header.Get("Authorization"), collection)
+
+	if err1 != nil{
+		fmt.Println("Respond error!!!")
+		http.Error(rw, "Respond error getPOSTIDS!!!", http.StatusInternalServerError)
+		return
+	}
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(string(b))
+
+	var postIds dtos.PostIdsDto
+
+	err = json.Unmarshal(b, &postIds)
+	if err !=nil{
+		fmt.Println("Error at unmarsal allFollowing")
+		return
+	}
+	fmt.Println("DOBIO FROMJSON: ")
+	fmt.Println(postIds)
+
+	posts := handler.Service.GetPostsByIds(postIds)
+
+	err = posts.ToJSON(rw)
+
+	rw.WriteHeader(http.StatusOK)
 }
 
 func GetFavouritePostsIds(tokenString string, collection string) (*http.Response, error) {

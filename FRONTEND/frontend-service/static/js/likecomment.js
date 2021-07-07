@@ -1,9 +1,15 @@
 var postForSave
+const tableCollection = $("#tableInsert")
 
 function likePost(id) {
 
 	var split = id.split("-")[1]
 	console.log("I like post " + split)
+
+	if (window.location.href.includes("profile")) {
+		// na profilu smo
+		split = currentOpenedPost.split("-")[1]
+	}
     
 	$.ajax({
 	    type: 'POST',
@@ -32,6 +38,11 @@ function dislikePost(id) {
 
 	var split = id.split("-")[1]
 	console.log("I like post " + split)
+
+	if (window.location.href.includes("profile")) {
+		// na profilu smo
+		split = currentOpenedPost.split("-")[1]
+	}
     
 	$.ajax({
 	    type: 'POST',
@@ -84,6 +95,30 @@ function postComment(id) {
 
 function setGlobalPostToSave(id) {
 	postForSave = id
+
+	if (window.location.href.includes("profile")) {
+		// na profilu smo
+		postForSave = currentOpenedPost.split("-")[1]
+	}
+
+	$.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getallcollections',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+			if (data.name != null) {
+            	fillTable(data)
+			}
+        },
+        error : function() {
+            console.log("Erorr at ajax call!")
+        }
+    })
 }
 
 
@@ -114,6 +149,46 @@ function savePost() {
 			alert('cant save post to favourites')
 	    }
 	})
+}
 
+function savePostOnProfile() {
+
+	collectionName = $("#collection_field_profile").val()
+
+	var obj = {
+        collection_name: collectionName,
+        post_id : parseInt(postForSave)
+    }
+
+	console.log(obj)
+	
+	$.ajax({
+	    type: 'POST',
+	    crossDomain: true,
+	    url: PROFILE_SERVICE_URL + '/addposttofavourites',
+	    contentType: 'application/json',
+		data: JSON.stringify(obj),
+	    beforeSend: function (xhr) {
+			xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+	    },
+	    success: function () {
+			alert('successfully saved post to favourites')
+	    },
+	    error: function () {
+			alert('cant save post to favourites')
+	    }
+	})
+}
+
+function fillTable(collections) {
+	
+	tableCollection.html("")
+    var insertHtml = ""
+
+    collections.name.forEach(function(col) {
+        insertHtml += `<tr><td class="collectionTable">${col}</td></tr>`
+    })
+
+    tableCollection.html(insertHtml)
 }
     

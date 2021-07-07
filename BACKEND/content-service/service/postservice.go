@@ -35,6 +35,7 @@ func (service *PostService) GetAllPostsForUser(username string) (data.Posts) {
 
 func (service *PostService) GetLikedPostsByUser(username string) data.Posts {
 	posts := service.Repo.GetAllPosts()
+	fmt.Println(username)
 	likedPosts := data.Posts{}
 	for _,post := range posts {
 		for _,likedby := range post.Likes {

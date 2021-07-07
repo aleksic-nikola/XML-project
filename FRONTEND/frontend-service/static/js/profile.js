@@ -9,10 +9,14 @@ var generatedFollowing = false
 var loggedIn
 var un
 var postList
+var postListSaved    // menja se u zavisnosti od selektovane kolekcije
+var postListLiked    // lista za prikaz lajkovanih postova
+var postListDisliked // lista za prikaz dislajkovanih postova
 var this_is_me // username / role
 var this_is_my_profile // profile of currently logged in user
 var user_on_page
 var whoCanISee
+var currentOpenedPost
 
 $(document).ready(function () {
 
@@ -218,8 +222,9 @@ document.addEventListener("click", function (e) {
         document.querySelector(".modal-img").src = src;
         const myModal = new bootstrap.Modal(document.getElementById('gallery-modal'));
         const post_id = e.target.getAttribute("id")
+        console.log(post_id)
         //console.log(post_id)
-        showImageModal(post_id.split("-")[1], postList)
+        //showImageModal(post_id.split("-")[1], postList)
 
 
         if (checkIfShowingPostIsAllowed()) {
@@ -227,6 +232,29 @@ document.addEventListener("click", function (e) {
         }
         else {
             alert("You must be logged in to view photo")
+        }
+
+        //Rendering unsaved button
+
+        // todo: za sve pillove posebne liste showovati
+        if (currentPill == "saved") {
+            $("#removeFromCollection").show()
+            var c = select_group.children(":selected").attr("id");
+            $("#removeFromCollection").html("Remove " + post_id + " from " + c)
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postListSaved)
+        } else if (currentPill == "posts") {
+            $("#removeFromCollection").hide()
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postList)
+        } else if (currentPill == "liked") {
+            $("#removeFromCollection").hide()
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postListLiked)
+        } else if (currentPill == "disliked") {
+            $("#removeFromCollection").hide()
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postListDisliked)
         }
     }
 })
@@ -401,19 +429,20 @@ function checkUserPublicity() {
     //console.log(user)
     //console.log(this_is_me)
     if (user.username == this_is_me.username) {
-        showPhotos(postList)
+        showPhotos(postList, "postsHere")
         return
     }
 
     if (user.privacy_setting.is_public == true) {
-        //console.log('profile is public')
-        showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+        console.log('profile is public')
+        showPhotos(postList, "postsHere")    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+
     } else {
         //console.log("NA DUGMETU TRENUTNO: ")
         //console.log($("#follow_button").text())
         if ($("#follow_button").text() === "Following") {   //znaci da ga vec prati
-            //console.log("USPEO DA UDJEM U IF")
-            showPhotos(postList)    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
+            console.log("USPEO DA UDJEM U IF")
+            showPhotos(postList, "postsHere")    //AJAX POZIV ZA DOBIJANJE POSTOVA OD USERA
             return
         }
         else {
@@ -634,3 +663,6 @@ function checkIfImInHisBlacklist(data) {
     })
 }
 
+//Dropdown sa nazivima kolekcija
+//Klik na tab, poziva se da se vrati lista naziva kolekcija(profile service), popuniti dropdown (1. vrednost prazna)
+//Kad se odabere stavka iz dd, 

@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/navbar.css">
     <link rel="stylesheet" type="text/css" href="css/profile.css">
-
+    <link rel="stylesheet" type="text/css" href="css/savePost.css">
 
     <title></title>
 </head>
@@ -121,21 +121,21 @@
 
                     <ul class="nav nav-pills nav-justified align-center" id="myTab" role="tablist">
                         <li class="nav-item">
-                          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Posts</a>
+                          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#posts" onclick="setPostsActive()" role="tab" aria-controls="posts" aria-selected="true">Posts</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="liked-tab" data-toggle="tab" href="#liked" role="tab" aria-controls="liked" aria-selected="false">Liked</a>
+                          <a class="nav-link" id="liked-tab" data-toggle="tab" href="#liked" onclick="setLikedPostsActive()" role="tab" aria-controls="liked" aria-selected="false">Liked</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="disliked-tab" data-toggle="tab" href="#disliked" role="tab" aria-controls="disliked" aria-selected="false">Disliked</a>
+                          <a class="nav-link" id="disliked-tab" data-toggle="tab" href="#disliked" onclick="setDislikedPostsActive()" role="tab" aria-controls="disliked" aria-selected="false">Disliked</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="saved-tab" data-toggle="tab" href="#saved" role="tab" aria-controls="saved" aria-selected="false">Saved</a>
-                          </li>
+                            <a class="nav-link" id="saved-tab" data-toggle="tab" onclick="getAllCollections()" href="#saved" role="tab" aria-controls="saved" aria-selected="false">Saved</a>
+                        </li>
                       </ul>
                       <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-
+                            <br>
                             <section class="gallery-block cards-gallery min-vh-100">
                                 <div class="container">
             
@@ -147,9 +147,63 @@
                                 </div>
                             </section>
                         </div>
-                        <div class="tab-pane fade" id="liked" role="tabpanel" aria-labelledby="liked-tab">liked</div>
-                        <div class="tab-pane fade" id="disliked" role="tabpanel" aria-labelledby="disliked-tab">disliked</div>
-                        <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">saved</div>
+
+                        <div class="tab-pane fade" id="liked" role="tabpanel" aria-labelledby="liked-tab">
+                            <br>
+                            <h4>Posts you have liked</h4>
+                            <br>
+                            <section class="gallery-block cards-gallery min-vh-100">
+                                <div class="container">
+            
+                                    <div id="postsHereLiked" class="row">
+                                        <!-- SLIKA 1 -->
+            
+                                    </div>
+            
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="disliked" role="tabpanel" aria-labelledby="disliked-tab">
+                            <br>
+                            <h4>Posts you have disliked</h4>
+                            <br>
+                            <section class="gallery-block cards-gallery min-vh-100">
+                                <div class="container">
+            
+                                    <div id="postsHereDisliked" class="row">
+                                        <!-- SLIKA 1 -->
+            
+                                    </div>
+            
+                                </div>
+                            </section>
+                        </div>
+                        <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">
+                            <br>
+                            <h4>Collections</h4>
+                            <br>
+                            <div>
+                                <select id="select_group">
+
+                                </select>
+                            </div>
+                            <div>
+                                <button class="btn btn-primary" id="deleteCollection" onclick="deleteCollection()">Delete collection</button>
+                            </div>
+                            <section class="gallery-block cards-gallery min-vh-100">
+                                <div class="container">
+            
+                                    <div id="postsHereSaved" class="row">
+                                        <!-- SLIKA 1 -->
+            
+                                    </div>
+            
+                                </div>
+                            </section>
+                            
+
+                        </div>
                       </div>
 
 
@@ -195,8 +249,23 @@
                                             <div id="like_button_div">
                                                 <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
                                             </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <button id="like" class="btn btn-success" onclick="likePost(this.id)">&nbsp&nbspLike&nbsp&nbsp</button>
+                                                </div>
+                                                <div class="col">
+                                                    <button id="dislike" class="btn btn-danger" onclick="dislikePost(this.id)">&nbsp&nbspDislike&nbsp&nbsp</button>
+                                                </div>
+                                                <div class="col">
+                                                    <button id="save" class="btn btn-warning" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModalProfile">&nbsp&nbspSave&nbsp&nbsp</button>
+                                                </div>
+                                                <div class="col">
+                                                    <button id="removeFromCollection" class="btn btn-primary" onclick="removePostFromCollection()"></button>
+                                                </div>
+                                            </div>
                                             </p>
                                             <hr>
+                                            <!--DUGME ZA BRISANJE IZ SAVED-->
 
 
                                             <h5 class="text-left">Comments:</h5>
@@ -696,55 +765,86 @@
 
         <!-- BLOCKED USER MODAL START-->
 
-                <div class="container" id="blockedUserModalDiv">
-                    <div class="row">
-                        <div class="col-xs-12">
-        
-                            <div class="modal fade" data-keyboard="false" data-backdrop="static" id="blockedUserModal"
-                                tabindex="-1">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-        
-                                        <div class="modal-header">
+        <div class="container" id="blockedUserModalDiv">
+            <div class="row">
+                <div class="col-xs-12">
 
-                                        </div>
-        
-                                        <div class="modal-body">
-        
-        
-                                            <div id="editprofbody">
-                                                <div class="form-group ">
-                                                    <h5 class="text-center">You can't get blocked users profile, you can unblock the user in your profile settings</h5>
-                                                </div>
-        
-                                            </div>
-        
-                                        </div>
-        
-                                        <div class="modal-footer">
-                                            <button class="btn btn-dark modalbtns" id="closeBtn"
-                                                onclick="redirectOnPrevPage()">Back</button>
-        
-                                        </div>
-        
-                                    </div>
+                    <div class="modal fade" data-keyboard="false" data-backdrop="static" id="blockedUserModal"
+                        tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+
                                 </div>
+
+                                <div class="modal-body">
+
+
+                                    <div id="editprofbody">
+                                        <div class="form-group ">
+                                            <h5 class="text-center">You can't get blocked users profile, you can unblock the user in your profile settings</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-dark modalbtns" id="closeBtn"
+                                        onclick="redirectOnPrevPage()">Back</button>
+
+                                </div>
+
                             </div>
-        
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOCKED USER MODAL END -->
+
+
+        <!--SAVE POST TO COLLECTION MODAL-->
+
+
+        <div class="modal fade" id="saveModalProfile" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="saveModalLabel">Save photo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <table class="table text-center">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">
+                                            Your collections
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableInsert" class="text-center">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="text" id="collection_field_profile" class="form-control" placeholder="Collection name">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-warning" id="save" onclick="savePostOnProfile()">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
                         </div>
                     </div>
                 </div>
-        
-                <!-- BLOCKED USER MODAL END -->
-
-
-    </div>
-
-
-
-
-
-
+            </div>
+        </div>
 
     </div>
 
@@ -772,6 +872,9 @@
     <script src="js/login.js"></script>
     <script src="js/saveprof.js"></script>
     <script src="js/followReqs.js"></script>
+    <script src="js/favourites.js"></script>
+    <script src="js/likecomment.js"></script>
+    <script src="js/likeddislikedposts.js"></script>
     <script src="js/blockmute.js"></script>
 </body>
 

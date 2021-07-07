@@ -31,6 +31,9 @@ func (repo *ProfileRepository) GetProfileByUsername(username string) (*data.Prof
 		Preload("Followers").Preload("CloseFriends").Preload("Favourites.SavedPosts").Where("username = ?", username).First(&profile)
 
 	fmt.Println(profile)
+	fmt.Println("************************************************")
+	fmt.Println(username)
+
 
 	if result.RowsAffected != 1 {
 		error := fmt.Errorf("We didnt find any object with that username!");
@@ -233,6 +236,12 @@ func (repo *ProfileRepository) GetAllPrivateProfiles(username string) (error, da
 	return nil, profiles
 }
 
+func (repo *ProfileRepository) ClearFavourites(profile *data.Profile) error {
+	repo.Database.Model(&profile).Association("Favourites").Clear()
+
+	return nil
+}
+
 func (repo *ProfileRepository) GetAllProfiles() (error, data.Profiles) {
 
 	var profiles data.Profiles
@@ -245,4 +254,3 @@ func (repo *ProfileRepository) GetAllProfiles() (error, data.Profiles) {
 	}
 	return nil, profiles
 }
-

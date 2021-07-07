@@ -1,7 +1,12 @@
-function showPhotos(postList) {
+function showPhotos(postList, divName) {
 	console.log('I am printing the images')
 	var posts = "";
-	console.log('post number is ' + postList.length)
+	//console.log('post number is ' + postList.length)
+	if (postList == undefined) {
+		$("#" + divName).html("")
+		return
+	}
+
 	postList.forEach(function (post) {
 		//console.log(post)
 		/*posts += `<div class="col-md-6 col-lg-4">
@@ -48,7 +53,9 @@ function showPhotos(postList) {
 
 	})
 	//console.log(posts)
-	$("#postsHere").html(posts)
+	//$("#postsHere").html(posts)
+	$("#" + divName).html(posts)
+
 }
 
 

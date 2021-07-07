@@ -159,7 +159,7 @@ function getAllAllowedProfiles() {
 		},
 		success: function (data) {
 		    //console.log(data)
-			if (data.length > 0) {
+			if (data != null) {
                 console.log('getAllAllowedProfiles size is > 0')
                 data.forEach(function(d) {
                     if (final_profiles.filter(e => e.username == d.username).length == 0) {

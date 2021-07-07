@@ -1,24 +1,21 @@
 
-table {
+.save_table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
 
-tbody {
+.save_tbody {
     width: 100%;
 }
 
-td, th {
+.save_td_th {
     border: 1px solid #dddddd;
     padding: 8px;
+    text-align: center;
+    width: 1000px;
 }
 
 tr:nth-child(even) {
     background-color: #dddddd;
-}
-
-.collectionTable {
-    text-align: center;
-    width: 1000px;
 }

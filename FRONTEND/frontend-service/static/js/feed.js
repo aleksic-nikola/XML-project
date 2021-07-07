@@ -1,7 +1,15 @@
+var currentUserFeed;
+
 $(document).ready(function() {
     //alert("CONNECTED")
-    loadFeedContent();
-    loadStories()
+    //loadFeedContent();
+    //loadStories()
+
+    getCurrentUserInformation()  // loadFeedContent i loadStories su prebaceni u success-u ove fje
+
+    // pozovem fju gde uzimam trenutnog usera - izvadim mu liste (blacklist, graylist)
+    // varijable globalna za usera --> currentUserFeed
+    // kad to uzmem, u success --> loadStories, LoadFeedContent --> postedby na contentu i continue ako je u nekoj listi(mute/block) i tjt
 })
 
 function loadStories() {
@@ -28,6 +36,10 @@ function loadStories() {
     })
 }
 
+
+
+var userStoriesMap ={} 
+
 function fillStories(data) {
 
     var stories_here = $('#stories_here_plz')
@@ -35,16 +47,39 @@ function fillStories(data) {
     var story_url
     console.log("PODACI IZ STORija: ")
     console.log(data)
+
+    //var userStoriesMap ={} // key = username, value = [story1, story2...]
+
     data.forEach(function(s) {
 
-        story_url = '../' + s.media.path
+        //story_url = '../' + s.media.path
+        story_url = s.media.path
         postedBy = s.postedby
         console.log("SVE IZ S:")
         console.log(s)
-        
 
-        html+= `<img class="card-img-center story-css" onClick="showStory('${story_url}', '${postedBy}')" height="80px" src="${story_url}" alt="Card image cap"></img>`
+        if(!(postedBy in userStoriesMap)){
+            userStoriesMap[postedBy] = [];
+        }
+        userStoriesMap[postedBy].push(s)
+        
+        //html+= `<img class="card-img-center story-css" onClick="showStory('${story_url}', '${postedBy}')" height="80px" src="${story_url}" alt="Card image cap"></img>`
     })
+
+    console.log("MAPAAA:")
+    console.log(userStoriesMap)
+
+    for ( [postedBy, s] of Object.entries(userStoriesMap)) {
+        story_url = s[0].media.path
+        html+= `<img class="card-img-center story-css" onClick="showStoryModal('${postedBy}')" height="80px" src="${story_url}" alt="Card image cap"></img>`
+
+
+
+    }
+    console.log("**********************************")
+
+
+
     stories_here.html(html)
 }
 
@@ -190,6 +225,11 @@ function generatePostsHTML1(allPosts){
 
     for(var i=0; i<allPosts.length;i++){
 
+        var dontshow = checkifPostedByIsInBlackListOrGrayList(allPosts[i].postedby)
+
+        if(dontshow == true) {
+            continue;
+        }
 
         console.log(img_url)
         //var img_url1 = '../../../BACKEND/content-service/temp/id-3/3d-render-banner-with-network-communications-low-poly-design.png'
@@ -255,6 +295,8 @@ function generatePostsHTML1(allPosts){
 
         postsHTML += `</div>`
 
+        if(allPosts[i].medias.length > 1) {
+
         postsHTML += `
                             <a class="carousel-control-prev" href="#demo-${i}" data-slide="prev">
                                 <span class="carousel-control-prev-icon"  style="background-color: black; border: 1px white;"></span>
@@ -264,13 +306,15 @@ function generatePostsHTML1(allPosts){
                             </a>`
 
         postsHTML += `</div>`
+        }
+        
             // CAROUSEL END --> card-body mi treba isti
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';
         postsHTML += '<p class="text-left"></p>'
         postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
         postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
-        
+        postsHTML += `<button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
         postsHTML += '<h5 class="text-left">Comments:</h5><hr>' + '\n';
         postsHTML += '<table class="table" id="mydatatable">'
         postsHTML += '<thead class="hideheader">'
@@ -307,3 +351,155 @@ function generatePostsHTML1(allPosts){
     $("#insertFeedPosts").after(postsHTML)
 }
 
+function getCurrentUserInformation() {
+    // getdata from profile
+    $.ajax({
+        type:'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getdata',
+        contentType : 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+
+            currentUserFeed = data
+            loadFeedContent();
+            loadStories();
+
+        },
+        error : function(xhr, status, data) {
+             alert('Error in getCurrentUserInformation')
+        }
+    })
+}
+
+function checkifPostedByIsInBlackListOrGrayList(username) {
+    var myflag = false
+    currentUserFeed.blacklist.forEach(function(b) {
+        if(b.username == username) {
+            myflag = true
+            return
+        }
+    })
+
+    currentUserFeed.graylist.forEach(function(g) {
+        if(g.username == username) {
+            myflag = true
+            return
+        }
+    })
+
+    return myflag
+}
+
+function showStoryModal(postedBy) {
+	//console.log('showing image ' + id)
+	var post = userStoriesMap[postedBy]
+    console.log("DOBIO NA POCETKU:")
+    console.log(post)
+	// postList.forEach(function(p) {
+	// 	console.log('post loop ' + p.ID)
+	// 	console.log(id==p.ID)
+	// 	console.log(id)
+	// 	console.log(p.ID)
+	// 	if (p.ID == id) {
+	// 		post = p
+	// 		console.log('post is ' + post)
+	// 	}
+	// })
+
+	//var media = post.medias[0].path
+
+	console.log("==============> length of post (num of content): " + post.length)
+
+    
+    //                              >0 NAMERNO------------       TEST
+    if(post.length > 1) {
+        // MORE VIDEOS or PICTURES (albums)
+
+        console.log("There is more then 1 PICTURE or VIDEO")
+
+        // carousel
+        var postsHTML = '<div id="insertStory">'
+
+
+            postsHTML +=  `<div id="demo-${post[0].postedby}" class="carousel slide" data-ride="carousel">`
+            postsHTML +=  `<ul class="carousel-indicators">`
+    
+            for(var j=0; j < post.length ; j++) {
+
+                if(j==0) {
+                    postsHTML += `<li data-target="#demo-'${post[0].postedby}'" data-slide-to="${j}" class="active"></li>`
+                } else {
+                    postsHTML += `<li data-target="#demo-'${post[0].postedby}'" data-slide-to="${j}" ></li>`    
+                }
+    
+            }
+            
+    
+            postsHTML +=  `</ul>`
+    
+            // SLIDESHOW:
+    
+            postsHTML += `<div class="carousel-inner" style=" width:100%; height:auto !important; padding-left:13%; padding-right:13%">`
+            
+            for(var g=0; g < post.length; g++) {
+                img_url = '../' + post[g].media.path
+                media_string = `<img width="100%" height="auto; !important" class="card-img-top modal-img"  src="${img_url}" alt="Card image cap">`
+        
+                if(g==0) {
+                    postsHTML += `<div class="carousel-item active">`
+                    postsHTML +=  media_string
+                    postsHTML +=  `</div>`
+                } else {
+                    postsHTML += `<div class="carousel-item">`
+                    postsHTML +=  media_string
+                    postsHTML +=  `</div>`
+                }
+    
+            }
+    
+            postsHTML += `</div>`
+    
+            postsHTML += `
+                                <a class="carousel-control-prev" href="#demo-${post[0].postedby}" data-slide="prev">
+                                    <span class="carousel-control-prev-icon"  style="background-color: black; border: 1px white;"></span>
+                                </a>
+                                <a class="carousel-control-next" href="#demo-${post[0].postedby}" data-slide="next" >
+                                    <span class="carousel-control-next-icon" style="background-color: black; border: 1px white;"></span>
+                                </a>`
+    
+            postsHTML += `</div>`
+
+            postsHTML += "</div>"
+
+        $("#insertStory").replaceWith(postsHTML)
+
+        $("#btnTriggerStory").click();
+
+        //which_image.html(postsHTML)
+
+    } else {
+        // Only 1 picture
+
+        $("#insertStory").replaceWith(`
+        <div id="insertStory">
+        <img 
+            class="card-img-top modal-img" 
+            src="${post[0].media.path}" 
+            alt="Card image cap">	
+        "</div>"
+        `)
+        $("#btnTriggerStory").click();
+    }
+
+
+	
+	// like button id looks like  like-ID e.g. like-1 current user likes current post
+
+	
+
+	//$('#gallery-modal').modal('show');
+}

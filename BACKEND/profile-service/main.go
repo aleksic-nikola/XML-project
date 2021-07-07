@@ -126,6 +126,9 @@ func main() {
 	getRouter.HandleFunc("/getuser/{username}", ph.GetUser)
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
+	getRouter.HandleFunc("/publicprofiles", ph.GetAllPublicProfiles)
+	getRouter.HandleFunc("/allowedprofiles", ph.GetAllowedProfiles)
+	getRouter.HandleFunc("/followlessprivateprofiles", ph.GetAllNonFollowedPrivateProfiles)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 
@@ -149,6 +152,8 @@ func main() {
 
 	postRouter.HandleFunc("/addposttofavourites", ph.AddPostToFavourites)
 	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavourites)
+
+	getRouter.HandleFunc("/getuserwhoblockedme", ph.GetUsersWhoBlockedMe)
 
 
 	//CORS

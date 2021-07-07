@@ -129,6 +129,9 @@ func (handler *UserHandler) CreateUser(rw http.ResponseWriter, r *http.Request) 
 			fmt.Println("GRESKA PRILIKOM KREIRANJA FOLDERA ZA USERA LOCAL")
 
 		}
+
+		err = os.MkdirAll("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), 0755)
+
 	} else {
 		err = os.MkdirAll("./temp/id-"+strconv.Itoa(int(userID)), 0755)
 		if err != nil{

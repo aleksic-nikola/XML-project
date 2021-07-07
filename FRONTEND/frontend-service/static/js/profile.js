@@ -9,7 +9,9 @@ var generatedFollowing = false
 var loggedIn
 var un
 var postList
-var postListSaved   // menja se u zavisnosti od selektovane kolekcije
+var postListSaved    // menja se u zavisnosti od selektovane kolekcije
+var postListLiked    // lista za prikaz lajkovanih postova
+var postListDisliked // lista za prikaz dislajkovanih postova
 var this_is_me // username / role
 var this_is_my_profile // profile of currently logged in user
 var user_on_page
@@ -219,10 +221,18 @@ document.addEventListener("click", function (e) {
             $("#removeFromCollection").html("Remove " + post_id + " from " + c)
             currentOpenedPost = post_id
             showImageModal(post_id.split("-")[1], postListSaved)
-        } else {
+        } else if (currentPill == "posts") {
             $("#removeFromCollection").hide()
             currentOpenedPost = post_id
             showImageModal(post_id.split("-")[1], postList)
+        } else if (currentPill == "liked") {
+            $("#removeFromCollection").hide()
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postListLiked)
+        } else if (currentPill == "disliked") {
+            $("#removeFromCollection").hide()
+            currentOpenedPost = post_id
+            showImageModal(post_id.split("-")[1], postListDisliked)
         }
     }
 })

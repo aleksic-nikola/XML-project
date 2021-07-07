@@ -289,6 +289,7 @@ func (p *PostHandler) GetLikedPostsByUser(rw http.ResponseWriter, r *http.Reques
 	defer resp.Body.Close()
 	fmt.Println(resp.Status)
 	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
 	if err != nil {
 		http.Error(
 			rw,

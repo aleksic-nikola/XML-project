@@ -122,10 +122,10 @@
                           <a class="nav-link active" id="home-tab" data-toggle="tab" href="#posts" onclick="setPostsActive()" role="tab" aria-controls="posts" aria-selected="true">Posts</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="liked-tab" data-toggle="tab" href="#liked" role="tab" aria-controls="liked" aria-selected="false">Liked</a>
+                          <a class="nav-link" id="liked-tab" data-toggle="tab" href="#liked" onclick="setLikedPostsActive()" role="tab" aria-controls="liked" aria-selected="false">Liked</a>
                         </li>
                         <li class="nav-item">
-                          <a class="nav-link" id="disliked-tab" data-toggle="tab" href="#disliked" role="tab" aria-controls="disliked" aria-selected="false">Disliked</a>
+                          <a class="nav-link" id="disliked-tab" data-toggle="tab" href="#disliked" onclick="setDislikedPostsActive()" role="tab" aria-controls="disliked" aria-selected="false">Disliked</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="saved-tab" data-toggle="tab" onclick="getAllCollections()" href="#saved" role="tab" aria-controls="saved" aria-selected="false">Saved</a>
@@ -133,7 +133,7 @@
                       </ul>
                       <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-
+                            <br>
                             <section class="gallery-block cards-gallery min-vh-100">
                                 <div class="container">
             
@@ -145,10 +145,42 @@
                                 </div>
                             </section>
                         </div>
-                        <div class="tab-pane fade" id="liked" role="tabpanel" aria-labelledby="liked-tab">liked</div>
-                        <div class="tab-pane fade" id="disliked" role="tabpanel" aria-labelledby="disliked-tab">disliked</div>
+
+                        <div class="tab-pane fade" id="liked" role="tabpanel" aria-labelledby="liked-tab">
+                            <br>
+                            <h4>Posts you have liked</h4>
+                            <br>
+                            <section class="gallery-block cards-gallery min-vh-100">
+                                <div class="container">
+            
+                                    <div id="postsHereLiked" class="row">
+                                        <!-- SLIKA 1 -->
+            
+                                    </div>
+            
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="disliked" role="tabpanel" aria-labelledby="disliked-tab">
+                            <br>
+                            <h4>Posts you have disliked</h4>
+                            <br>
+                            <section class="gallery-block cards-gallery min-vh-100">
+                                <div class="container">
+            
+                                    <div id="postsHereDisliked" class="row">
+                                        <!-- SLIKA 1 -->
+            
+                                    </div>
+            
+                                </div>
+                            </section>
+                        </div>
                         <div class="tab-pane fade" id="saved" role="tabpanel" aria-labelledby="saved-tab">
+                            <br>
                             <h4>Collections</h4>
+                            <br>
                             <div>
                                 <select id="select_group">
 
@@ -677,17 +709,6 @@
             </div>
         </div>
 
-
-
-
-    </div>
-
-
-
-
-
-
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -716,6 +737,7 @@
     <script src="js/followReqs.js"></script>
     <script src="js/favourites.js"></script>
     <script src="js/likecomment.js"></script>
+    <script src="js/likeddislikedposts.js"></script>
 
 </body>
 

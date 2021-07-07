@@ -156,6 +156,7 @@ func main() {
 
 	postRouter.HandleFunc("/deletecollection", ph.DeleteCollection)
 	postRouter.HandleFunc("/deletepostfromcollection", ph.DeletePostFromCollection)
+	getRouter.HandleFunc("/getuserwhoblockedme", ph.GetUsersWhoBlockedMe)
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

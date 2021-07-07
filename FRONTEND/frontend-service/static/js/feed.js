@@ -1,7 +1,15 @@
+var currentUserFeed;
+
 $(document).ready(function() {
     //alert("CONNECTED")
-    loadFeedContent();
-    loadStories()
+    //loadFeedContent();
+    //loadStories()
+
+    getCurrentUserInformation()  // loadFeedContent i loadStories su prebaceni u success-u ove fje
+
+    // pozovem fju gde uzimam trenutnog usera - izvadim mu liste (blacklist, graylist)
+    // varijable globalna za usera --> currentUserFeed
+    // kad to uzmem, u success --> loadStories, LoadFeedContent --> postedby na contentu i continue ako je u nekoj listi(mute/block) i tjt
 })
 
 function loadStories() {
@@ -159,6 +167,11 @@ function generatePostsHTML1(allPosts){
 
     for(var i=0; i<allPosts.length;i++){
 
+        var dontshow = checkifPostedByIsInBlackListOrGrayList(allPosts[i].postedby)
+
+        if(dontshow == true) {
+            continue;
+        }
 
         console.log(img_url)
         //var img_url1 = '../../../BACKEND/content-service/temp/id-3/3d-render-banner-with-network-communications-low-poly-design.png'
@@ -224,6 +237,8 @@ function generatePostsHTML1(allPosts){
 
         postsHTML += `</div>`
 
+        if(allPosts[i].medias.length > 1) {
+
         postsHTML += `
                             <a class="carousel-control-prev" href="#demo-${i}" data-slide="prev">
                                 <span class="carousel-control-prev-icon"  style="background-color: black; border: 1px white;"></span>
@@ -233,6 +248,8 @@ function generatePostsHTML1(allPosts){
                             </a>`
 
         postsHTML += `</div>`
+        }
+        
             // CAROUSEL END --> card-body mi treba isti
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';
@@ -287,5 +304,48 @@ function generatePostsHTML1(allPosts){
     }
 
     $("#insertFeedPosts").after(postsHTML)
+}
+
+function getCurrentUserInformation() {
+    // getdata from profile
+    $.ajax({
+        type:'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getdata',
+        contentType : 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+
+            currentUserFeed = data
+            loadFeedContent();
+            loadStories();
+
+        },
+        error : function(xhr, status, data) {
+             alert('Error in getCurrentUserInformation')
+        }
+    })
+}
+
+function checkifPostedByIsInBlackListOrGrayList(username) {
+    var myflag = false
+    currentUserFeed.blacklist.forEach(function(b) {
+        if(b.username == username) {
+            myflag = true
+            return
+        }
+    })
+
+    currentUserFeed.graylist.forEach(function(g) {
+        if(g.username == username) {
+            myflag = true
+            return
+        }
+    })
+
+    return myflag
 }
 

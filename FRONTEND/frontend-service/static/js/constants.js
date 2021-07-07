@@ -7,7 +7,7 @@ const MONOLIT_SERVICE_URL = getCorrectOrigin('monolit')
 const PROFILE_SERVICE_URL = getCorrectOrigin('profile')
 const REQUEST_SERVICE_URL = getCorrectOrigin('request')
 const SEARCH_SERVICE_URL = getCorrectOrigin('service')
-
+const FOLDER_PREFIX = getCorrectOrigin('prefix')
 
 function getCorrectOrigin(name) {
 
@@ -38,6 +38,9 @@ function getCorrectOrigin(name) {
 		if (name == 'search') {
 			return "http://localhost:9494"
 		}
+		if (name == 'prefix') {
+			return ""
+		}
 
 	}
 	// else return gateway 
@@ -64,6 +67,9 @@ function getCorrectOrigin(name) {
 	}
 	if (name == 'search') {
 		return "http://localhost:8888/api/search"
+	}
+	if (name == 'prefix') {
+		return "/app"
 	}
 
 	return "this should not be happening"

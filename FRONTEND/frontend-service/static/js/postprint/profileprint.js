@@ -8,7 +8,7 @@ function showPhotos(postList, divName) {
 	}
 
 	postList.forEach(function (post) {
-		console.log(post)
+		//console.log(post)
 		/*posts += `<div class="col-md-6 col-lg-4">
 			    <div class="card border-0 transform-on-hover">
 				<a class="lightbox">
@@ -52,9 +52,10 @@ function showPhotos(postList, divName) {
 
 
 	})
-	console.log(posts)
+	//console.log(posts)
 	//$("#postsHere").html(posts)
 	$("#" + divName).html(posts)
+
 }
 
 

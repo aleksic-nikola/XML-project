@@ -19,12 +19,23 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("static")))
 
+	var port string
+
+	if (os.Getenv("DOCKERIZED") != "yes") {
+		// local
+		port = ":8000"
+	} else {
+		port = ":8888"
+	}
+
 	server := &http.Server{
-		Addr:           ":8000",
+		Addr:           port,
 		Handler:        mux,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
+
+	log.Println("Frontend running on port " + port)
 	log.Fatal(server.ListenAndServe())
 }

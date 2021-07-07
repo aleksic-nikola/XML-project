@@ -186,7 +186,7 @@ function fillTable(collections) {
     var insertHtml = ""
 
     collections.name.forEach(function(col) {
-        insertHtml += `<tr><td class="collectionTable">${col}</td></tr>`
+        insertHtml += `<tr><td class="save_td_th">${col}</td></tr>`
     })
 
     tableCollection.html(insertHtml)

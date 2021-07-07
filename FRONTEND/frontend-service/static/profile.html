@@ -385,6 +385,19 @@
                                     </nav>
 
                                     <div id="editprofbody">
+                                        
+                                        <div class="form-group editprofform">
+                                            <label>Verification status: </label>
+                                            <input class="form-control" type="text" placeholder="" id="verificationid">                               
+                                        </div>
+
+                                        <div class="form-group editprofform">
+                                            <label></label>
+                                            <button class="btn btn-secondary float-right" id="verification_button"
+                                                data-target="#verificationModal" data-toggle="modal" onclick="">&nbsp&nbspGet Verified&nbsp&nbsp
+                                            </button>
+                                        </div>
+                                        
                                         <div class="form-group editprofform">
                                             <label>Name: </label>
                                             <input class="form-control" type="text" placeholder="" id="nameid">
@@ -846,6 +859,54 @@
             </div>
         </div>
 
+        <!-- VERIFICATION MODAL -->
+
+        <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center" style="border:solid 2px black; border-radius: 7px">
+                <div class="modal-content" style="background-color: rgb(246, 241, 241);">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="verificationModalLabel">Send verification request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form  id="verification_form" enctype="multipart/form-data" action="#" method="post">
+
+                            <div class="form-group editprofform">
+                                <label class="float-left">Official document photo:</label>
+                                <input class="form-control" type="file" name="filephoto" id="filephoto">
+                                <br>
+                                <label class="float-left">Verification category</label>
+                                <select id="verification_category_select" class="custom-select">
+                                    <option selected>Choose...</option>
+                                    <option value="1" id="influencer">Influencer</option>
+                                    <option value="2" id="sports">Sports</option>
+                                    <option value="3" id="media">Media</option>
+                                    <option value="4" id="business">Business</option>
+                                    <option value="5" id="brand">Brand</option>
+                                    <option value="6" id="organization">Organization</option>
+                                </select>     
+                                <br>                     
+                                <input name="verification_category" id="verification_category" hidden class="form-control" type="text" style="background-color: white!important; border: solid 1px rgb(230, 229, 229) !important;">
+                                <br>
+                                <label class="float-left">Name:</label>
+                                <input name="verification_name" id="verification_name" class="form-control" type="text" style="background-color: white!important; border: solid 1px rgb(230, 229, 229) !important;">
+                                <br>
+                                <label class="float-left">Last Name:</label>
+                                <input name="verification_lastname" id="verification_lastname" class="form-control" type="text" style="background-color: white!important; border: solid 1px rgb(224, 221, 221) !important">
+                                <br>
+                                <br>
+                                <button type="submit" class="btn btn-primary float-right" onclick="">&nbsp&nbspSend request&nbsp&nbsp</button>                          
+                            </div>
+                        </form>
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -876,6 +937,7 @@
     <script src="js/likecomment.js"></script>
     <script src="js/likeddislikedposts.js"></script>
     <script src="js/blockmute.js"></script>
+    <script src="js/verified.js"></script>
 </body>
 
 </html>

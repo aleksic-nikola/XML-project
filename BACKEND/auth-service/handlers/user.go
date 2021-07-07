@@ -356,5 +356,9 @@ func (handler *UserHandler) GetUserIdByUsername(wr http.ResponseWriter, r *http.
 		http.Error(wr, "Error ToJson userID", http.StatusBadRequest)
 		return
 	}
+	fmt.Println("entered GetUserIdByUSername function")
+	fmt.Println(dto)
+	wr.Header().Set("Content-Type", "application/json")
+	wr.WriteHeader(http.StatusOK)
 
 }

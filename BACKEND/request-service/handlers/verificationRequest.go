@@ -5,8 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/joho/godotenv"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
 	"xml/request-service/constants"
 	"xml/request-service/data"
 	dtoRequest "xml/request-service/dto"
@@ -62,12 +66,22 @@ func (handler *VerificationRequestHandler) GetInProgressVerificationRequests(rw 
 func (handler *VerificationRequestHandler) CreateInProgressVerificationRequest(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println("creating new VerificationRequest")
 	var verificationReqDto dtoRequest.VerificationRequestDto
-	err := verificationReqDto.FromJSON(r.Body)
-	if err != nil {
-		handler.L.Println(err)
-		rw.WriteHeader(http.StatusBadRequest)
-		return
-	}
+
+	r.ParseMultipartForm(2000000) // grab the multipart form
+
+	formdata := r.MultipartForm // ok, no problem so far, read the Form data
+	//get the *fileheaders
+
+	fmt.Println(formdata.Value)
+	res := formdata.Value
+	name := res["verification_name"]
+	lastname := res["verification_lastname"]
+	category := res["verification_category"]
+
+	fmt.Println(name)
+	fmt.Println(lastname)
+	fmt.Println(category)
+
 	fmt.Println(verificationReqDto)
 
 	resp, err := UserCheck(r.Header.Get("Authorization"))
@@ -89,10 +103,104 @@ func (handler *VerificationRequestHandler) CreateInProgressVerificationRequest(r
 		return
 	}
 
+	client := &http.Client{}
+	url := "http://" + constants.AUTH_SERVICE_URL + "/getuserId/" + dto.Username
+	req1, errReq := http.NewRequest("GET", url, nil)
+	fmt.Println(url)
+	if errReq != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error with who am I request %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	req1.Header.Add("Authorization", r.Header.Get("Authorization"))
+
+	resp1, err := client.Do(req1)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error getting user Id by username %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	defer resp1.Body.Close()
+	var user_id dtoRequest.UserIdDto
+	err = user_id.FromJSON(resp1.Body)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error unmarshalling user ID JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	// file handling
+
+	file, h, err := r.FormFile("filephoto")
+	if err != nil {
+		fmt.Println("Error Retrieving the File")
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	fmt.Printf("Uploaded File: %+v\n", h.Filename)
+	fmt.Printf("File Size: %+v\n", h.Size)
+	fmt.Printf("MIME Header: %+v\n", h.Header)
+
+	fileForRequest, err := h.Open()
+	defer fileForRequest.Close()
+	if err != nil {
+		fmt.Fprintln(rw, err)
+		return
+	}
+	var finalPath string
+	if os.Getenv("DOCKERIZED")== "yes" {
+		fmt.Println("USAO DA JE DOKERIZED!")
+		finalPath = "./temp/id-" + strconv.Itoa(int(user_id.UserId)) + "/" + h.Filename
+	} else{
+		finalPath =  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(user_id.UserId)), h.Filename )
+	}
+
+	out, err := os.Create(finalPath)
+
+	_, err = io.Copy(out, file) // file not files[i] !
+
+	if err != nil {
+		fmt.Fprintln(rw, err)
+		return
+	}
+	var verifiedType data.VerifiedType
+
+	if category[0] == "influencer" {
+		verifiedType = 0
+	} else if category[0] == "sports" {
+		verifiedType = 1
+	} else if category[0] == "media" {
+		verifiedType = 2
+	} else if category[0] == "business" {
+		verifiedType = 3
+	} else if category[0] == "brand" {
+		verifiedType = 4
+	} else {
+		verifiedType = 5
+	}
+
+	verificationReqDto.Name = name[0]
+	verificationReqDto.LastName = lastname[0]
+	verificationReqDto.Image = "temp/id-" + strconv.Itoa(int(user_id.UserId)) + "/" + h.Filename
+	verificationReqDto.Category = verifiedType
 	err = handler.Service.CreateInProgressVerificationRequest(&verificationReqDto, &dto)
 	if err != nil {
 		fmt.Println(err)
 		rw.WriteHeader(http.StatusExpectationFailed)
+		return
 	}
 	rw.WriteHeader(http.StatusCreated)
 	rw.Header().Set("Content-Type", "application/json")

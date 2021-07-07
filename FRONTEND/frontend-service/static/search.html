@@ -110,6 +110,206 @@
                   </div>
               </div>
         </div>
+
+            <!-- Modal -->
+        <div class="modal fade" id="gallery-modal-search" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5> -->
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="image_modal_body">
+                        <!-- CONTENT OF MODAL WHEN CLICKING ON PICTURE -->
+                        <div class="one-feed text-center">
+
+                            <div class="card">
+                                <!-- IMAGE OF POST-->
+                                <div id="which_image1" style="width: auto; height: auto !important;">
+                                    <img class="card-img-top modal-img"  src="img/test2.png"
+                                        alt="Card image cap">
+                                </div>
+                                <div class="card-body">
+
+                                    <!-- DESCRIPTION OF IMAGE-->
+                                    <p class="card-text text-left description_part" id="image_description1">
+                                        Moj opis za moju trecu sliku.</p>
+
+                                    <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                                    <p class="text-left">
+                                    <div id="like_button_div1">
+                                        <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button id="like" class="btn btn-success" onclick="likePost(this.id)">&nbsp&nbspLike&nbsp&nbsp</button>
+                                        </div>
+                                        <div class="col">
+                                            <button id="dislike" class="btn btn-danger" onclick="dislikePost(this.id)">&nbsp&nbspDislike&nbsp&nbsp</button>
+                                        </div>
+                                        <div class="col">
+                                            <button id="save" class="btn btn-warning" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModalSearch">&nbsp&nbspSave&nbsp&nbsp</button>
+                                        </div>
+                                    </div>
+                                    </p>
+                                    <hr>
+                                    <!--DUGME ZA BRISANJE IZ SAVED-->
+
+
+                                    <h5 class="text-left">Comments:</h5>
+                                    <hr>
+                                    <!-- COMMENTS -->
+
+                                    <table class="table" id="mydatatable">
+                                        <thead class="hideheader">
+                                            <tr>
+                                                <th scope="col" id="commented_by">CommentedBy</th>
+                                                <th scope="col" id="comment">Comment</th>
+                                            </tr>
+                                        </thead>
+                                        <div class="bodycontainer scrollable">
+                                            <tbody class="text-left" id="comments_body1">
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>Veoma lepa slika, pohvala za fotografa</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>Vrh</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>Svaka cast majstore</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>bravo care</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>pozdrav</td>
+                                                </tr>
+
+                                            </tbody>
+
+                                        </div>
+                                    </table>
+
+                                    <hr>
+                                    <div class="writecomment_section">
+                                        <div class="form-group">
+                                            <textarea class="form-control comment_textarea"
+                                                id="insert_comment" rows="2"
+                                                placeholder="Add a comment..."></textarea>
+                                            <div id="post_comment_button_div1">
+                                                <button class="btn btn-primary postcommentbtn"
+                                                    id="post_comment_btn" onclick="postComment()"> Post
+                                                </button>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <!--SAVE POST TO COLLECTION MODAL-->
+
+
+                <div class="modal fade" id="saveModalSearch" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable text-center">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title text-center" id="saveModalLabel">Save photo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <table class="table save_table text-center">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th class="save_td_th" scope="col">
+                                                    Your collections
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableInsert" class="save_tbody text-center">
+        
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" id="collection_field_profile" class="form-control" placeholder="Collection name">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-warning" id="save" onclick="savePostOnProfile()">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            <!--NON LOGGED USER CONTENT SHOW MODAL-->
+
+
+            <div class="modal fade" id="nonLoggedModal" tabindex="-1"  aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable text-center">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <h6>Login to view posts:</h6>
+                                <p><a href="login.html">Login</a></p>
+
+                                <hr>
+                                <br><br>
+                                <p> Don't have an account? <a href="signup.html">Sign Up</a></p>
+
+                            </div>
+                            <br>
+
+                            <div class="form-group">
+                                <button class="btn btn-dark float-right" id="close_alert" data-dismiss="modal">&nbsp&nbspClose&nbsp&nbsp</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -130,6 +330,9 @@
     <script src="js/search.js"></script>
     <script src="js/login.js"></script>
 
+    <script src="js/likecomment.js"></script>
+    <script src="js/favourites.js"></script>
+    <script src="js/feed.js"></script>
 </body>
 
 </html>

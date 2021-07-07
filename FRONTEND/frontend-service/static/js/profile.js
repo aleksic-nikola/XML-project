@@ -651,6 +651,11 @@ function checkIfUserBlockedMeAndRestrict() {
 }
 
 function checkIfImInHisBlacklist(data) {
+
+    if (data.listwhoblockedme == null) {
+        return
+    }
+
     data.listwhoblockedme.forEach(function(p) {
 
         var visitedUsername = location.href.split("?")[1];

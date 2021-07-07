@@ -25,6 +25,9 @@ function showImageModal(id, postList) {
 	})
 	var media = post.medias[0].path
 
+	$("#user_posted_by").text(post.postedby)
+	$("#user_posted_by").attr("href", "profile.html?" + post.postedby)
+
 	console.log("==============> length of post (num of content): " + post.medias.length)
 
 	if (post.medias[0].path.split(".")[1] != 'jpg' && post.medias[0].path.split(".")[1] != 'png' && post.medias.length == 1) {

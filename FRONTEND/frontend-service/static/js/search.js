@@ -18,7 +18,6 @@ $(document).ready(function() {
 
 	who_am_I()
 
-
 }) 
 
 /*
@@ -130,11 +129,13 @@ function who_am_I() {
             //authenticatedSearch()
 			getCurrentUserInformationSearch()
 			$("#myProfileHref").attr('href', "profile.html?" + data.username);
+			showActualNavs()
             
 		},
 		error: function () {
 		    console.log('using non authenticated search..')
 		    nonAuthenticatedSearch()
+			showActualNavs()
 		}
 	})
 
@@ -736,4 +737,17 @@ function searchquery() {
 		localStorage.setItem("query", undefined)
 		search_field.keyup()
 	}
+}
+
+function showActualNavs() {
+	if(authenticated) {
+		$("#loginnav").hide()
+	} else {
+		$("#feednav").hide()
+		$("#reqsnav").hide()
+		$("#msgnav").hide()
+		$("#profnav").hide()
+		$("#logoutnav").hide()
+	}
+
 }

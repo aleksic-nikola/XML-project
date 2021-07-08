@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/navbar.css">
     <link rel="stylesheet" type="text/css" href="css/search.css">
-
+    <link rel="stylesheet" type="text/css" href="css/profile.css">
 
     <title></title>
 </head>
@@ -128,9 +128,16 @@
                     </div>
                     <div class="modal-body" id="image_modal_body">
                         <!-- CONTENT OF MODAL WHEN CLICKING ON PICTURE -->
+                        
                         <div class="one-feed text-center">
+                            <div>
+                                <img src="img/avatar.png" class="user_img">
+                                <a class="postedby" id="user_posted_bysearch">User</a>
+                                <button class="btn btn-secondary" style="float: right;" id="report" onclick="setGlobalPostToReport(this.id)" data-toggle="modal" data-target="#reportModal">&nbsp&nbsp&nbsp&nbsp Report &nbsp&nbsp&nbsp&nbsp</button>
+                            </div>
+                            <br>
 
-                            <div class="card">
+                            <div class="card" style="width: 100%;">
                                 <!-- IMAGE OF POST-->
                                 <div id="which_image1" style="width: auto; height: auto !important;">
                                     <img class="card-img-top modal-img"  src="img/test2.png"
@@ -216,7 +223,7 @@
                                     <div class="writecomment_section">
                                         <div class="form-group">
                                             <textarea class="form-control comment_textarea"
-                                                id="insert_comment" rows="2"
+                                                id="insert_comment_search" rows="2"
                                                 placeholder="Add a comment..."></textarea>
                                             <div id="post_comment_button_div1">
                                                 <button class="btn btn-primary postcommentbtn"
@@ -312,6 +319,30 @@
             </div>
 
 
+        <!--MODAL ZA SENSITIVE CONTENT REPORT-->
+
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="reportModalLabel">Sensitive content report</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">      
+                        <div class="form-group">
+                            <input type="text" id="note" class="form-control" placeholder="Reason">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" id="save" onclick="createSensitiveReport()">&nbsp&nbsp&nbsp&nbsp Send report &nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
 
     </div>
@@ -336,7 +367,7 @@
 
     <script src="js/likecomment.js"></script>
     <script src="js/favourites.js"></script>
-
+    <script src="js/sensitivereport.js"></script>
 </body>
 
 </html>

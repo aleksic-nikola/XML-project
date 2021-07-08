@@ -70,7 +70,7 @@ function fillStories(data) {
     console.log(userStoriesMap)
 
     for ( [postedBy, s] of Object.entries(userStoriesMap)) {
-        story_url = s[0].media.path
+        story_url = "./img/avatar.png"
         html+= `<img class="card-img-center story-css" onClick="showStoryModal('${postedBy}')" height="80px" src="${story_url}" alt="Card image cap"></img>`
 
 
@@ -92,7 +92,7 @@ function showStory(imgPath, postedBy){
    // $("#forAddingDiv").after('<div id="insertStory"></div>')
 
     htmlStory = '<div id="insertStory">'
-    htmlStory += `<img class="img-responsive" src="${imgPath}" style="max-height:500px; width=100%;" alt="Not found" >`
+    htmlStory += `<img class="img-responsive" src="./img/avatar.png" style="max-height:500px; width=100%;" alt="Not found" >`
     htmlStory += `<p> <i> Posted by</i>:  <a href="profile.html?${postedBy}"><b> ${postedBy}</b></a>  </p>`
     htmlStory += '</div>'
 
@@ -414,86 +414,120 @@ function showStoryModal(postedBy) {
 
 	console.log("==============> length of post (num of content): " + post.length)
 
-    
-    //                              >0 NAMERNO------------       TEST
-    if(post.length > 1) {
-        // MORE VIDEOS or PICTURES (albums)
+    if(post[0].media.path.split(".")[1] != 'jpg' && post[0].media.path.split(".")[1] != 'jpeg' && post[0].media.path.split(".")[1] != 'jfif' && post[0].media.path.split(".")[1] != 'png' && post.length == 1) {
+		// only one VIDEO
 
-        console.log("There is more then 1 PICTURE or VIDEO")
-
-        // carousel
-        var postsHTML = '<div id="insertStory">'
-
-
-            postsHTML +=  `<div id="demo-${post[0].postedby}" class="carousel slide" data-ride="carousel">`
-            postsHTML +=  `<ul class="carousel-indicators">`
-    
-            for(var j=0; j < post.length ; j++) {
-
-                if(j==0) {
-                    postsHTML += `<li data-target="#demo-'${post[0].postedby}'" data-slide-to="${j}" class="active"></li>`
-                } else {
-                    postsHTML += `<li data-target="#demo-'${post[0].postedby}'" data-slide-to="${j}" ></li>`    
-                }
-    
-            }
-            
-    
-            postsHTML +=  `</ul>`
-    
-            // SLIDESHOW:
-    
-            postsHTML += `<div class="carousel-inner" style=" width:100%; height:auto !important; padding-left:13%; padding-right:13%">`
-            
-            for(var g=0; g < post.length; g++) {
-                img_url = '../' + post[g].media.path
-                media_string = `<img width="100%" height="auto; !important" class="card-img-top modal-img"  src="${img_url}" alt="Card image cap">`
-        
-                if(g==0) {
-                    postsHTML += `<div class="carousel-item active">`
-                    postsHTML +=  media_string
-                    postsHTML +=  `</div>`
-                } else {
-                    postsHTML += `<div class="carousel-item">`
-                    postsHTML +=  media_string
-                    postsHTML +=  `</div>`
-                }
-    
-            }
-    
-            postsHTML += `</div>`
-    
-            postsHTML += `
-                                <a class="carousel-control-prev" href="#demo-${post[0].postedby}" data-slide="prev">
-                                    <span class="carousel-control-prev-icon"  style="background-color: black; border: 1px white;"></span>
-                                </a>
-                                <a class="carousel-control-next" href="#demo-${post[0].postedby}" data-slide="next" >
-                                    <span class="carousel-control-next-icon" style="background-color: black; border: 1px white;"></span>
-                                </a>`
-    
-            postsHTML += `</div>`
-
-            postsHTML += "</div>"
-
-        $("#insertStory").replaceWith(postsHTML)
-
-        $("#btnTriggerStory").click();
-
-        //which_image.html(postsHTML)
-
-    } else {
-        // Only 1 picture
-
-        $("#insertStory").replaceWith(`
+		$("#insertStory").replaceWith(`
         <div id="insertStory">
-        <img 
-            class="card-img-top modal-img" 
-            src="${post[0].media.path}" 
-            alt="Card image cap">	
-        "</div>"
-        `)
-        $("#btnTriggerStory").click();
+		<video width="100%" height="100%" controls alt="Card image cap" class="card-img-top modal-img">
+			<source src="${post[0].media.path}" type="video/mp4">                       
+			Your browser does not support the video tag.
+		</video>
+        <p> <i> Posted by</i>:  <a href="profile.html?${post[0].postedby}"><b> ${post[0].postedby}</b></a>  </p>
+        </div>
+		
+		`)
+
+	}
+    else{
+            //                           
+        if(post.length > 1) {
+            // MORE VIDEOS or PICTURES (albums)
+
+            console.log("There is more then 1 PICTURE or VIDEO")
+
+            // carousel
+            var postsHTML = '<div id="insertStory">'
+
+
+                postsHTML +=  `<div id="demo-${post[0].postedby}" class="carousel slide" data-ride="carousel">`
+                postsHTML +=  `<ul class="carousel-indicators">`
+        
+                for(var j=0; j < post.length ; j++) {
+
+                    if(j==0) {
+                        postsHTML += `<li data-target="#demo-'${post[0].postedby}'" data-slide-to="${j}" class="active"></li>`
+                    } else {
+                        postsHTML += `<li data-target="#demo-'${post[0].postedby}'" data-slide-to="${j}" ></li>`    
+                    }
+        
+                }
+                
+        
+                postsHTML +=  `</ul>`
+        
+                // SLIDESHOW:
+        
+                postsHTML += `<div class="carousel-inner" style=" width:100%; height:auto !important; padding-left:13%; padding-right:13%">`
+                
+                for(var g=0; g < post.length; g++) {
+                    img_url = '../' + post[g].media.path
+                    media_string = `<img width="100%" height="auto; !important" class="card-img-top modal-img"  src="${img_url}" alt="Card image cap">`
+                    console.log("OVO JE SPLITOVANO: ")
+                    console.log(post[g].media.path.split(".")[1])
+                    if (post[g].media.path.split(".")[1] != 'jpg' && post[g].media.path.split(".")[1] != 'png' && post[g].media.path.split(".")[1] != 'jfif') {
+						console.log("USAO DA JE VIDEO!!!")
+                        // then its a video
+						media_string = `
+									<video width="100px" height="100%" controls class="card-img-top modal-img" >
+										<source src="${img_url}" type="video/mp4">                       
+										Your browser does not support the video tag.
+									</video>`
+					}
+
+                    if(g==0) {
+                        postsHTML += `<div class="carousel-item active">`
+                        postsHTML +=  media_string
+                        postsHTML +=  `</div>`
+                    } else {
+                        postsHTML += `<div class="carousel-item">`
+                        postsHTML +=  media_string
+                        postsHTML +=  `</div>`
+                    }
+        
+                }
+        
+                postsHTML += `</div>`
+        
+                postsHTML += `
+                                    <a class="carousel-control-prev" href="#demo-${post[0].postedby}" data-slide="prev">
+                                        <span class="carousel-control-prev-icon"  style="background-color: black; border: 1px white;"></span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#demo-${post[0].postedby}" data-slide="next" >
+                                        <span class="carousel-control-next-icon" style="background-color: black; border: 1px white;"></span>
+                                    </a>`
+        
+                postsHTML += `</div>`
+                postsHTML += `<p> <i> Posted by</i>:  <a href="profile.html?${post[0].postedby}"><b> ${post[0].postedby}</b></a>  </p>`
+                postsHTML += "</div>"
+
+            $("#insertStory").replaceWith(postsHTML)
+
+            $("#btnTriggerStory").click();
+
+            //which_image.html(postsHTML)
+
+        } else {
+            // Only 1 picture
+
+            $("#insertStory").replaceWith(`
+            <div id="insertStory">
+            <img 
+                class="card-img-top modal-img" 
+                src="${post[0].media.path}" 
+                alt="Card image cap">
+            <p> <i> Posted by</i>:  <a href="profile.html?${post[0].postedby}"><b> ${post[0].postedby}</b></a>  </p>	
+            "</div>"
+            `)
+            $("#btnTriggerStory").click();
+        }
+
     }
+
+
+    
+    
+    
 
 
 	

@@ -196,7 +196,7 @@
         <button id="btnTriggerStory" hidden data-toggle="modal" data-target="#storyModal"></button>
 
         <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-dialog modal-xs modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="storyModalLabel">Story
@@ -206,9 +206,10 @@
                         </button>
                     </div>
                     <div class="modal-body" id="storyModalWindow">
-                        <div id="insertStory"></div>
+                        <div class="container">
+                            <div id="insertStory"></div>
+                        </div>
 
-                        <a href=""></a>
                     </div>
                 </div>
             </div>
@@ -232,7 +233,9 @@
                             <input type="text" id="collection_field" class="form-control" placeholder="Collection name">
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-warning" id="save" onclick="savePost()" data-toggle="modal" data-target="#saveModal-${allPosts[i].ID}">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
+                            <button class="btn btn-warning" id="save" onclick="savePost()" data-toggle="modal"
+                                data-target="#saveModal-${allPosts[i].ID}">&nbsp&nbsp&nbsp&nbsp Save
+                                &nbsp&nbsp&nbsp&nbsp</button>
                         </div>
                     </div>
                 </div>
@@ -240,7 +243,7 @@
         </div>
 
 
-    
+
 
 
 

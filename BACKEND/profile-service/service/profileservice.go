@@ -559,3 +559,15 @@ func (service *ProfileService) GetUsersWhoBlockedMe(myusername string) (error, [
 
 	return err, listOfUsersWhoBlockedMe
 }
+
+func (service *ProfileService) GetMyNotificationsSettings(username string) (data.NotificationSetting,error) {
+	profile, err := service.Repo.GetProfileByUsername(username)
+
+	if err != nil {
+		return data.NotificationSetting{}, err
+	}
+
+	notificationSetting := profile.NotificationSetting
+
+	return notificationSetting, nil
+}

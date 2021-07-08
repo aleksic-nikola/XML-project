@@ -1105,3 +1105,29 @@ func (handler *ProfileHandler) DeletePostFromCollection(rw http.ResponseWriter, 
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+func (handler *ProfileHandler) GetMyNotificationsSettings(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+
+	notifSettings, err := handler.Service.GetMyNotificationsSettings(username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error: %s", err),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	//fmt.Println(notifSettings)
+
+	err = notifSettings.ToJson(rw)
+
+	if err != nil {
+		http.Error(rw, "Unable to unmarshal posts json", http.StatusInternalServerError)
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}

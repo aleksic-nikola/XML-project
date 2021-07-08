@@ -29,4 +29,17 @@ func (s PostNotificationService) GetMyUnreadPostNotif(username string) (data.Pos
 	return notifications
 }
 
+func (s PostNotificationService) ReadPostNotifications(username string) error {
+	notifications := s.Repo.GetMyUnreadPostNotif(username)
+
+	for _,n := range notifications {
+		n.Notification.IsRead = true
+		err := s.Repo.Save(n)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 

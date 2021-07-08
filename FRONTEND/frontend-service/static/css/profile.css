@@ -199,3 +199,15 @@ tbody {
   color: black;
   float: left;
 }
+
+.tbodynew {
+  width: 10000px !important;
+  height: 100% !important;
+  overflow-y: hidden !important;
+  display: block;
+  position: relative;
+}
+
+.modal-content-dani {
+  height: 550px;
+}

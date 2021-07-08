@@ -21,8 +21,9 @@ function likePost(id) {
 	    beforeSend: function (xhr) {
 		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
 	    },
-	    success: function (data) {
+	    success: function () {
 			alert('successfully liked')
+			//checkNotificationSetting(split, "LIKE")
 			createNotification(split, "LIKE")
 	    },
 	    error: function () {
@@ -32,6 +33,35 @@ function likePost(id) {
 
 	console.log('here')
 }
+
+/*function checkNotificationSetting(split, type) {
+	$.ajax({
+        type:'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getmynotifsettings',
+        contentType : 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+			if (type == "COMMENT") {
+				if (data.show_dm_notification) {
+					createNotification(split, type)
+				} else {
+					alert("User doesnt")
+				}
+			} else {
+				if (data.show_tagged_notification) {
+					createNotification(split, type)
+				}
+			}
+        },
+        error : function(xhr, status, data) {
+            alert('Error in getting my notifications')
+        }
+    })
+}*/
 
 function createNotification(postId, type) {
 	var obj = {

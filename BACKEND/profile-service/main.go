@@ -129,6 +129,7 @@ func main() {
 	getRouter.HandleFunc("/publicprofiles", ph.GetAllPublicProfiles)
 	getRouter.HandleFunc("/allowedprofiles", ph.GetAllowedProfiles)
 	getRouter.HandleFunc("/followlessprivateprofiles", ph.GetAllNonFollowedPrivateProfiles)
+	getRouter.HandleFunc("/getmynotifsettings/{username}", ph.GetMyNotificationsSettings)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 

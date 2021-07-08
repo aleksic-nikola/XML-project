@@ -188,7 +188,23 @@ tbody {
 
 .modal-content {
   height: 550px;
+}
+
+.save-modal-content {
+  height: auto !important;
+}
+
+.report-modal-content {
+  height: auto !important;
+}
 
 .carousel-indicators .li{
     background-color: rgb(0, 0, 0);
+}
+
+.tbodynew {
+  width: 10000px !important;
+  height: 100% !important;
+  overflow-y: hidden !important;
+  display: block;
 }

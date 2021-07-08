@@ -1,5 +1,9 @@
 function showPhotos(postList, divName) {
 	console.log('I am printing the images')
+	//console.log(postList)
+	if (postList == undefined || postList == []) {
+		console.log('I have nothing to print')
+	}
 	var posts = "";
 	//console.log('post number is ' + postList.length)
 	if (postList == undefined) {

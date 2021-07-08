@@ -1,7 +1,7 @@
 $(document).ready(function () {
     //alert("CONNECTED")
-    loadAllFollowReqs()
-    setMyProfileHREF();
+    //loadAllFollowReqs()
+    //setMyProfileHREF();
 })
 
 var myUserName = ""

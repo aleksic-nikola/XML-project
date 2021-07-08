@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("#deleteCollection").hide()
+    //$("#deleteCollection").hide()
 })
 
 const select_group = $("#select_group")

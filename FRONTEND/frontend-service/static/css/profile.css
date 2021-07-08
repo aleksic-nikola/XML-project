@@ -186,3 +186,16 @@ tbody {
   margin-top: -3px;
   margin-left: 80px;
 }
+
+.user_img {
+  width: 30px;
+  float: left;
+  margin: 0px auto;
+}
+
+.postedby {
+  margin: 2px auto;
+  margin-left: 15px;
+  color: black;
+  float: left;
+}

@@ -171,6 +171,7 @@ func main() {
 	getRouter.HandleFunc("/current/dislikedposts", ph.GetDislikedPostsByUser)
 	getRouter.HandleFunc("/current/getAllPostsForFeed", ph.GetAllPostsForFeedForCurrentUser)
 	getRouter.HandleFunc("/current/getallstoriesforfeed", sh.GetAllStoriesForFeedForCurrentUser)
+	getRouter.HandleFunc("/getuserbypostid/{id}", ph.GetUserByPost)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)

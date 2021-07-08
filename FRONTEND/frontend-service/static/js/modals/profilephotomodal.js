@@ -144,7 +144,7 @@ function showImageModal(id, postList) {
 		comment_html += `
 			<tr>
 			<td class = "first_td">
-			<a class ="commentedby" href=""> ${c.postedby}: </a> 
+			<a class ="commentedby" href="profile.html?${c.postedby}"> ${c.postedby}: </a> 
 			</td>
 			<td>
 			${c.text}

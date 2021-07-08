@@ -125,3 +125,12 @@ func (service *PostService) PostComment(id string, text string, username string)
 
 }
 
+func (service *PostService) GetUserByPost(postid string) dtos.UsernameDto {
+	post := service.Repo.GetPostByID(postid)
+
+	var user dtos.UsernameDto
+	user.Username = post.PostedBy
+
+	return user
+}
+

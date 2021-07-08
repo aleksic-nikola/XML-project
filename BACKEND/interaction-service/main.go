@@ -187,7 +187,8 @@ func main() {
 	getRouter.HandleFunc("/getmsgswithonetimecontent", msgwotcH.GetMessagesWithOneTimeContent).Methods("GET")
 	getRouter.HandleFunc("/getnotif", notifH.GetNotifications).Methods("GET")
 	getRouter.HandleFunc("/getprofnotif", profnotifH.GetProfileNotifications).Methods("GET")
-	getRouter.HandleFunc("/getpostnotif", postnotifH.GetPostNotifications).Methods("GET")
+	//getRouter.HandleFunc("/getpostnotif", postnotifH.GetPostNotifications).Methods("GET")
+	getRouter.HandleFunc("/getunreadpostnotif", postnotifH.GetUnreadPostNotif).Methods("GET")
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/message/add", msgH.CreateMessage)

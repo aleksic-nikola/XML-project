@@ -47,3 +47,30 @@ func (repo *StoryRepository) GetAllStoriesForFeed(usernames []string) []data.Sto
 
 	return stories
 }
+
+func (repo *StoryRepository) SetStoryHighlightedOn(id int) error {
+	var story data.Story
+	result := repo.Database.Where("id = ?", id).Find(&story)
+	if result.RowsAffected == 0{
+		return fmt.Errorf("cant find story with passed ID - %d", id)
+	}
+
+	story.IsHighlighted = true
+
+	repo.Database.Save(story)
+	return nil
+
+}
+
+func (repo *StoryRepository) SetStoryHighlightedOff(id int) error {
+	var story data.Story
+	result := repo.Database.Where("id = ?", id).Find(&story)
+	if result.RowsAffected == 0{
+		return fmt.Errorf("cant find story with passed ID - %d", id)
+	}
+
+	story.IsHighlighted = false
+
+	repo.Database.Save(story)
+	return nil
+}

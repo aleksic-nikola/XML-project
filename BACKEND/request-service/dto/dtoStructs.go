@@ -42,6 +42,9 @@ type NewVerified struct {
 	VerifiedType data.VerifiedType `json:"verified_type"`
 }
 
+
+
+
 func (ur *UsernameRoleDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(ur)
@@ -61,3 +64,5 @@ func (uvrdto *UpdateVerificationRequestDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(uvrdto)
 }
+
+

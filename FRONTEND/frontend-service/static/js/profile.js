@@ -17,6 +17,8 @@ var this_is_my_profile // profile of currently logged in user
 var user_on_page
 var whoCanISee
 var currentOpenedPost
+var storiesArchive
+var storiesHighlighted = []
 
 $(document).ready(function () {
 
@@ -32,6 +34,10 @@ $(document).ready(function () {
     //checkUserPublicity()
 
     getMyDatas()
+
+
+    setArchiveStories() //-------------------------------
+    
 
 })
 
@@ -214,7 +220,7 @@ function getAuthInfoForPageUser() {
 
 
 document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("gallery-item")) {
+    if (e.target.classList.contains("gallery-item")  ) {
 
         const src = e.target.getAttribute("src");
         //console.log(src);
@@ -237,6 +243,20 @@ document.addEventListener("click", function (e) {
         //Rendering unsaved button
 
         // todo: za sve pillove posebne liste showovati
+        $("#image_description").show()
+        $("#like_button_div").show()
+        $("#like").show()
+        $("#dislike").show()
+        $("#save").show()
+        $("#removeFromCollection").show()
+        $("#mydatatable").show()
+        $("#writecomment_section").show()
+        $("#commentsH5").show()
+        $("#report").show()
+        $("#user_posted_by").show()
+        $("#setAsHighlight").hide()
+
+        console.log("TRENUTNO currentPill: " + currentPill)
         if (currentPill == "saved") {
             $("#removeFromCollection").show()
             var c = select_group.children(":selected").attr("id");
@@ -255,6 +275,22 @@ document.addEventListener("click", function (e) {
             $("#removeFromCollection").hide()
             currentOpenedPost = post_id
             showImageModal(post_id.split("-")[1], postListDisliked)
+        }else if(currentPill === "archiveStories"){
+            currentOpenedPost = post_id
+            $("#image_description").hide()
+            $("#like_button_div").hide()
+            $("#like").hide()
+            $("#dislike").hide()
+            $("#save").hide()
+            $("#removeFromCollection").hide()
+            $("#mydatatable").hide()
+            $("#writecomment_section").hide()
+            $("#commentsH5").hide()
+            $("#report").hide()
+            $("#user_posted_by").hide()
+            $("#setAsHighlight").show()
+            showStoryModalArchive(post_id.split("-")[1], storiesArchive)
+            
         }
     }
 })

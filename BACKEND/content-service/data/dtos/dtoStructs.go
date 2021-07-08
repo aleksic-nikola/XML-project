@@ -27,6 +27,15 @@ type CommentDto struct {
 	Text string `json:"text"`
 }
 
+type StoryDto struct{
+	StoryID int `json:"story_id"`
+}
+
+func (c *StoryDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(c)
+}
+
 func (c *CommentDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(c)

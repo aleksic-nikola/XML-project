@@ -152,9 +152,11 @@ func main() {
 
 	postRouter.HandleFunc("/addposttofavourites", ph.AddPostToFavourites)
 	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavourites)
+	getRouter.HandleFunc("/getallcollections", ph.GetAllFavourites)
 
+	postRouter.HandleFunc("/deletecollection", ph.DeleteCollection)
+	postRouter.HandleFunc("/deletepostfromcollection", ph.DeletePostFromCollection)
 	getRouter.HandleFunc("/getuserwhoblockedme", ph.GetUsersWhoBlockedMe)
-
 
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),

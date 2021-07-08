@@ -97,6 +97,20 @@ type PostIdDto struct {
 	Id uint `json:"id"`
 }
 
+type Collection struct {
+	Name []string `json:"name"`
+}
+
+func (col *Collection) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(col)
+}
+
+func (col *Collection) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(col)
+}
+
 func (ptf *PostIdsDto) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(ptf)

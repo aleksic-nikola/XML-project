@@ -443,6 +443,96 @@ func (service *ProfileService) GetAllNonFollowedPrivateProfiles(username string)
 	return err, retList
 }
 
+func (service *ProfileService) GetFavouritPostsIds(roleDto dto.UsernameRole) (dto.Collection, error) {
+	profile, err := service.Repo.GetProfileByUsername(roleDto.Username)
+
+	if err != nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", roleDto.Username)
+		return dto.Collection{}, err
+	}
+
+	var collections dto.Collection
+
+	for _, f := range profile.Favourites {
+		collections.Name = append(collections.Name, f.CollectionName)
+	}
+
+	for _, cn := range collections.Name {
+		fmt.Println(cn)
+	}
+
+	return collections, nil
+}
+
+func (service *ProfileService) DeleteCollection(username string, collectionName string) error {
+	profile, err := service.Repo.GetProfileByUsername(username)
+
+	if err != nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", username)
+		return err
+	}
+
+	var newFavourites []data.Favourite
+
+	for _,col := range profile.Favourites {
+		if col.CollectionName != collectionName {
+			newFavourites = append(newFavourites, col)
+		}
+	}
+
+	err = service.Repo.ClearFavourites(profile)
+	profile.Favourites = newFavourites
+	err = service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in deleting collection")
+		return err
+	}
+
+	return nil
+}
+
+func (service *ProfileService) DeletePostFromCollection(username string, favourites dto.PostToFavourites) error {
+	fmt.Println(username)
+	profile, err := service.Repo.GetProfileByUsername(username)
+
+	if err != nil{
+		fmt.Errorf("Can't find any profile obj with username: %s\n", username)
+		return err
+	}
+
+	var newFavourites []data.Favourite
+	var singleFav data.Favourite
+
+	for _,col := range profile.Favourites {
+		if col.CollectionName == favourites.CollectionName {
+			var newSavedPostList []data.SavedPost
+			for _, post := range col.SavedPosts {
+				if post.PostId != favourites.PostId {
+					newSavedPostList = append(newSavedPostList, post)
+				}
+			}
+			singleFav.SavedPosts = newSavedPostList
+			singleFav.CollectionName = col.CollectionName
+			newFavourites = append(newFavourites, singleFav)
+
+		} else {
+			newFavourites = append(newFavourites, col)
+		}
+	}
+
+	err = service.Repo.ClearFavourites(profile)
+	profile.Favourites = newFavourites
+	err = service.Repo.UpdateProfile(profile)
+
+	if err != nil {
+		fmt.Errorf("Error while updating profile - Error in deleting collection")
+		return err
+	}
+
+	return nil
+}
+
 func (service *ProfileService) GetUsersWhoBlockedMe(myusername string) (error, []string) {
 
 	var listOfUsersWhoBlockedMe []string
@@ -469,4 +559,3 @@ func (service *ProfileService) GetUsersWhoBlockedMe(myusername string) (error, [
 
 	return err, listOfUsersWhoBlockedMe
 }
-

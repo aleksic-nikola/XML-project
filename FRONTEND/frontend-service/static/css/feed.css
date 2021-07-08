@@ -177,6 +177,7 @@ tbody {
   padding-bottom: 50px;
 }
 
+
 #btnTriggerStory {
   display: none;
 }
@@ -187,4 +188,7 @@ tbody {
 
 .modal-content {
   height: 550px;
+
+.carousel-indicators .li{
+    background-color: rgb(0, 0, 0);
 }

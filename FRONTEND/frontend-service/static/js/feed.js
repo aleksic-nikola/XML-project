@@ -29,9 +29,7 @@ function loadStories() {
            fillStories(data)
         },
         error : function() {
-            console.log("Erorr at ajax call!")
-            
-            
+            console.log("Erorr at ajax call!")    
         }
     })
 }
@@ -237,12 +235,14 @@ function generatePostsHTML1(allPosts){
         // BACKEND/content-service/temp/id-3/3d-render-banner-with-network-communications-low-poly-design.png
         postsHTML += '<div class="one-feed text-center">' + '\n';
         postsHTML += '<div class="form-group">' + '\n';
-        postsHTML += '<img src="img/avatar.png" class="profile_img">' + '\n';
+        postsHTML += '<a href="profile.html?'+ allPosts[i].postedby +'"><img src="img/avatar.png" class="profile_img"></a>' + '\n';
                                             //dodati posle href
-        postsHTML += '<a class="postedby" href="">' + allPosts[i].postedby + '</a>\n';
+        postsHTML += '<a class="postedby" href="profile.html?'+ allPosts[i].postedby +'">' + allPosts[i].postedby + '</a>';
+        postsHTML += `<button class="btn btn-secondary" style="float: right;" id="${allPosts[i].ID}" onclick="setGlobalPostToReport(this.id)" data-toggle="modal" data-target="#reportModal">&nbsp&nbsp&nbsp&nbsp Report &nbsp&nbsp&nbsp&nbsp</button></p>`;
+
         postsHTML += '</div>' + '\n';
 
-        postsHTML += '<div class="card">' + '\n';
+        postsHTML += '<div class="card" style="width: 100%;">' + '\n';
             //          ovde treba ici allPosts[i].medias[j].path,  ubaciti jos jednu for petlju, ali trenutno putanje nisu sredjene
             //CAROUSEL deo
         //postsHTML += media_string
@@ -312,9 +312,22 @@ function generatePostsHTML1(allPosts){
         postsHTML += '<div class="card-body"></div>' + '\n';
         postsHTML += '<p class="card-text text-left description_part">' + allPosts[i].description + '</p>' + '\n';
         postsHTML += '<p class="text-left"></p>'
-        postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
-        postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
-        postsHTML += `<button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+
+        postsHTML += `<div class="row">
+            <div class="col">
+                <button class="btn btn-success" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>
+            </div>
+            <div class="col">
+                <button class="btn btn-danger" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>
+            </div>
+            <div class="col">
+                <button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>
+            </div>
+        </div>`
+
+        //postsHTML += `<button class="btn btn-info" id="like-${allPosts[i].ID}" onclick="likePost(this.id)">&nbsp&nbsp&nbsp&nbsp Like &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+        //postsHTML += `<button class="btn btn-info" id="dislike-${allPosts[i].ID}" onclick="dislikePost(this.id)">&nbsp&nbsp&nbsp&nbsp Dislike &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
+        //postsHTML += `<button class="btn btn-warning" id="${allPosts[i].ID}" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModal">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button></p><hr>` + '\n';
         postsHTML += '<h5 class="text-left">Comments:</h5><hr>' + '\n';
         postsHTML += '<table class="table" id="mydatatable">'
         postsHTML += '<thead class="hideheader">'

@@ -143,7 +143,7 @@ function whoAmI() {
 
             //prebaceno ovde zbog sinhronizacije
             getMyDatas1();
-            setFollowers();
+            //setFollowers();
 
 
             if (user_on_page.username == this_is_me.username) {
@@ -152,7 +152,8 @@ function whoAmI() {
             else {
                 modifyForNotMyProfile()
             }
-            fetchCurrentUserPosts()
+            //fetchCurrentUserPosts()
+            setFollowersAndCheckIfImHere()
 
         },
         error: function () {
@@ -751,3 +752,59 @@ function checkIfImInHisBlacklist(data) {
 //Dropdown sa nazivima kolekcija
 //Klik na tab, poziva se da se vrati lista naziva kolekcija(profile service), popuniti dropdown (1. vrednost prazna)
 //Kad se odabere stavka iz dd, 
+
+function setFollowersAndCheckIfImHere() {
+    var obj = {
+        username: user_on_page.username
+    }
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getAllFollowers',
+        data: JSON.stringify(obj),
+        contentType: 'application/json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+
+            $("#numberOfFollowers").text(data.length)
+            allFollowers = data
+
+            if (loggedIn) {
+                checkIfAlreadyFollowed() //this change Follow button to disable if user already follow some profile
+                fetchCurrentUserPosts()
+            }    
+        },
+        error: function (xhr, status, data) {
+
+        }
+    })
+
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getAllFollowing',
+        data: JSON.stringify(obj),
+        contentType: 'application/json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+
+            if (data == null) {
+                $("#numberOfFollowing").text(0)
+            } else {
+                $("#numberOfFollowing").text(data.length)
+
+            }
+            allFollowing = data;
+
+        },
+        error: function (xhr, status, data) {
+
+        }
+    })
+}

@@ -6,7 +6,7 @@ $(document).ready(function() {
     //loadStories()
     setMyProfileHREF();
     getCurrentUserInformation()  // loadFeedContent i loadStories su prebaceni u success-u ove fje
-
+    loadAllFollowReqs()
     // pozovem fju gde uzimam trenutnog usera - izvadim mu liste (blacklist, graylist)
     // varijable globalna za usera --> currentUserFeed
     // kad to uzmem, u success --> loadStories, LoadFeedContent --> postedby na contentu i continue ako je u nekoj listi(mute/block) i tjt

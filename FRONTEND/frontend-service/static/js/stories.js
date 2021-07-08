@@ -1,9 +1,11 @@
 var userStoriesMap ={} 
 var stories_here
 function fillStories(data) {
+    var isOnProfile = false
     stories_here = $('#stories_here_plz')
     if (window.location.href.includes("profile")){
         stories_here = $('#highlightedStoriesHere')
+        isOnProfile=true
     }
     
     var html = ''
@@ -34,6 +36,12 @@ function fillStories(data) {
 
     for ( [postedBy, s] of Object.entries(userStoriesMap)) {
         story_url = "./img/avatar.png"
+        if(isOnProfile){
+        story_url = "./img/highlights.png"
+
+        }
+
+
         html+= `<img class="card-img-center story-css" onClick="showStoryModal('${postedBy}')" height="80px" src="${story_url}" alt="Card image cap"></img>`
 
 
@@ -58,6 +66,8 @@ function showStoryModal(postedBy) {
     if(post[0].media.path.split(".")[1] != 'jpg' && post[0].media.path.split(".")[1] != 'jpeg' && post[0].media.path.split(".")[1] != 'jfif' && post[0].media.path.split(".")[1] != 'png' && post.length == 1) {
 		// only one VIDEO
 
+
+        /*
 		$("#insertStory").replaceWith(`
         <div id="insertStory">
 		<video width="100%" height="100%" controls alt="Card image cap" class="card-img-top modal-img">
@@ -68,6 +78,37 @@ function showStoryModal(postedBy) {
         </div>
 		
 		`)
+        */
+
+        divId = "insertStory"
+        if(window.location.href.includes("profile")){
+            divId = "insertStoryHighlight"
+        }
+
+        var htmlOneVideo = `
+            <div id="${divId}">
+            <video width="100%" height="100%" controls alt="Card image cap" class="card-img-top modal-img">
+                <source src="${post[0].media.path}" type="video/mp4">                       
+                Your browser does not support the video tag.
+            </video>
+            <p> <i> Posted by</i>:  <a href="profile.html?${post[0].postedby}"><b> ${post[0].postedby}</b></a>  </p>
+            </div>
+        
+        `
+
+        if(window.location.href.includes("profile")){
+                $("#insertStoryHighlight").replaceWith(htmlOneVideo)
+                $('#highlightedStoryModal').modal('show');
+            }
+        else{
+            $("#insertStory").replaceWith(htmlOneVideo)
+            $("#btnTriggerStory").click();
+        }
+
+
+
+
+
 
 	}
     else{
@@ -145,16 +186,24 @@ function showStoryModal(postedBy) {
 
             
             //stories_here.replaceWith(postsHTML)
+            
+            if (window.location.href.includes("profile")){
+                $("#insertStoryHighlight").replaceWith(postsHTML)
+                $('#highlightedStoryModal').modal('show');
+            }
+            else{
+                $("#insertStory").replaceWith(postsHTML)
+                $("#btnTriggerStory").click();
+            }
 
-            $("#insertStoryHighlight").replaceWith(postsHTML)
-            $('#highlightedStoryModal').modal('show');
-            $("#btnTriggerStory").click();
+            
+            
             
             //which_image.html(postsHTML)
 
         } else {
             // Only 1 picture
-
+            /*
             $("#insertStory").replaceWith(`
             <div id="insertStory">
             <img 
@@ -164,7 +213,40 @@ function showStoryModal(postedBy) {
             <p> <i> Posted by</i>:  <a href="profile.html?${post[0].postedby}"><b> ${post[0].postedby}</b></a>  </p>	
             "</div>"
             `)
+            */
+
             $("#btnTriggerStory").click();
+
+            divId = "insertStory"
+            if(window.location.href.includes("profile")){
+                divId = "insertStoryHighlight"
+            }
+
+            htmlOneStory = `<div id="${divId}">
+                <img 
+                class="card-img-top modal-img" 
+                src="${post[0].media.path}" 
+                alt="Card image cap">
+                <p> <i> Posted by</i>:  <a href="profile.html?${post[0].postedby}"><b> ${post[0].postedby}</b></a>  </p>	
+                "</div>"
+            `
+
+
+
+            if(window.location.href.includes("profile")){
+                $("#insertStoryHighlight").replaceWith(htmlOneStory)
+                $('#highlightedStoryModal').modal('show');
+            }
+            else{
+                $("#insertStory").replaceWith(htmlOneStory)
+                $("#btnTriggerStory").click();
+            }
+
+
+
+
+
+
         }
 
     }

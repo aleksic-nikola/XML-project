@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"io"
 	"log"
@@ -436,6 +437,26 @@ func (s *StoryHandler) GetAllArchiveStories(rw http.ResponseWriter, r *http.Requ
 	rw.WriteHeader(http.StatusOK)
 	rw.Header().Set("Content-Type", "application/json")
 	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
+
+
+}
+
+func (sh *StoryHandler) GetAllStoriesByUser(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+
+
+	stories := sh.Service.GetAllArchiveStories(username)
+	err := stories.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
 
 
 }

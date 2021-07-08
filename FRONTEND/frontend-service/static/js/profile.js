@@ -29,15 +29,17 @@ $(document).ready(function () {
 
 
 
-
     printOriginVariables()
     //checkUserPublicity()
 
     getMyDatas()
-
+    var visitedUsername = location.href.split("?")[1];
+    console.log("UZEO ")
+    console.log(visitedUsername)
+    setHighlightedStoriesProfile(visitedUsername)
 
     setArchiveStories() //-------------------------------
-    
+
 
 })
 
@@ -255,7 +257,7 @@ document.addEventListener("click", function (e) {
         $("#report").show()
         $("#user_posted_by").show()
         $("#setAsHighlight").hide()
-
+        $("#setAsHighlightOff").hide()
         console.log("TRENUTNO currentPill: " + currentPill)
         if (currentPill == "saved") {
             $("#removeFromCollection").show()
@@ -289,6 +291,7 @@ document.addEventListener("click", function (e) {
             $("#report").hide()
             $("#user_posted_by").hide()
             $("#setAsHighlight").show()
+            $("#setAsHighlightOff").show()
             showStoryModalArchive(post_id.split("-")[1], storiesArchive)
             
         }

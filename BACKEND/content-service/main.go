@@ -173,6 +173,8 @@ func main() {
 	getRouter.HandleFunc("/current/getAllPostsForFeed", ph.GetAllPostsForFeedForCurrentUser)
 	getRouter.HandleFunc("/current/getallstoriesforfeed", sh.GetAllStoriesForFeedForCurrentUser)
 	getRouter.HandleFunc("/getuserbypostid/{id}", ph.GetUserByPost)
+	getRouter.HandleFunc("/getAllStoriesByUser/{username}", sh.GetAllStoriesByUser)
+
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)

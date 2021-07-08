@@ -178,7 +178,7 @@ tbody {
 
 .moreactionbtn {
   float: left;
-  width : 100%;
+  width: 100%;
   margin-left: -2px;
 }
 
@@ -198,4 +198,8 @@ tbody {
   margin-left: 15px;
   color: black;
   float: left;
+}
+
+#setAsHighlightOff {
+  margin-right: 20px;
 }

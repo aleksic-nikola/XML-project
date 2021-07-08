@@ -157,8 +157,9 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 			finalPath = "./temp/id-" + strconv.Itoa(int(userID)) + "/" + files[i].Filename
 		} else{
 			finalPath =  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), files[i].Filename )
+
 		}
-		
+
 		out, err := os.Create(finalPath)
 
 		fmt.Println("final path is" + finalPath)

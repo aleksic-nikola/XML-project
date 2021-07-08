@@ -61,6 +61,11 @@ func (ur *UsernameDto) FromJSON(r io.Reader) error {
 	return e.Decode(ur)
 }
 
+func (ur *UsernameDto) ToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(ur)
+}
+
 type PostIdsDto struct {
 	Ids []PostIdDto `json:"ids"`
 }

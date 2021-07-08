@@ -2,13 +2,13 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
-	"time"
 )
 
 type ProfileNotification struct {
-	NotificationID uint                    `json:"notification_id"`
-	Notification   Notification            `json:"notification" gorm:"foreignkey=NotificationID"`
+	gorm.Model
+	Notification   Notification            `json:"notification" gorm:"embedded"`
 	Type           ProfileNotificationType `json:"type" gorm:"type:string"`
 }
 
@@ -28,11 +28,11 @@ func GetProfileNotifications() ProfileNotifications {
 	return profileNotificationList
 }
 
-var profileNotificationList = []*ProfileNotification{
-	{
+var profileNotificationList = []*ProfileNotification{}
+	/*{
 		Notification: Notification{
 
-			From:      "me",
+			FromUser:      "me",
 			For:       "you",
 			IsRead:    false,
 			Timestamp: time.Now(),
@@ -43,7 +43,7 @@ var profileNotificationList = []*ProfileNotification{
 	{
 		Notification: Notification{
 
-			From:      "me",
+			FromUser:      "me",
 			For:       "you",
 			IsRead:    true,
 			Timestamp: time.Now().AddDate(0, 0, -12),
@@ -54,11 +54,11 @@ var profileNotificationList = []*ProfileNotification{
 	{
 		Notification: Notification{
 
-			From:      "me",
+			FromUser:      "me",
 			For:       "you",
 			IsRead:    true,
 			Timestamp: time.Now().AddDate(0, 0, -2),
 		},
 		Type: message,
 	},
-}
+}*/

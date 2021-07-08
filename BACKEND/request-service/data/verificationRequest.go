@@ -8,7 +8,7 @@ import (
 type VerificationRequest struct {
 
 	Request   Request `json:"request" gorm:"embedded"`
-	Category VerifiedType `json:"verifiedType"`
+	Category VerifiedType `json:"verifiedtype"`
 	Image string `json:"image"`
 	Name string `json:"name"`
 	LastName string `json:"lastname"`

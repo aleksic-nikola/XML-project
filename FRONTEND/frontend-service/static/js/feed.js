@@ -349,7 +349,7 @@ function generatePostsHTML1(allPosts){
             var comms = allPosts[i].comments
             postsHTML += '<tr>'
                                                 //dodati posle href za profil
-            postsHTML +='<td class="first_td"> <a class="commentedby" href="">' +  comms[h].postedby + '</a>'
+            postsHTML +='<td class="first_td"> <a class="commentedby" href="profile.html?' + comms[h].postedby +'">' +  comms[h].postedby + '</a>'
             postsHTML += '</td>'
             postsHTML += '<td>' + comms[h].text +'</td>'
             postsHTML += '</tr>'

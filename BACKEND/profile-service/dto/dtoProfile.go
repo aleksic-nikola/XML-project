@@ -39,7 +39,6 @@ func (u *FollowRequestDto) ToJSON(w io.Writer) error {
 	return e.Encode(u)
 }
 
-
 func (u *UsernameRoleDto) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(u)
@@ -54,9 +53,9 @@ func (t *TokenDto) ToJSON(w io.Writer) error {
 	return e.Encode(t)
 }
 
-func (ur *UsernameRoleDto) FromJSON(r io.Reader) error {
+func (u *UsernameRoleDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
-	return e.Decode(ur)
+	return e.Decode(u)
 }
 
 type NewVerified struct {

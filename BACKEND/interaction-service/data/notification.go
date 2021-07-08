@@ -3,17 +3,13 @@ package data
 import (
 	"encoding/json"
 	"io"
-	"time"
-
-	"gorm.io/gorm"
 )
 
 type Notification struct {
-	gorm.Model
-	From      string    `json:"from"`
-	For       string    `json:"for"`
-	IsRead    bool      `json:"isread"`
-	Timestamp time.Time `json:"timestamp"`
+	FromUser string `json:"fromUser"`
+	ForUser  string `json:"forUser"`
+	IsRead   bool   `json:"isread"`
+	Text     string `json:"text"`
 }
 
 func (m *Notification) FromJSON(r io.Reader) error {

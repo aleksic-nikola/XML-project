@@ -2,13 +2,13 @@ package data
 
 import (
 	"encoding/json"
+	"gorm.io/gorm"
 	"io"
-	"time"
 )
 
 type PostNotification struct {
-	NotificationID uint                 `json:"notification_id"`
-	Notification   Notification         `json:"notification" gorm:"foreignkey=NotificationID"`
+	gorm.Model
+	Notification   Notification         `json:"notification" gorm:"embedded"`
 	PostID         int                  `json:"postid"`
 	Type           PostNotificationType `json:"type" gorm:"type:string"`
 }
@@ -25,15 +25,20 @@ func (p *PostNotifications) ToJSON(w io.Writer) error {
 	return e.Encode(p)
 }
 
+func (p *PostNotifications) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(e)
+}
+
 func GetPostNotifications() PostNotifications {
 	return postNotificationList
 }
 
-var postNotificationList = []*PostNotification{
-	{
+var postNotificationList = []*PostNotification{}
+	/*{
 		Notification: Notification{
 
-			From:      "me",
+			FromUser:      "me",
 			For:       "you",
 			IsRead:    false,
 			Timestamp: time.Now(),
@@ -45,7 +50,7 @@ var postNotificationList = []*PostNotification{
 	{
 		Notification: Notification{
 
-			From:      "me",
+			FromUser:      "me",
 			For:       "you",
 			IsRead:    true,
 			Timestamp: time.Now().AddDate(0, 0, -12),
@@ -57,7 +62,7 @@ var postNotificationList = []*PostNotification{
 	{
 		Notification: Notification{
 
-			From:      "me",
+			FromUser:      "me",
 			For:       "you",
 			IsRead:    true,
 			Timestamp: time.Now().AddDate(0, 0, -2),
@@ -65,4 +70,4 @@ var postNotificationList = []*PostNotification{
 		PostID: 12,
 		Type:   like,
 	},
-}
+}*/

@@ -20,16 +20,41 @@ function likePost(id) {
 		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
 	    },
 	    success: function (data) {
-		alert('successfully liked')
+			alert('successfully liked')
+			createNotification(split, "LIKE")
 	    },
 	    error: function () {
-		alert('cant like this tntntntn')
-    
-    
+			alert('you have already liked this post')    
 	    }
 	})
 
 	console.log('here')
+}
+
+function createNotification(postId, type) {
+	var obj = {
+		post_id : parseInt(postId),
+		type : type
+	}
+
+	$.ajax({
+	    type: 'POST',
+	    crossDomain: true,
+	    url: INTERACTION_SERVICE_URL + '/postnotification/add',
+	    contentType: 'application/json',
+		//dataType: 'json',
+		data : JSON.stringify(obj),
+	    beforeSend: function (xhr) {
+		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+	    },
+	    success: function () {
+			alert('notification created')
+	    },
+	    error: function () {
+			alert('error creating like notif')    
+	    }
+	})
+
 }
 
 function dislikePost(id) {
@@ -53,17 +78,17 @@ function dislikePost(id) {
 		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
 	    },
 	    success: function (data) {
-		alert('successfully disliked')
+			alert('successfully disliked')
+			createNotification(split, "DISLIKE")
 	    },
 	    error: function () {
-		alert('cant dislike this tntntntn')
-    
-    
+			alert('you have already disliked this post')   
 	    }
 	})
 
 	console.log('here')
 }
+
 
 function postComment(id) {
 
@@ -84,6 +109,7 @@ function postComment(id) {
 		},
 		success: function (data) {
 		    alert('successfully posted comment')
+			createNotification(split, "COMMENT")
 		},
 		error: function () {
 		    alert('cant post this tntntntn')

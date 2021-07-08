@@ -653,6 +653,23 @@ func (handler *PostHandler) GetFavouritePosts(rw http.ResponseWriter, r *http.Re
 	rw.WriteHeader(http.StatusOK)
 }
 
+func (handler *PostHandler) GetUserByPost(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	postid := params["id"]
+	fmt.Println(postid)
+
+	username := handler.Service.GetUserByPost(postid)
+
+	err := username.ToJSON(rw)
+
+	if err !=nil{
+		fmt.Println("Error at ToJSONING username")
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
+
 func GetFavouritePostsIds(tokenString string, collection string) (*http.Response, error) {
 	godotenv.Load()
 

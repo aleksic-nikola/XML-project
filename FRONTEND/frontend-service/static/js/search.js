@@ -462,11 +462,18 @@ function showModalForLoggedUser(id, postList) {
 		if (p.ID == id) {
 			post = p
 			console.log('post is ' + post)
+
+			$("#user_posted_bysearch").text(post.postedby)
+			$("#user_posted_bysearch").attr("href", "profile.html?" + post.postedby)
+		
+			//console.log("HEEEEEEEEEEEEJ")
+			//console.log(post.medias[0].postedby)
 		} else {
 			return
 		}
 	})
 	var media = post.medias[0].path
+
 
 	//console.log("==============> length of post (num of content): " + post.medias.length)
 
@@ -584,7 +591,7 @@ function showModalForLoggedUser(id, postList) {
 		comment_html += `
 			<tr>
 			<td class = "first_td">
-			<a class ="commentedby" href=""> ${c.postedby}: </a> 
+			<a class ="commentedby" href="profile.html?${c.postedby}"> ${c.postedby}: </a> 
 			</td>
 			<td>
 			${c.text}
@@ -593,6 +600,9 @@ function showModalForLoggedUser(id, postList) {
 		`
 	})
 
+	console.log("MYCOMMENTSSSS: ")
+	console.log(post.comments)
+	
 	comments_body.html(comment_html)
 
 	post_comment_button_div.html(`

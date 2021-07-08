@@ -66,3 +66,52 @@ func (handler *VerifiedHandler) CreateVerified(rw http.ResponseWriter, r *http.R
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+func (u *VerifiedHandler) CheckIfVerified(rw http.ResponseWriter, r *http.Request) {
+
+	userRoleDto, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+
+	if err != nil {
+		fmt.Println("Error getting verified status")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("><><><><><")
+	fmt.Println(userRoleDto)
+	id,err := u.ProfileService.GetIdByUsername(userRoleDto.Username)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf(err.Error()),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	ver, err1 := u.Service.GetVerificationForUser(id)
+	fmt.Println("CheckIfVerified Error")
+	fmt.Println(err1)
+	if err1 != nil {
+		fmt.Println("THIS USER IS NOT VERIFIED BRO")
+		http.Error(
+			rw,
+			fmt.Sprintf(err1.Error()),
+			http.StatusBadRequest,
+		)
+		return
+	}
+
+	if ver.Profile.Username == "" {
+		fmt.Println("THIS USER IS NOT VERIFIED BRO")
+		http.Error(
+			rw,
+			fmt.Sprintf("This user is not verified"),
+			http.StatusBadRequest,
+		)
+		return
+	}
+	ver.ToJson(rw)
+	rw.WriteHeader(http.StatusOK)
+}
+

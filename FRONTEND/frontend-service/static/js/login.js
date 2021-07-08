@@ -33,11 +33,37 @@ function login() {
 }
 
 function redirectMe() {
-    console.log('redirecting user to feed page')
-    window.location.href = 'feed.html'
+    whoamiredirect()
 }
 
 function logout(){
     localStorage.removeItem('myToken');
     window.location.href = 'login.html';
+}
+
+function whoamiredirect() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: AUTH_SERVICE_URL + '/whoami',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+            if (data.role == 'admin') {
+                window.location.href = 'admin.html'
+                return
+            }
+            console.log('redirecting user to feed page')
+            window.location.href = 'feed.html'
+
+        },
+        error: function () {
+
+            alert('Could not redirect user')
+        }
+    })
 }

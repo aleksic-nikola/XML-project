@@ -61,3 +61,12 @@ func (uvrdto *UpdateVerificationRequestDto) FromJSON(r io.Reader) error {
 	e := json.NewDecoder(r)
 	return e.Decode(uvrdto)
 }
+
+type UserIdDto struct {
+	UserId uint `json:"user_id"`
+}
+
+func (ur *UserIdDto) FromJSON(r io.Reader) error {
+	e := json.NewDecoder(r)
+	return e.Decode(ur)
+}

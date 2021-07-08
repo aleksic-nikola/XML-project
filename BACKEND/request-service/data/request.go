@@ -12,7 +12,7 @@ import (
 type Request struct {
 	gorm.Model
 	SentBy string `json:"sentby" gorm:"primaryKey"`
-	Status RequestStatus `json:"RequestStatus"`
+	Status RequestStatus `json:"requeststatus"`
 }
 
 func (p *Request) FromJSON(r io.Reader) error {

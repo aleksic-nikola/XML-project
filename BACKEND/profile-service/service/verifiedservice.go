@@ -25,3 +25,8 @@ func (service *VerifiedService) CreateNewVerified(profile *data.Profile, verifie
 
 	return err
 }
+
+func (service *VerifiedService) GetVerificationForUser(id uint) (data.Verified, error) {
+
+	return service.Repo.GetVerificationForUser(id)
+}

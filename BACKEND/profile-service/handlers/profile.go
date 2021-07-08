@@ -1105,3 +1105,8 @@ func (handler *ProfileHandler) DeletePostFromCollection(rw http.ResponseWriter, 
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+func GetCurrentUserWrapper(tokenString string) (dto.UsernameRole, error) {
+
+	return getCurrentUserCredentials(tokenString)
+}

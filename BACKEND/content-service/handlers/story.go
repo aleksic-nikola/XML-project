@@ -82,13 +82,7 @@ func (p *StoryHandler) UploadStory(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println(res["description_part"])
 	fmt.Println(id)
 
-	path, _ := filepath.Abs("./")
-	fmt.Println(filepath.Join(path, "temp")	)
-	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
-	fmt.Println(filepath.Join(path, "temp/id-" + strconv.Itoa(int(userID))))
-	//tempFile, err := ioutil.TempFile(filepath.Join(path, "temp"), "upload-*.png")
 	var medias []data.Media
-
 	for i, _ := range files { // loop through the files one by one
 		file, err := files[i].Open()
 		defer file.Close()
@@ -96,11 +90,18 @@ func (p *StoryHandler) UploadStory(rw http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(rw, err)
 			return
 		}
-		prepath, err:= os.Getwd()
-		finalpath := filepath.Join(prepath, "temp")
-		filepath :=  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), files[i].Filename )
-		out, err := os.Create(filepath)
-		fmt.Println("final path is" + finalpath)
+
+		finalPath := ""
+		if os.Getenv("DOCKERIZED")== "yes" {
+			fmt.Println("USAO DA JE DOKERIZED!")
+			finalPath = "./temp/id-" + strconv.Itoa(int(userID)) + "/" + files[i].Filename
+		} else{
+			finalPath =  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(userID)), files[i].Filename )
+
+		}
+
+		out, err := os.Create(finalPath)
+		fmt.Println("final path is" + finalPath)
 
 		defer out.Close()
 		if err != nil {
@@ -117,6 +118,8 @@ func (p *StoryHandler) UploadStory(rw http.ResponseWriter, r *http.Request) {
 		// TODO: FIX THIS
 		var media data.Media
 		media.Path = "temp/id-" + strconv.Itoa(int(userID)) + "/" + files[i].Filename
+		//media.Path = finalPath
+
 		var location data.Location
 		location.Country = "some country"
 		location.City = "some_city"
@@ -131,21 +134,33 @@ func (p *StoryHandler) UploadStory(rw http.ResponseWriter, r *http.Request) {
 	// for is over
 	// create the actual post with uris
 
-	var story data.Story
-	story.PostedBy = dto.Username
-	story.Media = medias[0]
 
 
-	err = p.Service.CreateStory(&story)
+	for i, _ := range medias{
+		var story data.Story
+		story.PostedBy = dto.Username
 
-	if err != nil {
-		http.Error(
-			rw,
-			fmt.Sprintf("Error creating STORY %s", err),
-			http.StatusInternalServerError,
-		)
-		return
+		story.Media = medias[i]
+		fmt.Println("OVDE DOBILI ZA STORY: ")
+		fmt.Println(story.Media)
+		err = p.Service.CreateStory(&story)
+
+		if err != nil {
+			fmt.Println("USAO U GRESKU CREATING STORY!")
+			http.Error(
+				rw,
+				fmt.Sprintf("Error creating STORY %s", err),
+				http.StatusInternalServerError,
+			)
+			return
+		}
+
 	}
+
+	//story.Media = medias[0]
+
+
+
 
 	rw.WriteHeader(http.StatusOK)
 

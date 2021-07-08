@@ -22,7 +22,7 @@
             <a class="navbar-brand brand" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
 
             <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
-
+            <button class="btn btn-primary" onclick="search()">Search</button>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -37,9 +37,7 @@
                             <span id="numOfFollowReqs"></span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Messages </a>
-                    </li>
+
 
                     <li class="nav-item active">
                         <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
@@ -326,7 +324,7 @@
                                             <div class="writecomment_section">
                                                 <div class="form-group">
                                                     <textarea class="form-control comment_textarea"
-                                                        id="insert_comment" rows="2"
+                                                        id="insert_comment_profile" rows="2"
                                                         placeholder="Add a comment..."></textarea>
                                                     <div id="post_comment_button_div">
                                                         <button class="btn btn-primary postcommentbtn"
@@ -904,7 +902,9 @@
     <script src="js/likecomment.js"></script>
     <script src="js/likeddislikedposts.js"></script>
     <script src="js/blockmute.js"></script>
+    <script src="js/searchinput.js"></script>
     <script src="js/sensitivereport.js"></script>
+
 
 </body>
 

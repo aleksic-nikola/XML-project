@@ -9,6 +9,8 @@ function likePost(id) {
 	if (window.location.href.includes("profile")) {
 		// na profilu smo
 		split = currentOpenedPost.split("-")[1]
+	} else if (window.location.href.includes("search")) {
+		split = currentOpenedPost.split("-")[1]
 	}
     
 	$.ajax({
@@ -67,6 +69,8 @@ function dislikePost(id) {
 	if (window.location.href.includes("profile")) {
 		// na profilu smo
 		split = currentOpenedPost.split("-")[1]
+	} else if (window.location.href.includes("search")) {
+		split = currentOpenedPost.split("-")[1]
 	}
     
 	$.ajax({
@@ -91,12 +95,24 @@ function dislikePost(id) {
 
 
 function postComment(id) {
+	// alert(id)
+	var split;
+	var field;
 
-	var split = id.split("-")[1]
-	var field = $('#insert_comment-' + split)
-    
-	console.log('post is ' + split)
-	console.log(field.val())
+	// Comments on profile/feed/search
+	if (window.location.href.includes("profile")) {
+		// na profilu smo
+		split = id.split("-")[1]
+		field = $('#insert_comment_profile')
+	} else if (window.location.href.includes("search")) {
+		split = id.split("-")[1]
+		field = $('#insert_comment_search')
+		//alert($('#insert_comment_search').val())
+	} else {   //na feedu smo
+		split = id.split("-")[1]
+		field = $('#insert_comment-' + split)
+	}
+	// do ovde
     
 	$.ajax({
 		type: 'POST',
@@ -124,6 +140,8 @@ function setGlobalPostToSave(id) {
 
 	if (window.location.href.includes("profile")) {
 		// na profilu smo
+		postForSave = currentOpenedPost.split("-")[1]
+	} else if (window.location.href.includes("search")) {
 		postForSave = currentOpenedPost.split("-")[1]
 	}
 

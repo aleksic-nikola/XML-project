@@ -22,7 +22,7 @@
             <a class="navbar-brand brand" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
 
             <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
-
+            <button class="btn btn-primary" onclick="search()">Search</button>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -41,9 +41,7 @@
                             <span id="numOfFollowReqs"></span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"> Messages </a>
-                    </li>
+
 
                     <li class="nav-item">
                         <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
@@ -63,10 +61,11 @@
         <div class="row">
 
             <div class="col-sm-6">
-                <!-- STORY PART-->
+                <!--                        STORY PART-->
                 <div class="story-part">
+
                     <div class="scrollmenu" id="stories_here_plz">
-                        
+
                     </div>
                 </div>
                 <!-- STORY PART END-->
@@ -86,8 +85,7 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="post_form" enctype="multipart/form-data" action="ph"
-                                    method="post">
+                                <form id="post_form" enctype="multipart/form-data" action="ph" method="post">
                                     <div class="container">
                                         <div class="row">
                                             <div class="offset-5 col-3">
@@ -194,6 +192,28 @@
                 </div>
             </div>
         </div>
+        <button id="btnTriggerStory" hidden data-toggle="modal" data-target="#storyModal"></button>
+
+        <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xs modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="storyModalLabel">Story
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="storyModalWindow">
+                        <div class="container">
+                            <div id="insertStory"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
         <!--MODAL ZA SAVEOVANJE POSTOVA U FAVORITE-->
@@ -227,7 +247,13 @@
                             <input type="text" id="collection_field" class="form-control" placeholder="Collection name">
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-warning" id="save" onclick="savePost()">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
+
+                            <button class="btn btn-warning" id="save" onclick="savePost()" data-toggle="modal"
+                                data-target="#saveModal-${allPosts[i].ID}">&nbsp&nbsp&nbsp&nbsp Save
+                                &nbsp&nbsp&nbsp&nbsp</button>
+
+                            <button class="btn btn-warning" id="save" onclick="savePost()">&nbsp&nbsp&nbsp&nbsp Save
+                                &nbsp&nbsp&nbsp&nbsp</button>
                         </div>
                     </div>
                 </div>
@@ -235,6 +261,8 @@
         </div>
 
         <!--MODAL ZA SENSITIVE CONTENT REPORT-->
+
+
 
         <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable text-center">
@@ -245,17 +273,20 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">      
+                    <div class="modal-body">
                         <div class="form-group">
                             <input type="text" id="note" class="form-control" placeholder="Reason">
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-secondary" id="save" onclick="createSensitiveReport()">&nbsp&nbsp&nbsp&nbsp Send report &nbsp&nbsp&nbsp&nbsp</button>
+                            <button class="btn btn-secondary" id="save"
+                                onclick="createSensitiveReport()">&nbsp&nbsp&nbsp&nbsp Send report
+                                &nbsp&nbsp&nbsp&nbsp</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
 
 
@@ -276,6 +307,7 @@
     <script src="js/login.js"></script>
     <script src="js/feed.js"></script>
     <script src="js/followReqs.js"></script>
+    <script src="js/searchinput.js"></script>
     <script src="js/sensitivereport.js"></script>
 
 </body>

@@ -75,7 +75,7 @@ func (repo *ProfileRepository) GetAllFollowingByUsername(username string) []data
 	var profile data.Profile
 	id, _ := repo.GetIdByUsername(username)
 
-	repo.Database.Preload("Following").Find(&profile, id)
+	repo.Database.Preload("Following").Preload("Graylist").Preload("Blacklist").Find(&profile, id)
 	//fmt.Println("Ja sam " + profile.Username)
 	//fmt.Println("******************* JA PRATIM SVE: ********************")
 	//fmt.Println(profile.Following)
@@ -214,7 +214,7 @@ func (repo *ProfileRepository) ClearGrayList(profile *data.Profile) error {
 func (repo *ProfileRepository) GetAllPublicProfiles() (error, data.Profiles) {
 
 	var profiles data.Profiles
-	err := repo.Database.Where("is_public = ?", true).Find(&profiles)
+	err := repo.Database.Preload("Blacklist").Preload("Graylist").Where("is_public = ?", true).Find(&profiles)
 
 	if err.Error != nil {
 		fmt.Println(err.Error)
@@ -227,7 +227,7 @@ func (repo *ProfileRepository) GetAllPrivateProfiles(username string) (error, da
 
 	var profiles data.Profiles
 
-	err := repo.Database.Where("is_public = ? AND username != ?", false, username).Find(&profiles)
+	err := repo.Database.Preload("Graylist").Preload("Blacklist").Where("is_public = ? AND username != ?", false, username).Find(&profiles)
 
 	if err.Error != nil {
 		fmt.Println(err.Error)

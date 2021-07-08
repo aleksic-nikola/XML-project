@@ -108,6 +108,52 @@ function fillProfileDataFromProfile(data) {
 
     bio.val(data.biography)
     website.val(data.website)
+
+    getVerificationStatus()
+}
+
+function getVerificationStatus() {
+
+    $.ajax({
+        type:'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/checkcurrentuserverification',
+        contentType : 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success : function(data) {
+            setVerificationStatus(data)
+        },
+        error : function(xhr, status, data) {
+            //console.log(xhr)
+            //console.log('Cant get user data');
+
+            $('#verificationid').val('NOT VERIFIED')
+        }
+    })
+
+}
+
+function setVerificationStatus(data) {
+
+    const field = $('#verificationid')
+    var num = data.category
+    if (num == '0') {
+        field.val('INFLUENCER')
+	} else if (num == 1) {
+        return 'SPORTS'
+	} else if (num == 2) {
+        field.val('MEDIA')
+	} else if (num == 3) {
+        field.val('BUSINESS')
+	} else if (num == 4) {
+        field.val('BRAND')
+	} else {
+        field.val('ORGANIZATION')
+	}
+
 }
 
 function fillPrivacySettings(data) {

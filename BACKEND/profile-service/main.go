@@ -145,7 +145,7 @@ func main() {
 	postRouter.HandleFunc("/editnotifsettings", ph.EditProfileNotificationSettings)
 
 	postRouter.HandleFunc("/verified/create", vh.CreateVerified)
-
+	getRouter.HandleFunc("/checkcurrentuserverification", vh.CheckIfVerified)
 	postRouter.HandleFunc("/blockuser", ph.BlockUser)
 	postRouter.HandleFunc("/muteuser", ph.MuteUser)
 	postRouter.HandleFunc("/unblockuser", ph.UnblockUser)

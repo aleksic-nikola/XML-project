@@ -17,6 +17,11 @@ func (v *Verified) FromJSON(r io.Reader) error {
 	return e.Decode(v)
 }
 
+func (v* Verified) ToJson(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(v)
+}
+
 func (v* Verifieds) ToJson(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(v)

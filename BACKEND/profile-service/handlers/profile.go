@@ -1131,3 +1131,8 @@ func (handler *ProfileHandler) GetMyNotificationsSettings(rw http.ResponseWriter
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+func GetCurrentUserWrapper(tokenString string) (dto.UsernameRole, error) {
+
+	return getCurrentUserCredentials(tokenString)
+}

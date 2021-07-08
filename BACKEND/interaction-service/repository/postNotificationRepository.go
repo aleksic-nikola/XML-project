@@ -13,7 +13,12 @@ type PostNotificationRepository struct {
 
 func (repo *PostNotificationRepository) CreatePostNotification(postNotification *data.PostNotification) error {
 	result := repo.Database.Create(postNotification)
-	//TODO convert to logs
 	fmt.Println(result.RowsAffected)
 	return result.Error
+}
+
+func (repo *PostNotificationRepository) GetMyUnreadPostNotif(username string) data.PostNotifications {
+	var notifications data.PostNotifications
+	repo.Database.Where("is_read = false and for_user = ?", username).Find(&notifications)
+	return notifications
 }

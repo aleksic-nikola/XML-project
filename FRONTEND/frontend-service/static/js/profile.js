@@ -22,25 +22,89 @@ var storiesHighlighted = []
 
 $(document).ready(function () {
 
-
+    checkIfAuthOrNonAuth()
     //whoAmI()
+    // editprofmodal()
+    // fetchCurrentPageUser()
+    // loadAllFollowReqs()
+    // setMyProfileHREF();
+    // // hides collection button till opened
+    // $("#deleteCollection").hide()
+    // whoAmI2();
+
+    // // po defaultu je sakriven, pa kad je korisnik blokiran onda se prikazuje ovo dugme (checkIfUserIsMutedOrBlocked() -->u editprof.js je poziv)
+    // $("#umuteuserBtn").hide();
+
+
+    // printOriginVariables()
+    // //checkUserPublicity()
+
+    // getMyDatas()
+
+    var visitedUsername = location.href.split("?")[1];
+    setHighlightedStoriesProfile(visitedUsername)
+
+    //setArchiveStories()
+
+    //getNotifications()
+
+})
+
+function checkIfAuthOrNonAuth() {
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: AUTH_SERVICE_URL + '/whoami',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+            loggedIn = true 
+            buildAuthenticatedView()
+        },
+        error: function () {
+            loggedIn = false
+            buildNonAuthenticatedView()
+
+        }
+    })
+
+}
+
+function buildAuthenticatedView() {
+    console.log('Building Authenticated view..')
     editprofmodal()
     fetchCurrentPageUser()
+    loadAllFollowReqs()
+    setMyProfileHREF();
+    // hides collection button till opened
+    $("#deleteCollection").hide()
+    whoAmI2();
 
-
+    // po defaultu je sakriven, pa kad je korisnik blokiran onda se prikazuje ovo dugme (checkIfUserIsMutedOrBlocked() -->u editprof.js je poziv)
+    $("#umuteuserBtn").hide();
 
     printOriginVariables()
     //checkUserPublicity()
 
     getMyDatas()
-    var visitedUsername = location.href.split("?")[1];
-    setHighlightedStoriesProfile(visitedUsername)
-
+    getNotifications()
     setArchiveStories()
 
-    getNotifications()
+}
 
-})
+
+function buildNonAuthenticatedView() {
+
+    console.log('Building NonAuthenticated view..')
+    $("#deleteCollection").hide()
+    $("#umuteuserBtn").hide();
+    fetchCurrentPageUser()
+
+}
 
 function fetchCurrentUserPosts() {
 
@@ -54,7 +118,7 @@ function fetchCurrentUserPosts() {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            loggedIn = true;
+            //loggedIn = true;
             //console.log(data)
             //console.log('FETCHED POSTS FOR USER')
             postList = data
@@ -62,9 +126,10 @@ function fetchCurrentUserPosts() {
             //console.log(data)
             $('#num_of_posts').html(data.length)
             // checkUserPublicity()
+            checkUserPublicity()
         },
         error: function () {
-            loggedIn = false
+            //loggedIn = false
             //IamNotLoggedIn
 
 
@@ -90,7 +155,7 @@ function whoAmI() {
 
             //prebaceno ovde zbog sinhronizacije
             getMyDatas1();
-            setFollowers();
+            //setFollowers();
 
 
             if (user_on_page.username == this_is_me.username) {
@@ -99,12 +164,17 @@ function whoAmI() {
             else {
                 modifyForNotMyProfile()
             }
-            fetchCurrentUserPosts()
+            //fetchCurrentUserPosts()
+            setFollowersAndCheckIfImHere()
 
         },
         error: function () {
             loggedIn = false
+            console.log('who am I errored')
+            modifyForNotMyProfile()
             fetchCurrentUserPosts()
+            setFollowers()
+            //checkUserPublicity()
             //IamNotLoggedIn
 
 
@@ -129,6 +199,10 @@ function modifyForNotMyProfile() {
     var visitedUsername = location.href.split("?")[1];
 
     checkIfUserBlockedMeAndRestrict();
+
+    if(currentprofileObj == undefined) {
+        return 
+    }
 
     if(currentprofileObj.blacklist == undefined) {
         return
@@ -157,7 +231,7 @@ function fetchUser(username) {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            loggedIn = true;
+            //loggedIn = true;
             //console.log('succesfully fetched user')
             //console.log(data)
             user_on_page = data
@@ -208,6 +282,7 @@ function getAuthInfoForPageUser() {
         success: function (data) {
             //console.log(data)
             $('#current_name').html(data.name + ' ' + data.lastname)
+            
         },
         error: function (xhr, status, data) {
             //console.log(xhr)
@@ -392,12 +467,12 @@ function getOtherProfile(name) {
 
 async function setFollowers() {
 
-    try {
-        const res = await getMyDatas1()
+    // try {
+    //     const res = await getMyDatas1()
 
-    } catch (err) {
-        //console.log(err)
-    }
+    // } catch (err) {
+    //     //console.log(err)
+    // }
 
     var obj = {
         username: user_on_page.username
@@ -421,8 +496,10 @@ async function setFollowers() {
             $("#numberOfFollowers").text(data.length)
             allFollowers = data
             // //console.log(data.length)
-            checkIfAlreadyFollowed()    //this change Follow button to disable if user already follow some profile
-            checkUserPublicity()
+            if (loggedIn) {
+                checkIfAlreadyFollowed() //this change Follow button to disable if user already follow some profile
+            }    
+           //checkUserPublicity()
         },
         error: function (xhr, status, data) {
             //console.log(status)
@@ -446,7 +523,12 @@ async function setFollowers() {
             //console.log("PRVO SE OVO ZAVRSILO SET FOLLOWING")
             ////console.log("UKUPNO FOLLOWERA: ")
             // //console.log(data)
-            $("#numberOfFollowing").text(data.length)
+            if (data == null) {
+                $("#numberOfFollowing").text(0)
+            } else {
+                $("#numberOfFollowing").text(data.length)
+
+            }
             allFollowing = data;
             ////console.log(data.length)
         },
@@ -463,10 +545,14 @@ async function setFollowers() {
 
 function checkUserPublicity() {
     var user = user_on_page
+    console.log('user on page is')
+    console.log(user_on_page)
+    console.log('postListi is')
+    console.log(postList)
     //alert(user.privacy_setting.is_public)
     //console.log(user)
     //console.log(this_is_me)
-    if (user.username == this_is_me.username) {
+    if (this_is_me != undefined && user.username == this_is_me.username) {
         showPhotos(postList, "postsHere")
         return
     }
@@ -709,3 +795,59 @@ function checkIfImInHisBlacklist(data) {
 //Dropdown sa nazivima kolekcija
 //Klik na tab, poziva se da se vrati lista naziva kolekcija(profile service), popuniti dropdown (1. vrednost prazna)
 //Kad se odabere stavka iz dd, 
+
+function setFollowersAndCheckIfImHere() {
+    var obj = {
+        username: user_on_page.username
+    }
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getAllFollowers',
+        data: JSON.stringify(obj),
+        contentType: 'application/json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+
+            $("#numberOfFollowers").text(data.length)
+            allFollowers = data
+
+            if (loggedIn) {
+                checkIfAlreadyFollowed() //this change Follow button to disable if user already follow some profile
+                fetchCurrentUserPosts()
+            }    
+        },
+        error: function (xhr, status, data) {
+
+        }
+    })
+
+
+    $.ajax({
+        type: 'POST',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/getAllFollowing',
+        data: JSON.stringify(obj),
+        contentType: 'application/json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function (data) {
+
+            if (data == null) {
+                $("#numberOfFollowing").text(0)
+            } else {
+                $("#numberOfFollowing").text(data.length)
+
+            }
+            allFollowing = data;
+
+        },
+        error: function (xhr, status, data) {
+
+        }
+    })
+}

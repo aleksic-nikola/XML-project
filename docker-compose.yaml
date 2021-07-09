@@ -11,18 +11,6 @@ services:
       - ./BACKEND/Gateway/nginx.conf:/etc/nginx/nginx.conf
       - ./BACKEND/Gateway/api_gateway.conf:/etc/nginx/api_gateway.conf
   
-  frontend-service:
-    image: nistagram-frontend
-    container_name: frontend-service
-    build:
-      context: ./FRONTEND/frontend-service
-      dockerfile: Dockerfile
-    restart: always   
-    environment:
-      DOCKERIZED: ${DOCKERIZED}
-    networks:
-      - backend
-
   profile-service:
     image: nistagram-profile
     container_name: profile-service
@@ -152,11 +140,11 @@ services:
     networks:
       - backend
 
-  search-service:
-    image: nistagram-search
-    container_name: search-service
+  interaction-service:
+    image: nistagram-interaction
+    container_name: interaction-service
     build:
-      context: ./BACKEND/search-service
+      context: ./BACKEND/interaction-service
       dockerfile: Dockerfile
     restart: always
     environment:
@@ -174,8 +162,8 @@ services:
       PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
       REQUEST_SERVICE_DOMAIN: ${REQUEST_SERVICE_DOMAIN}
       REQUEST_SERVICE_PORT: ${REQUEST_SERVICE_PORT}
-      SEARCH_SERVICE_DOMAIN: ${SEARCH_SERVICE_DOMAIN}
-      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      INTERACTION_SERVICE_DOMAIN: ${INTERACTION_SERVICE_DOMAIN}
+      INTERACTION_SERVICE_PORT: ${INTERACTION_SERVICE_PORT}
       PORT: ${CONTENT_SERVICE_PORT}
       DOCKERIZED: ${DOCKERIZED}
     depends_on:

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     //alert("CONNECTED")
-    loadAllFollowReqs()
-    setMyProfileHREF();
+    //loadAllFollowReqs()
+    //setMyProfileHREF();
 })
 
 var myUserName = ""
@@ -34,8 +34,10 @@ function loadAllFollowReqs() {
 
 
 function generateAllFollowReqsHTML(allReqs) {
-    if (isGeneratedFollowReqs)
-        return
+    //if (isGeneratedFollowReqs)
+    //    return
+    console.log("TU SMO: ")
+    console.log(allReqs)
 
     var allReqsHtml = ''
     allReqsHtml += '<ul class="list-unstyled">' + '\n'
@@ -45,7 +47,7 @@ function generateAllFollowReqsHTML(allReqs) {
     var numActiveReqs = n
     for (let i = 0; i < n; i++) {
 
-        if (allReqs[i].request.RequestStatus != 0) {
+        if (allReqs[i].request.requeststatus != 0) {
             numActiveReqs--;
             continue
         }
@@ -82,6 +84,8 @@ function generateAllFollowReqsHTML(allReqs) {
     allReqsHtml += '</ul>'
 
     $("#insertAllFollowReqs").after(allReqsHtml)
+    
+    console.log(allReqsHtml)
 
     $("#numOfFollowReqs").text('(' + numActiveReqs + ')')
     isGeneratedFollowReqs = true;

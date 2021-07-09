@@ -4,8 +4,9 @@ $(document).ready(function() {
     //alert("CONNECTED")
     //loadFeedContent();
     //loadStories()
-
+    setMyProfileHREF();
     getCurrentUserInformation()  // loadFeedContent i loadStories su prebaceni u success-u ove fje
+    loadAllFollowReqs()
     getNotifications()
     // pozovem fju gde uzimam trenutnog usera - izvadim mu liste (blacklist, graylist)
     // varijable globalna za usera --> currentUserFeed

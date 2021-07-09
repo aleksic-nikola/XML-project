@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/navbar.css">
     <link rel="stylesheet" type="text/css" href="css/profile.css">
-    <link rel="stylesheet" type="text/css" href="css/savePost.css">
+    <!--<link rel="stylesheet" type="text/css" href="css/savePost.css">-->
 
     <title></title>
 </head>
@@ -35,6 +35,12 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="modal" data-target="#followReqsModal" href="#"> Follow Requests
                             <span id="numOfFollowReqs"></span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item" id="postnotifsnav">
+                        <a class="nav-link" data-toggle="modal" data-target="#postNotifModal" href="#">Notifications
+                            <span id="numOfPostNotifs"></span>
                         </a>
                     </li>
 
@@ -499,13 +505,13 @@
                                         </div>
 
                                         <div class="form-inline editprofform">
-                                            <label>Show message notifications: </label>
+                                            <label>Show comment notifications: </label>
                                             <input type="checkbox" data-toggle="switchbutton" data-size="md"
                                                 id="dmnotif_id">
                                         </div>
 
                                         <div class="form-inline editprofform">
-                                            <label>Show tag notifications: </label>
+                                            <label>Show like/dislike notifications: </label>
                                             <input type="checkbox" data-toggle="switchbutton" data-size="md"
                                                 id="tagnotif_id">
                                         </div>
@@ -934,6 +940,29 @@
         </div>
 
 
+        <!--MODAL ZA POST NOTIFIKACIJE-->
+
+        <div class="modal fade" id="postNotifModal" tabindex="-1" aria-labelledby="postNotifModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content modal-content-dani">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="postNotifModalLabel">Post notifications</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table save_table table-sm">
+                            <tbody class="save_tbody" id="insertNotifications">
+                            </tbody>
+                        </table>
+                        <button class="btn btn-secondary float-right" onclick="readNotif()">&nbsp&nbsp Mark all as read &nbsp&nbsp</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
     </div>
 
@@ -968,7 +997,7 @@
     <script src="js/verified.js"></script>
     <script src="js/searchinput.js"></script>
     <script src="js/sensitivereport.js"></script>
-
+    <script src="js/modals/notifications.js"></script>
 
 </body>
 

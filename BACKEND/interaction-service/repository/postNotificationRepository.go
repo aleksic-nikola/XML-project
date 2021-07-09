@@ -22,3 +22,8 @@ func (repo *PostNotificationRepository) GetMyUnreadPostNotif(username string) da
 	repo.Database.Where("is_read = false and for_user = ?", username).Find(&notifications)
 	return notifications
 }
+
+func (repo *PostNotificationRepository) Save(postNotif *data.PostNotification) error {
+	err := repo.Database.Save(&postNotif).Error
+	return err
+}

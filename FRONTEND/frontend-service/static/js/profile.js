@@ -32,7 +32,8 @@ $(document).ready(function () {
     //checkUserPublicity()
 
     getMyDatas()
-
+    getNotifications()
+    
 })
 
 function fetchCurrentUserPosts() {

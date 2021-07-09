@@ -200,6 +200,19 @@ tbody {
   float: left;
 }
 
+
 #setAsHighlightOff {
   margin-right: 20px;
+}
+
+.tbodynew {
+  width: 10000px !important;
+  height: 100% !important;
+  overflow-y: hidden !important;
+  display: block;
+  position: relative;
+}
+
+.modal-content-dani {
+  height: 550px;
 }

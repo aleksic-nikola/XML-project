@@ -198,6 +198,8 @@ func main() {
 	postRouter.HandleFunc("/postnotification/add", postnotifH.CreatePostNotification)
 	postRouter.HandleFunc("/profilenotification/add", profnotifH.CreateProfileNotification)
 
+	postRouter.HandleFunc("/readpostnotif", postnotifH.ReadPostNotifications)
+
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

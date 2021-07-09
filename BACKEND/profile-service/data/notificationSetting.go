@@ -17,6 +17,11 @@ func (ns *NotificationSetting) FromJSON(r io.Reader) error {
 	return e.Decode(ns)
 }
 
+func (ns *NotificationSetting) ToJson(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(ns)
+}
+
 func (ns *NotificationSettings) ToJson(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(ns)

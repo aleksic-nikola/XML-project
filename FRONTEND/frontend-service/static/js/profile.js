@@ -34,12 +34,11 @@ $(document).ready(function () {
 
     getMyDatas()
     var visitedUsername = location.href.split("?")[1];
-    console.log("UZEO ")
-    console.log(visitedUsername)
     setHighlightedStoriesProfile(visitedUsername)
 
-    setArchiveStories() //-------------------------------
+    setArchiveStories()
 
+    getNotifications()
 
 })
 

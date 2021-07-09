@@ -1,8 +1,9 @@
 package constants
 
 import (
-	"github.com/joho/godotenv"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 var HOST = GetVariable("HOST")
@@ -57,13 +58,12 @@ func GetVariable(name string) string {
 			return os.Getenv("SEARCH_SERVICE_URL")
 		}
 
-
 		return ""
 	}
 
 	// running in docker container
 	if name == "HOST" {
-		return os.Getenv("HOST")
+		return os.Getenv("HOST_NAME")
 	}
 	if name == "PORT" {
 		return ":" + os.Getenv("AUTH_SERVICE_PORT")
@@ -100,7 +100,3 @@ func GetVariable(name string) string {
 
 	return ""
 }
-
-
-
-

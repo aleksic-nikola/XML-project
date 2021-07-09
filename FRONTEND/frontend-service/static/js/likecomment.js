@@ -199,7 +199,8 @@ function setGlobalPostToSave(id) {
 
 function savePost() {
 
-	collectionName = $("#collection_field").val()
+	var collectionName = $("#collection_field").val()
+	alert(collectionName)
 
 	var obj = {
         collection_name: collectionName,

@@ -1,10 +1,10 @@
 var blokcmutebtn = $("#blockmutePart"); 
 
 $(document).ready(function () {
-    whoAmI2();
+    //whoAmI2();
 
     // po defaultu je sakriven, pa kad je korisnik blokiran onda se prikazuje ovo dugme (checkIfUserIsMutedOrBlocked() -->u editprof.js je poziv)
-    $("#umuteuserBtn").hide();
+    //$("#umuteuserBtn").hide();
 })
 
 function whoAmI2() {

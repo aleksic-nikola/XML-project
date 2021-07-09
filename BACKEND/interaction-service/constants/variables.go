@@ -1,8 +1,9 @@
 package constants
 
 import (
-	"github.com/joho/godotenv"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 var HOST = GetVariable("HOST")
@@ -57,13 +58,12 @@ func GetVariable(name string) string {
 			return os.Getenv("SEARCH_SERVICE_URL")
 		}
 
-
 		return ""
 	}
 
 	// running in docker container
 	if name == "HOST" {
-		return os.Getenv("HOST")
+		return os.Getenv("HOST_NAME")
 	}
 	if name == "PORT" {
 		return ":" + os.Getenv("AUTH_SERVICE_PORT")
@@ -74,33 +74,29 @@ func GetVariable(name string) string {
 	}
 
 	if name == "AUTH_SERVICE" {
-		return "localhost:" + os.Getenv("AUTH_SERVICE_PORT")
+		return "auth-service:" + os.Getenv("AUTH_SERVICE_PORT")
 	}
 	if name == "CAMPAIGN_SERVICE" {
-		return "localhost:" + os.Getenv("CAMPAIGN_SERVICE_PORT")
+		return "campaign-service:" + os.Getenv("CAMPAIGN_SERVICE_PORT")
 	}
 	if name == "CONTENT_SERVICE" {
-		return "localhost:" + os.Getenv("CONTENT_SERVICE_PORT")
+		return "content-service:" + os.Getenv("CONTENT_SERVICE_PORT")
 	}
 	if name == "INTERACTION_SERVICE" {
-		return "localhost:" + os.Getenv("INTERACTION_SERVICE_PORT")
+		return "interaction-service:" + os.Getenv("INTERACTION_SERVICE_PORT")
 	}
 	if name == "MONOLIT_SERVICE" {
-		return "localhost:" + os.Getenv("MONOLIT_SERVICE_PORT")
+		return "monolit-service:" + os.Getenv("MONOLIT_SERVICE_PORT")
 	}
 	if name == "PROFILE_SERVICE" {
-		return "localhost:" + os.Getenv("PROFILE_SERVICE_PORT")
+		return "profile-service:" + os.Getenv("PROFILE_SERVICE_PORT")
 	}
 	if name == "REQUEST_SERVICE" {
-		return "localhost:" + os.Getenv("REQUEST_SERVICE_PORT")
+		return "request-service:" + os.Getenv("REQUEST_SERVICE_PORT")
 	}
 	if name == "SEARCH_SERVICE" {
-		return "localhost:" + os.Getenv("SEARCH_SERVICE_PORT")
+		return "search-service:" + os.Getenv("SEARCH_SERVICE_PORT")
 	}
 
 	return ""
 }
-
-
-
-

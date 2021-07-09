@@ -80,9 +80,13 @@ func main() {
 	sm := mux.NewRouter()
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
+	// non authenticated calls
+	getRouterNonAuth := sm.Methods(http.MethodGet).Subrouter()
+	getRouterNonAuth.HandleFunc("/getuser/{username}", uh.GetUserByUsername)
+
 	getRouter.HandleFunc("/", uh.GetUsers)
 	getRouter.HandleFunc("/whoami", uh.WhoAmI)
-	getRouter.HandleFunc("/getuser/{username}", uh.GetUserByUsername)
+	//getRouter.HandleFunc("/getuser/{username}", uh.GetUserByUsername)
 	getRouter.HandleFunc("/getuserId/{username}", uh.GetUserIdByUsername)
 	getRouter.Use(uh.AuthMiddleware)
 

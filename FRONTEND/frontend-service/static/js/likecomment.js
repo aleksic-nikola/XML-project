@@ -2,7 +2,8 @@ var postForSave
 const tableCollection = $("#tableInsert")
 
 function likePost(id) {
-
+	console.log("LIKEPOST:")
+	console.log(id)
 	var split = id.split("-")[1]
 	console.log("I like post " + split)
 
@@ -198,7 +199,8 @@ function setGlobalPostToSave(id) {
 
 function savePost() {
 
-	collectionName = $("#collection_field").val()
+	var collectionName = $("#collection_field").val()
+	alert(collectionName)
 
 	var obj = {
         collection_name: collectionName,

@@ -1132,6 +1132,128 @@ func (handler *ProfileHandler) GetMyNotificationsSettings(rw http.ResponseWriter
 	rw.WriteHeader(http.StatusOK)
 }
 
+func (ph *ProfileHandler) GetCloseFriendsByUsername(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+
+	closeFriends, err := ph.Service.GetCloseFriendsByUsername(username)
+
+	if err!=nil{
+		http.Error(rw, "Cant find close friend for passed username", http.StatusNotFound)
+		return
+	}
+
+	closeFriendsJson, err := json.Marshal(closeFriends)
+
+	if err!=nil{
+		http.Error(rw, "Cant Marshal!", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = rw.Write(closeFriendsJson)
+	if err != nil {
+		http.Error(rw, "Cant Marshal!", http.StatusInternalServerError)
+		return
+	}
+
+
+}
+
+func (u *ProfileHandler) AddProfileToCloseFriends(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	usernameForAddToCloseFriends := params["username"]
+
+	dtoMe, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = u.Service.AddProfileToCloseFriends(dtoMe.Username, usernameForAddToCloseFriends)
+
+	if err!=nil{
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	rw.WriteHeader(http.StatusCreated)
+
+
+
+}
+
+func (u *ProfileHandler) RemoveProfileFromCloseFriends(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	usernameForRemoveFromCloseFriends := params["username"]
+
+	dtoMe, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = u.Service.RemoveProfileFromCloseFriends(dtoMe.Username, usernameForRemoveFromCloseFriends)
+
+	if err!=nil{
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
+func (u *ProfileHandler) CheckIfCloseFriends(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	usernameForCheck := params["username"]
+
+	dtoMe, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	fmt.Println(dtoMe.Username)
+	fmt.Println(usernameForCheck)
+	if dtoMe.Username == usernameForCheck{
+		rw.WriteHeader(http.StatusAccepted)
+		return
+	}
+
+	flag, err := u.Service.CheckIfCloseFriends(dtoMe.Username, usernameForCheck)
+
+	if err!=nil{
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if flag==true{
+		rw.WriteHeader(http.StatusAccepted)
+		return
+	}
+
+
+	rw.WriteHeader(http.StatusOK)
+
+
+}
+
+
+
 func GetCurrentUserWrapper(tokenString string) (dto.UsernameRole, error) {
 
 	return getCurrentUserCredentials(tokenString)

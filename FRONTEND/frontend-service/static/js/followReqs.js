@@ -64,7 +64,7 @@ function generateAllFollowReqsHTML(allReqs) {
         allReqsHtml += '<li class="media">' + '\n'
         allReqsHtml += '<img src="./img/avatar.png" width="40" height="40" class="mr-3" alt="...">' + '\n'
         allReqsHtml += '<div class="media-body">' + '\n'
-        allReqsHtml += '<h5 class="mt-0 mb-1">' + username + '</h5>' + '\n'
+        allReqsHtml += '<h5 class="mt-0 mb-1 float-left"><a href="profile.html?' + username + '">' + username + '</a>' + '</h5>' + '\n'
         allReqsHtml += '<p>' + fullName + '</p>' + '\n'
         allReqsHtml += '</div>' + '\n'
         allReqsHtml += '<span class="btnFollow">' + '\n'
@@ -84,7 +84,7 @@ function generateAllFollowReqsHTML(allReqs) {
     allReqsHtml += '</ul>'
 
     $("#insertAllFollowReqs").after(allReqsHtml)
-    
+
     console.log(allReqsHtml)
 
     $("#numOfFollowReqs").text('(' + numActiveReqs + ')')

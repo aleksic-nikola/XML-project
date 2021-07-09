@@ -571,3 +571,43 @@ func (service *ProfileService) GetMyNotificationsSettings(username string) (data
 
 	return notificationSetting, nil
 }
+
+
+func (service *ProfileService) GetCloseFriendsByUsername(username string) ([]data.Profile, error) {
+	closeFriends, err := service.Repo.GetCloseFriendsByUsername(username)
+
+	return closeFriends, err
+}
+
+func (service *ProfileService) AddProfileToCloseFriends(myUsername string, usernameForAddToCloseFriends string) error {
+
+	err := service.Repo.AddProfileToCloseFriends(myUsername, usernameForAddToCloseFriends)
+
+	return err
+
+}
+
+func (service *ProfileService) RemoveProfileFromCloseFriends(myUsername string, usernameForRemoveFromCloseFriends string) error {
+	err := service.Repo.RemoveProfileFromCloseFriends(myUsername, usernameForRemoveFromCloseFriends)
+
+	return err
+}
+
+func (service *ProfileService) CheckIfCloseFriends(myUsername string, usernameCheck string) (bool, error) {
+
+	closeFriends, err := service.GetCloseFriendsByUsername(usernameCheck )
+
+	if err!=nil{
+		return false, err
+	}
+	fmt.Println("**********************")
+	for _, oneProfile:= range closeFriends{
+		fmt.Println(oneProfile.CloseFriends)
+		if oneProfile.Username == myUsername{
+			fmt.Println("NASLI SMO SE")
+			return true, nil
+		}
+	}
+	fmt.Println("NISMO SMO SE NASLI")
+	return false, nil
+}

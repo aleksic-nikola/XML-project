@@ -2,16 +2,17 @@ const modal = $('#new-post-modal')
 const location_field = $('#post_title')
 const tags_field = $('#description_part')
 const album_select = $('#album_select')
+const closeFriend_select = $("#closeFriend_select")
 var submit_endpoint = '/post/upload'
 var sent = false
 function showModalPost() {
 	modal.modal('show')
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
 
 	album_select.hide()
-
+	closeFriend_select.hide()
 })
 
 function postSelected() {
@@ -29,13 +30,13 @@ function postSelected() {
 		processData: false,
 		//method: 'POST',
 		success: function(data){
-		    alert(data);
+			alert(data);
 		}
 	});
 	*/
 }
 
-$('#select_type').change(function() {
+$('#select_type').change(function () {
 
 
 	if ($("#select_type").prop('selectedIndex') == 0) {
@@ -44,6 +45,7 @@ $('#select_type').change(function() {
 		tags_field.show()
 		location_field.show()
 		album_select.hide()
+		$("#closeFriend_select").hide()
 	}
 	else if ($("#select_type").prop('selectedIndex') == 2) {
 		console.log('Story')
@@ -51,6 +53,8 @@ $('#select_type').change(function() {
 		tags_field.hide()
 		location_field.hide()
 		album_select.hide()
+		$("#closeFriend_select").show()
+
 	}
 	else {
 		console.log('Album')
@@ -58,10 +62,11 @@ $('#select_type').change(function() {
 		location_field.show()
 		album_select.show()
 		//submit_endpoint = '/post/upload'
+
 	}
 })
 
-album_select.change(function() {
+album_select.change(function () {
 
 	var index = album_select.prop('selectedIndex')
 
@@ -74,6 +79,8 @@ album_select.change(function() {
 		location_field.show()
 		tags_field.show()
 		location_field.show()
+		$("#closeFriend_select").hide()
+
 	}
 	else {
 		submit_endpoint = '/story/upload'
@@ -81,17 +88,31 @@ album_select.change(function() {
 		location_field.hide()
 		tags_field.hide()
 		location_field.hide()
+		$("#closeFriend_select").show()
+
 	}
 
 })
 
 
 
-function changeActionURL() {	
-	
-	$('#post_form').attr('action', CONTENT_SERVICE_URL + submit_endpoint); 
+function changeActionURL() {
+
+	$('#post_form').attr('action', CONTENT_SERVICE_URL + submit_endpoint);
 
 	//e.preventDefault(); // avoid to execute the actual submit of the form.
+
+	if ($("#closeFriend_select").prop('selectedIndex') == 0) {
+		alert("Select if is story for close friend")
+		return
+	}
+	else if ($("#closeFriend_select").prop('selectedIndex') == 1) { //true
+		$("#closeFriends_input").val("TRUE")
+	}
+	else {
+		$("#closeFriends_input").val("FALSE")
+
+	}
 
 	var datax = new FormData($("#post_form")[0]);
 	//multiplefiles
@@ -104,19 +125,19 @@ function changeActionURL() {
 		console.log('trying to send a post')
 		if (inp.files.length != 1) {
 			alert('You can only choose 1 image/video for post')
-			return 
+			return
 		}
 		console.log(submit_endpoint.toUpperCase())
-	// story
+		// story
 	} else if (type_index == 2) {
 
 		console.log('trying to send a story')
 		if (inp.files.length != 1) {
 			alert('You can only choose 1 image/video for story')
-			return 
+			return
 		}
 		console.log(submit_endpoint.toUpperCase())
-	} 
+	}
 	// album
 	else {
 		console.log('trying to send an album')
@@ -124,13 +145,13 @@ function changeActionURL() {
 
 		if (album_index == 0) {
 			alert('Please choose what you want to post your album as!')
-			return 
+			return
 		}
 		else if (album_index == 1) {
 			// post
 			if (inp.files.length < 2) {
 				alert('You have to select multiple images/videos to post an album')
-				return 
+				return
 			}
 			submit_endpoint = '/post/upload'
 			console.log(submit_endpoint.toUpperCase())
@@ -138,7 +159,7 @@ function changeActionURL() {
 			// story 
 			if (inp.files.length < 2) {
 				alert('You have to select multiple images/videos to post an album')
-				return 
+				return
 			}
 			submit_endpoint = '/story/upload'
 			console.log(submit_endpoint.toUpperCase())
@@ -149,25 +170,24 @@ function changeActionURL() {
 	// 	var name = inp.files.item(i).name;
 	// 	alert("here is a file name: " + name);
 	// }
-	 
+
 	//var dataz = form.serialize()
 	//console.log(dataz)
-    	$.ajax({
-           type: "POST",
-           url: CONTENT_SERVICE_URL + submit_endpoint,
-	   //contentType: 'multipart/form-data',
-           data: datax, // serializes the form's elements.
-	   beforeSend: function (xhr) {
-		xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
-	    },
-	    processData: false,
-	    contentType: false,	
-           success: function(data)
-           {
-               alert(data); // show response from the php script.
-           }
-         });
+	$.ajax({
+		type: "POST",
+		url: CONTENT_SERVICE_URL + submit_endpoint,
+		//contentType: 'multipart/form-data',
+		data: datax, // serializes the form's elements.
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+		},
+		processData: false,
+		contentType: false,
+		success: function (data) {
+			alert(data); // show response from the php script.
+		}
+	});
 
 
-	
+
 }

@@ -21,11 +21,11 @@ func main() {
 
 	var port string
 
-	if (os.Getenv("DOCKERIZED") != "yes") {
+	if os.Getenv("DOCKERIZED") != "yes" {
 		// local
 		port = ":8000"
 	} else {
-		port = ":8888"
+		port = ":8000"
 	}
 
 	server := &http.Server{

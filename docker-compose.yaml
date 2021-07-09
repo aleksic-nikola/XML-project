@@ -11,18 +11,6 @@ services:
       - ./BACKEND/Gateway/nginx.conf:/etc/nginx/nginx.conf
       - ./BACKEND/Gateway/api_gateway.conf:/etc/nginx/api_gateway.conf
   
-  frontend-service:
-    image: nistagram-frontend
-    container_name: frontend-service
-    build:
-      context: ./FRONTEND/frontend-service
-      dockerfile: Dockerfile
-    restart: always   
-    environment:
-      DOCKERIZED: ${DOCKERIZED}
-    networks:
-      - backend
-
   profile-service:
     image: nistagram-profile
     container_name: profile-service

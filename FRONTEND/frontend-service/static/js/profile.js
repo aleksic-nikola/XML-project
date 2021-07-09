@@ -62,7 +62,7 @@ function checkIfAuthOrNonAuth() {
             xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
         },
         success: function (data) {
-            loggedIn = true 
+            loggedIn = true
             buildAuthenticatedView()
         },
         error: function () {
@@ -195,25 +195,25 @@ function modifyForNotMyProfile() {
     $('#liked-tab').addClass('disabled')
     $('#disliked-tab').addClass('disabled')
     $('#saved-tab').addClass('disabled')
-
+    $('#archive-tab').hide()
     var visitedUsername = location.href.split("?")[1];
 
     checkIfUserBlockedMeAndRestrict();
 
-    if(currentprofileObj == undefined) {
-        return 
+    if (currentprofileObj == undefined) {
+        return
     }
 
-    if(currentprofileObj.blacklist == undefined) {
+    if (currentprofileObj.blacklist == undefined) {
         return
     } else {
 
-    currentprofileObj.blacklist.forEach(function(b) {
-        if(visitedUsername == b.username) {
-            //console.log("profile is blocked - do not show the profile");
-            showBlockedUserModal();
-        }
-    })
+        currentprofileObj.blacklist.forEach(function (b) {
+            if (visitedUsername == b.username) {
+                //console.log("profile is blocked - do not show the profile");
+                showBlockedUserModal();
+            }
+        })
     }
 
 
@@ -282,7 +282,7 @@ function getAuthInfoForPageUser() {
         success: function (data) {
             //console.log(data)
             $('#current_name').html(data.name + ' ' + data.lastname)
-            
+
         },
         error: function (xhr, status, data) {
             //console.log(xhr)
@@ -296,7 +296,7 @@ function getAuthInfoForPageUser() {
 
 
 document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("gallery-item")  ) {
+    if (e.target.classList.contains("gallery-item")) {
 
         const src = e.target.getAttribute("src");
         //console.log(src);
@@ -351,7 +351,7 @@ document.addEventListener("click", function (e) {
             $("#removeFromCollection").hide()
             currentOpenedPost = post_id
             showImageModal(post_id.split("-")[1], postListDisliked)
-        }else if(currentPill === "archiveStories"){
+        } else if (currentPill === "archiveStories") {
             currentOpenedPost = post_id
             $("#image_description").hide()
             $("#like_button_div").hide()
@@ -367,7 +367,7 @@ document.addEventListener("click", function (e) {
             $("#setAsHighlight").show()
             $("#setAsHighlightOff").show()
             showStoryModalArchive(post_id.split("-")[1], storiesArchive)
-            
+
         }
     }
 })
@@ -498,8 +498,8 @@ async function setFollowers() {
             // //console.log(data.length)
             if (loggedIn) {
                 checkIfAlreadyFollowed() //this change Follow button to disable if user already follow some profile
-            }    
-           //checkUserPublicity()
+            }
+            //checkUserPublicity()
         },
         error: function (xhr, status, data) {
             //console.log(status)
@@ -630,7 +630,7 @@ function showFollowers() {
         allFollowersHtml += '<li class="media">' + '\n'
         allFollowersHtml += '<img src="./img/avatar.png" width="35" height="35" class="mr-3" alt="...">' + '\n'
         allFollowersHtml += '<div class="media-body">' + '\n'
-        allFollowersHtml += '<h5 class="mt-0 mb-1"><a href="profile.html?' + username + '">' + username + '</a>' + '</h5>' + '\n'
+        allFollowersHtml += '<h5 class="mt-0 mb-1 float-left"><a href="profile.html?' + username + '">' + username + '</a>' + '</h5>' + '\n'
         allFollowersHtml += '<p>' + fullName + '</p>' + '\n'
         allFollowersHtml += '</div>' + '\n'
         allFollowersHtml += '<span class="btnFollow">' + '\n'
@@ -670,7 +670,7 @@ function showFollowing() {
         allFollowersHtml += '<li class="media">' + '\n'
         allFollowersHtml += '<img src="./img/avatar.png" class="mr-3" width="35" height="35" alt="...">' + '\n'
         allFollowersHtml += '<div class="media-body">' + '\n'
-        allFollowersHtml += '<h5 class="mt-0 mb-1"><a href="profile.html?' + username + '">' + username + '</a>' + '</h5>' + '\n'
+        allFollowersHtml += '<h5 class="mt-0 mb-1 float-left"><a href="profile.html?' + username + '">' + username + '</a>' + '</h5>' + '\n'
         allFollowersHtml += '<p>' + fullName + '</p>' + '\n'
         allFollowersHtml += '</div>' + '\n'
         allFollowersHtml += '<span class="btnFollow">' + '\n'
@@ -745,7 +745,7 @@ function checkIfAlreadyFollowed() {
 }
 
 function showBlockedUserModal() {
-    $('#blockedUserModal').modal('show'); 
+    $('#blockedUserModal').modal('show');
 }
 
 function redirectOnPrevPage() {
@@ -780,12 +780,12 @@ function checkIfImInHisBlacklist(data) {
         return
     }
 
-    data.listwhoblockedme.forEach(function(p) {
+    data.listwhoblockedme.forEach(function (p) {
 
         var visitedUsername = location.href.split("?")[1];
         //console.log(p)
 
-        if(visitedUsername == p) {
+        if (visitedUsername == p) {
             $("#maincontainer").css("visibility", "hidden")
             $("#userdoesntexist").html("User with that username doesn't exists")
         }
@@ -818,7 +818,7 @@ function setFollowersAndCheckIfImHere() {
             if (loggedIn) {
                 checkIfAlreadyFollowed() //this change Follow button to disable if user already follow some profile
                 fetchCurrentUserPosts()
-            }    
+            }
         },
         error: function (xhr, status, data) {
 

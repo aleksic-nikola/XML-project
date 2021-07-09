@@ -1213,6 +1213,45 @@ func (u *ProfileHandler) RemoveProfileFromCloseFriends(rw http.ResponseWriter, r
 
 }
 
+func (u *ProfileHandler) CheckIfCloseFriends(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	usernameForCheck := params["username"]
+
+	dtoMe, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	fmt.Println(dtoMe.Username)
+	fmt.Println(usernameForCheck)
+	if dtoMe.Username == usernameForCheck{
+		rw.WriteHeader(http.StatusAccepted)
+		return
+	}
+
+	flag, err := u.Service.CheckIfCloseFriends(dtoMe.Username, usernameForCheck)
+
+	if err!=nil{
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if flag==true{
+		rw.WriteHeader(http.StatusAccepted)
+		return
+	}
+
+
+	rw.WriteHeader(http.StatusOK)
+
+
+}
+
 
 
 func GetCurrentUserWrapper(tokenString string) (dto.UsernameRole, error) {

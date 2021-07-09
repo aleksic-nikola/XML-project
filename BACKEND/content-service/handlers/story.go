@@ -79,6 +79,11 @@ func (p *StoryHandler) UploadStory(rw http.ResponseWriter, r *http.Request) {
 	fmt.Println(formdata.Value)
 	res := formdata.Value
 	id  := res["post_title"]
+	isForCloseFriend := res["closeFriends_input"]
+	fmt.Println("\n")
+	fmt.Println("********************  CLOSE FRIENDS: ", isForCloseFriend)
+	fmt.Println("\n")
+
 
 	fmt.Println(res["description_part"])
 	fmt.Println(id)
@@ -144,6 +149,14 @@ func (p *StoryHandler) UploadStory(rw http.ResponseWriter, r *http.Request) {
 		story.Media = medias[i]
 		fmt.Println("OVDE DOBILI ZA STORY: ")
 		fmt.Println(story.Media)
+
+		if isForCloseFriend[0] =="TRUE"{
+			story.IsForCloseFriendsOnly = true
+		}else{
+			story.IsForCloseFriendsOnly = false
+
+		}
+
 		err = p.Service.CreateStory(&story)
 
 		if err != nil {

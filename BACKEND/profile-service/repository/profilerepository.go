@@ -341,7 +341,7 @@ func (repo *ProfileRepository) RemoveProfileFromCloseFriends(myUsername string, 
 		return fmt.Errorf("MyProfile not found")
 	}
 
-	isInList, index := containsInCloseFriends(myProfile.CloseFriends, usernameForRemoveFromCloseFriends)
+	isInList, _ := containsInCloseFriends(myProfile.CloseFriends, usernameForRemoveFromCloseFriends)
 	if !isInList {
 		return fmt.Errorf("Profile is not in closeFriends list")
 	}
@@ -353,13 +353,22 @@ func (repo *ProfileRepository) RemoveProfileFromCloseFriends(myUsername string, 
 	fmt.Println("***************************************")
 
 
-	myProfile.CloseFriends = removeFromList(myProfile.CloseFriends, index)
+	var newCloseFriendsList []data.Profile
 
-	fmt.Println("POSLE BRISANJA: ")
-	for _, oneFriend := range myProfile.CloseFriends{
-		fmt.Println(oneFriend.Username)
+	for _,oneProfile := range myProfile.CloseFriends {
+		if oneProfile.Username != usernameForRemoveFromCloseFriends {
+			newCloseFriendsList = append(newCloseFriendsList, oneProfile)
+		}
 	}
-	fmt.Println("***************************************")
+
+
+	errClear:= repo.Database.Model(&myProfile).Association("CloseFriends").Clear()
+	if errClear != nil {
+		fmt.Println(res.Error)
+		return fmt.Errorf("Error clearing table")
+	}
+
+	myProfile.CloseFriends = newCloseFriendsList
 
 	res = repo.Database.Save(myProfile)
 

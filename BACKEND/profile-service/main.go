@@ -131,6 +131,8 @@ func main() {
 	getRouter.HandleFunc("/allowedprofiles", ph.GetAllowedProfiles)
 	getRouter.HandleFunc("/followlessprivateprofiles", ph.GetAllNonFollowedPrivateProfiles)
 	getRouter.HandleFunc("/getmynotifsettings/{username}", ph.GetMyNotificationsSettings)
+	getRouter.HandleFunc("/checkIfCloseFriends/{username}", ph.CheckIfCloseFriends)
+
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/addProfileToCloseFriends/{username}", ph.AddProfileToCloseFriends)

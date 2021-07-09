@@ -592,3 +592,22 @@ func (service *ProfileService) RemoveProfileFromCloseFriends(myUsername string, 
 
 	return err
 }
+
+func (service *ProfileService) CheckIfCloseFriends(myUsername string, usernameCheck string) (bool, error) {
+
+	closeFriends, err := service.GetCloseFriendsByUsername(usernameCheck )
+
+	if err!=nil{
+		return false, err
+	}
+	fmt.Println("**********************")
+	for _, oneProfile:= range closeFriends{
+		fmt.Println(oneProfile.CloseFriends)
+		if oneProfile.Username == myUsername{
+			fmt.Println("NASLI SMO SE")
+			return true, nil
+		}
+	}
+	fmt.Println("NISMO SMO SE NASLI")
+	return false, nil
+}

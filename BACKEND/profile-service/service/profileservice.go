@@ -571,3 +571,24 @@ func (service *ProfileService) GetMyNotificationsSettings(username string) (data
 
 	return notificationSetting, nil
 }
+
+
+func (service *ProfileService) GetCloseFriendsByUsername(username string) ([]data.Profile, error) {
+	closeFriends, err := service.Repo.GetCloseFriendsByUsername(username)
+
+	return closeFriends, err
+}
+
+func (service *ProfileService) AddProfileToCloseFriends(myUsername string, usernameForAddToCloseFriends string) error {
+
+	err := service.Repo.AddProfileToCloseFriends(myUsername, usernameForAddToCloseFriends)
+
+	return err
+
+}
+
+func (service *ProfileService) RemoveProfileFromCloseFriends(myUsername string, usernameForRemoveFromCloseFriends string) error {
+	err := service.Repo.RemoveProfileFromCloseFriends(myUsername, usernameForRemoveFromCloseFriends)
+
+	return err
+}

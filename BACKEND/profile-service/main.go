@@ -124,6 +124,7 @@ func main() {
 	//getRouter.HandleFunc("/getverifieds", vh.GetVerifieds)
 	getRouter.HandleFunc("/isuserpublic/{username}", ph.IsUserPublic)
 	getRouter.HandleFunc("/getuser/{username}", ph.GetUser)
+	getRouter.HandleFunc("/getCloseFriendsByUsername/{username}", ph.GetCloseFriendsByUsername)
 
 	getRouter.HandleFunc("/getdata", ph.GetCurrent)
 	getRouter.HandleFunc("/publicprofiles", ph.GetAllPublicProfiles)
@@ -132,7 +133,8 @@ func main() {
 	getRouter.HandleFunc("/getmynotifsettings/{username}", ph.GetMyNotificationsSettings)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-
+	postRouter.HandleFunc("/addProfileToCloseFriends/{username}", ph.AddProfileToCloseFriends)
+	postRouter.HandleFunc("/removeProfileFromCloseFriends/{username}", ph.RemoveProfileFromCloseFriends)
 	postRouter.HandleFunc("/getAllFollowing", ph.GetAllFollowingByUsername)
 	postRouter.HandleFunc("/getAllFollowers", ph.GetAllFollowersByUsername)
 

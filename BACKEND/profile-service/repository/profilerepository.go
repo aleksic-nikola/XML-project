@@ -254,3 +254,134 @@ func (repo *ProfileRepository) GetAllProfiles() (error, data.Profiles) {
 	}
 	return nil, profiles
 }
+
+func (repo *ProfileRepository) GetCloseFriendsByUsername(username string) ([]data.Profile, error) {
+	var userProfile data.Profile
+	res := repo.Database.Preload("CloseFriends").Where("username = ?", username).Find(&userProfile)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+		return nil, fmt.Errorf("there has been an error retrieving CloseFriends")
+
+	}
+
+	if res.RowsAffected == 0{
+		fmt.Println(res.Error)
+		return nil, fmt.Errorf("User not found!")
+	}
+
+	fmt.Println(userProfile.CloseFriends)
+	return userProfile.CloseFriends, nil
+
+}
+
+func (repo *ProfileRepository) AddProfileToCloseFriends(myUsername string, usernameForAddToCloseFriends string) error {
+
+	var myProfile data.Profile
+	res := repo.Database.Preload("CloseFriends").Where("username = ?", myUsername).Find(&myProfile)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+		return fmt.Errorf("there has been an error retrieving myProfile")
+
+	}
+	if res.RowsAffected == 0{
+		fmt.Println(res.Error)
+		return fmt.Errorf("MyProfile not found")
+	}
+
+	var profileForAddToCloseFriend data.Profile
+	res = repo.Database.Where("username = ?", usernameForAddToCloseFriends).Find(&profileForAddToCloseFriend)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+		return fmt.Errorf("there has been an error retrieving profileForAddToCloseFriend")
+
+	}
+	if res.RowsAffected == 0{
+		fmt.Println(res.Error)
+		return fmt.Errorf("profileForAddToCloseFriend not found")
+	}
+
+	fmt.Println("PROFIL KOJI DODAJEM: ", profileForAddToCloseFriend.Username)
+	fmt.Println("JA SAM : ", myProfile.Username)
+
+	isAlreadyInList, _ := containsInCloseFriends(myProfile.CloseFriends, profileForAddToCloseFriend.Username)
+
+	if isAlreadyInList{
+		return fmt.Errorf("profile is already in CloseFriends")
+	}
+
+
+	myProfile.CloseFriends = append(myProfile.CloseFriends, profileForAddToCloseFriend)
+
+	res = repo.Database.Save(myProfile)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+		return fmt.Errorf("there has been an error adding to closeFriends")
+	}
+
+	return nil
+
+
+}
+
+func (repo *ProfileRepository) RemoveProfileFromCloseFriends(myUsername string, usernameForRemoveFromCloseFriends string) error{
+	var myProfile data.Profile
+	res := repo.Database.Preload("CloseFriends").Where("username = ?", myUsername).Find(&myProfile)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+		return fmt.Errorf("there has been an error retrieving myProfile")
+
+	}
+	if res.RowsAffected == 0{
+		fmt.Println(res.Error)
+		return fmt.Errorf("MyProfile not found")
+	}
+
+	isInList, index := containsInCloseFriends(myProfile.CloseFriends, usernameForRemoveFromCloseFriends)
+	if !isInList {
+		return fmt.Errorf("Profile is not in closeFriends list")
+	}
+
+	fmt.Println("PRE BRISANJA: ")
+	for _, oneFriend := range myProfile.CloseFriends{
+		fmt.Println(oneFriend.Username)
+	}
+	fmt.Println("***************************************")
+
+
+	myProfile.CloseFriends = removeFromList(myProfile.CloseFriends, index)
+
+	fmt.Println("POSLE BRISANJA: ")
+	for _, oneFriend := range myProfile.CloseFriends{
+		fmt.Println(oneFriend.Username)
+	}
+	fmt.Println("***************************************")
+
+	res = repo.Database.Save(myProfile)
+
+	if res.Error != nil {
+		fmt.Println(res.Error)
+		return fmt.Errorf("there has been an error removing from closeFriends")
+	}
+
+	return nil
+}
+
+func removeFromList(arr []data.Profile, index int) []data.Profile {
+	return append(arr[:index], arr[index+1:]...)
+}
+
+func containsInCloseFriends(closeFriends []data.Profile, username string) (bool, int) {
+
+	for i, oneProfile:= range closeFriends{
+		if oneProfile.Username == username {
+			return true, i
+		}
+	}
+	return false, -1
+
+}

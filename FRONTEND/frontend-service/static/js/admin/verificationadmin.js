@@ -110,7 +110,7 @@ function rejectVerRequest(id) {
     }
 
     $.ajax({
-		type: 'GET',
+		type: 'POST',
 		crossDomain: true,
 		url: REQUEST_SERVICE_URL + '/verificationReqs/update',
 		contentType: 'application/json',

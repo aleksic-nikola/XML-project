@@ -671,6 +671,7 @@ func (handler *PostHandler) GetUserByPost(rw http.ResponseWriter, r *http.Reques
 	rw.WriteHeader(http.StatusOK)
 }
 
+
 func GetFavouritePostsIds(tokenString string, collection string) (*http.Response, error) {
 	godotenv.Load()
 

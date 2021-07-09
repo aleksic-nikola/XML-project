@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/navbar.css">
     <link rel="stylesheet" type="text/css" href="css/feed.css">
-    <link rel="stylesheet" type="text/css" href="css/savePost.css">
+    <!--<link rel="stylesheet" type="text/css" href="css/savePost.css">-->
 
     <title></title>
 </head>
@@ -42,6 +42,11 @@
                         </a>
                     </li>
 
+                    <li class="nav-item" id="postnotifsnav">
+                        <a class="nav-link" data-toggle="modal" data-target="#postNotifModal" href="#">Notifications
+                            <span id="numOfPostNotifs"></span>
+                        </a>
+                    </li>
 
                     <li class="nav-item">
                         <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
@@ -220,7 +225,7 @@
 
         <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable text-center">
-                <div class="modal-content">
+                <div class="save-modal-content modal-content">
                     <div class="modal-header text-center">
                         <h5 class="modal-title text-center" id="saveModalLabel">Save photo</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -247,13 +252,7 @@
                             <input type="text" id="collection_field" class="form-control" placeholder="Collection name">
                         </div>
                         <div class="form-group">
-
-                            <button class="btn btn-warning" id="save" onclick="savePost()" data-toggle="modal"
-                                data-target="#saveModal-${allPosts[i].ID}">&nbsp&nbsp&nbsp&nbsp Save
-                                &nbsp&nbsp&nbsp&nbsp</button>
-
-                            <button class="btn btn-warning" id="save" onclick="savePost()">&nbsp&nbsp&nbsp&nbsp Save
-                                &nbsp&nbsp&nbsp&nbsp</button>
+                            <button class="btn btn-warning" id="save" onclick="savePost()">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
                         </div>
                     </div>
                 </div>
@@ -266,7 +265,7 @@
 
         <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable text-center">
-                <div class="modal-content">
+                <div class="modal-content report-modal-content">
                     <div class="modal-header text-center">
                         <h5 class="modal-title text-center" id="reportModalLabel">Sensitive content report</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -288,6 +287,27 @@
         </div>
 
 
+        <!--MODAL ZA POST NOTIFIKACIJE-->
+
+        <div class="modal fade" id="postNotifModal" tabindex="-1" aria-labelledby="postNotifModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="postNotifModalLabel">Post notifications</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table save_table table-sm">
+                            <tbody class="save_tbody" id="insertNotifications">
+                            </tbody>
+                        </table>
+                        <button class="btn btn-secondary float-right" onclick="readNotif()">&nbsp&nbsp Mark all as read &nbsp&nbsp</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </div>
@@ -309,6 +329,8 @@
     <script src="js/followReqs.js"></script>
     <script src="js/searchinput.js"></script>
     <script src="js/sensitivereport.js"></script>
+    <script src="js/stories.js"></script>
+    <script src="js/modals/notifications.js"></script>
 
 </body>
 

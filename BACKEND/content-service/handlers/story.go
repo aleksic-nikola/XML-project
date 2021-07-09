@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"io"
 	"log"
@@ -308,5 +309,154 @@ func (h *StoryHandler) GetAllStoriesForFeedForCurrentUser(rw http.ResponseWriter
 		fmt.Println("Error with Write!")
 		return
 	}
+
+}
+
+func (h *StoryHandler) SetHighlightedOn(rw http.ResponseWriter, r *http.Request) {
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+
+	//iz bodija procitati koji je ID storija u pitanju
+
+	var storyDto dtos.StoryDto
+	err = storyDto.FromJSON(r.Body)
+	if err != nil {
+		fmt.Println("GRESKA FROM JSON")
+		h.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println("DOBIO STORY ID: ")
+	fmt.Println(storyDto)
+
+	err = h.Service.SetStoryHighlightedOn(storyDto.StoryID)
+	if err != nil {
+		fmt.Println("ERROR FROM SERVICE")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+	//iz servisa pozvati repo, pronaci taj objekat  samo mu promeniti isHighlighted --> ON
+	// dodati dugme i napraviti ajax poziv ka ovomo handleru
+	// napraviti pill na profilu recimo i tu samo ubaciti sve hihlightovane ILI na dugme otvoriti modalni prozor i sve ih samo prikazati hmmm---
+
+
+}
+
+func (h *StoryHandler) SetHighlightedOff(rw http.ResponseWriter, r *http.Request) {
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		//p.L.Fatalln("There has been an error sending the /whoami request")
+		http.Error(rw,"There has been an error sending the /whoami request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var myUsernameRoleDto dtos.UsernameRole
+	err = myUsernameRoleDto.FromJSON(resp.Body)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+
+	//iz bodija procitati koji je ID storija u pitanju
+
+	var storyDto dtos.StoryDto
+	err = storyDto.FromJSON(r.Body)
+	if err != nil {
+		fmt.Println("GRESKA FROM JSON")
+		h.L.Println(err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Println("DOBIO STORY ID: ")
+	fmt.Println(storyDto)
+
+	err = h.Service.SetStoryHighlightedOff(storyDto.StoryID)
+	if err != nil {
+		fmt.Println("ERROR FROM SERVICE")
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
+
+func (s *StoryHandler) GetAllArchiveStories(rw http.ResponseWriter, r *http.Request) {
+
+	resp, err := UserCheck(r.Header.Get("Authorization"))
+	if err != nil {
+		s.L.Fatalln("There has been an error sending the /whoami request")
+		rw.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
+	var dto dtos.UsernameRole
+	err = dto.FromJSON(resp.Body)
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+	stories := s.Service.GetAllArchiveStories(dto.Username)
+	err = stories.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+	//resp, err := http.Get(os.Getenv("profile") + "/whoami")
+
+
+}
+
+func (sh *StoryHandler) GetAllStoriesByUser(rw http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+
+
+	stories := sh.Service.GetAllArchiveStories(username)
+	err := stories.ToJSON(rw)
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+	}
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "application/json")
+
 
 }

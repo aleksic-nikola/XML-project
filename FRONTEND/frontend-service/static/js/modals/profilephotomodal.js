@@ -165,3 +165,59 @@ function showImageModal(id, postList) {
 
 	//$('#gallery-modal').modal('show');
 }
+
+function showStoryModalArchive(id, postList) {
+	console.log('showing image ' + id)
+	var post = undefined
+	postList.forEach(function(p) {
+		console.log('post loop ' + p.ID)
+		console.log(id==p.ID)
+		console.log(id)
+		console.log(p.ID)
+		if (p.ID == id) {
+			post = p
+			console.log('post is ' + post)
+		}
+	})
+	var media = post.media.path
+
+	$("#user_posted_by").text(post.postedby)
+	$("#user_posted_by").attr("href", "profile.html?" + post.postedby)
+
+	//console.log("==============> length of post (num of content): " + post.medias.length)
+
+	if (post.media.path.split(".")[1] != 'jpg' && post.media.path.split(".")[1] != 'png') {
+		// only one VIDEO
+
+		which_image.html(`
+
+		<video width="100%" height="100%" controls alt="Card image cap" class="card-img-top modal-img">
+			<source src="${media}" type="video/mp4">                       
+			Your browser does not support the video tag.
+		</video>
+		
+		`)
+
+	}  else {
+			// Only 1 picture
+
+			which_image.html(`
+	
+			<img 
+				class="card-img-top modal-img" 
+				src="${media}" 
+				alt="Card image cap">	
+	
+			`)
+	}
+
+
+	
+
+
+	//.log('give me image ' + post.medias[0])
+	// like button id looks like  like-ID e.g. like-1 current user likes current post
+
+
+	//$('#gallery-modal').modal('show');
+}

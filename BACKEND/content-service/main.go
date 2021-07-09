@@ -167,11 +167,14 @@ func main() {
 	getRouter.HandleFunc("/getpostsbyuser/{username}", ph.GetPostsByUser)
 	getRouter.HandleFunc("/current/posts", ph.GetPostsForCurrentUser)
 	getRouter.HandleFunc("/current/stories", sh.GetStoriesForCurrentUser)
+	getRouter.HandleFunc("/current/archiveStories", sh.GetAllArchiveStories)
 	getRouter.HandleFunc("/current/likedposts", ph.GetLikedPostsByUser)
 	getRouter.HandleFunc("/current/dislikedposts", ph.GetDislikedPostsByUser)
 	getRouter.HandleFunc("/current/getAllPostsForFeed", ph.GetAllPostsForFeedForCurrentUser)
 	getRouter.HandleFunc("/current/getallstoriesforfeed", sh.GetAllStoriesForFeedForCurrentUser)
 	getRouter.HandleFunc("/getuserbypostid/{id}", ph.GetUserByPost)
+	getRouter.HandleFunc("/getAllStoriesByUser/{username}", sh.GetAllStoriesByUser)
+
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/post/add", ph.CreatePost)
@@ -182,6 +185,8 @@ func main() {
 	postRouter.HandleFunc("/like/{post}", ph.LikePost)
 	postRouter.HandleFunc("/dislike/{post}", ph.DislikePost)
 	postRouter.HandleFunc("/comment/{post}", ph.Comment)
+	postRouter.HandleFunc("/story/setHighlightedOn", sh.SetHighlightedOn)
+	postRouter.HandleFunc("/story/setHighlightedOff", sh.SetHighlightedOff)
 
 	getRouter.HandleFunc("/getFavouritePosts/{collection}", ph.GetFavouritePosts)
 

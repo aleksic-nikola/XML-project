@@ -35,12 +35,16 @@ function loadStories() {
 }
 
 
+/*
 
 var userStoriesMap ={} 
 
 function fillStories(data) {
-
     var stories_here = $('#stories_here_plz')
+    if (window.location.href.includes("profile")){
+        stories_here = $('#highlightedStoriesHere')
+    }
+    
     var html = ''
     var story_url
     console.log("PODACI IZ STORija: ")
@@ -80,6 +84,12 @@ function fillStories(data) {
 
     stories_here.html(html)
 }
+*/
+
+
+/*  
+
+NE KORISTI SE
 
 
 function showStory(imgPath, postedBy){
@@ -100,7 +110,7 @@ function showStory(imgPath, postedBy){
 
 }
 
-
+*/
 
 
 
@@ -407,24 +417,13 @@ function checkifPostedByIsInBlackListOrGrayList(username) {
     return myflag
 }
 
+/*
 function showStoryModal(postedBy) {
 	//console.log('showing image ' + id)
 	var post = userStoriesMap[postedBy]
     console.log("DOBIO NA POCETKU:")
     console.log(post)
-	// postList.forEach(function(p) {
-	// 	console.log('post loop ' + p.ID)
-	// 	console.log(id==p.ID)
-	// 	console.log(id)
-	// 	console.log(p.ID)
-	// 	if (p.ID == id) {
-	// 		post = p
-	// 		console.log('post is ' + post)
-	// 	}
-	// })
-
-	//var media = post.medias[0].path
-
+	
 	console.log("==============> length of post (num of content): " + post.length)
 
     if(post[0].media.path.split(".")[1] != 'jpg' && post[0].media.path.split(".")[1] != 'jpeg' && post[0].media.path.split(".")[1] != 'jfif' && post[0].media.path.split(".")[1] != 'png' && post.length == 1) {
@@ -550,3 +549,5 @@ function showStoryModal(postedBy) {
 
 	//$('#gallery-modal').modal('show');
 }
+
+*/

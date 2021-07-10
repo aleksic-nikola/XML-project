@@ -17,7 +17,9 @@ function fillStories(data) {
     console.log(data)
 
     //var userStoriesMap ={} // key = username, value = [story1, story2...]
-
+    if (data == undefined) {
+        return 
+    }
     data.forEach(function (s) {
 
         //story_url = '../' + s.media.path
@@ -25,6 +27,14 @@ function fillStories(data) {
         postedBy = s.postedby
         //console.log("SVE IZ S:")
         //console.log(s)
+        if (window.location.href.includes("profile") == false) {
+
+            var dontshow = checkifPostedByIsInBlackListOrGrayList(s.postedby)
+    
+            if(dontshow == true) {
+                return;
+            }
+        }
 
         if (s.isforclosefriendsonly == true) {
             checkIfCloseFriends(s.postedby)

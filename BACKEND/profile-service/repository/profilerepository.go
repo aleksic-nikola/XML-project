@@ -380,6 +380,18 @@ func (repo *ProfileRepository) RemoveProfileFromCloseFriends(myUsername string, 
 	return nil
 }
 
+func (repo *ProfileRepository) ClearFollowing(profile *data.Profile) error {
+
+	return repo.Database.Model(&profile).Association("Following").Clear()
+
+}
+
+func (repo *ProfileRepository) ClearFollowers(profile *data.Profile) error {
+
+	return repo.Database.Model(&profile).Association("Followers").Clear()
+
+}
+
 func removeFromList(arr []data.Profile, index int) []data.Profile {
 	return append(arr[:index], arr[index+1:]...)
 }

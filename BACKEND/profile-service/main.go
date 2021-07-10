@@ -162,7 +162,7 @@ func main() {
 	postRouter.HandleFunc("/deletecollection", ph.DeleteCollection)
 	postRouter.HandleFunc("/deletepostfromcollection", ph.DeletePostFromCollection)
 	getRouter.HandleFunc("/getuserwhoblockedme", ph.GetUsersWhoBlockedMe)
-
+	getRouter.HandleFunc("/unfollow/{username}", ph.UnfollowUser)
 	//CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),

@@ -216,12 +216,13 @@ function getAllPublicProfiles() {
 			})
 			//console.log('Size of final_profiles is ' + final_posts.length)
 			//public_profiles.push.apply(public_profiles, data)
+            final_profiles_with_private.push.apply(final_profiles_with_private, final_profiles)
 			if(authenticated) {
 				filterBlockedAndMutedUsers(final_profiles, false)
 			}
 
             getAllPublicPosts(final_profiles)
-            final_profiles_with_private.push.apply(final_profiles_with_private, final_profiles)
+            //final_profiles_with_private.push.apply(final_profiles_with_private, final_profiles)
 
             if (authenticated) {
                 getPrivateNonFollowed()
@@ -251,11 +252,13 @@ function getPrivateNonFollowed() {
 		},
 		success: function (data) {
 		    console.log('using authenticated search..')
-            data.forEach(function(d) {
-				if (final_profiles_with_private.filter(e => e.username == d.username).length == 0) {
-					final_profiles_with_private.push(d)
-				}		  
-			})
+            if (data != undefined) {
+                data.forEach(function(d) {
+                    if (final_profiles_with_private.filter(e => e.username == d.username).length == 0) {
+                        final_profiles_with_private.push(d)
+                    }		  
+                })
+            }
             //fillColumnsProfiles(final_profiles_with_private)
 			if(authenticated) {
 				filterBlockedAndMutedUsers(final_profiles_with_private, true)
@@ -663,6 +666,18 @@ function filterBlockedAndMutedUsers(mylist, filterForUsers) {
 		}		
 	})
 
+    if(filterForUsers) {
+
+		final_profiles_with_private = filteredblockedlist
+
+		fillColumnsProfiles(filteredblockedlist)
+        
+		return
+	}
+    //fillColumnsProfiles(filteredblockedlist)
+    //return 
+    
+
 	// isfiltriraj u graylistovane
 	filteredblockedlist.forEach(function(b) {
 		if(currentUserSearch.graylist.filter(e => e.username == b.username).length == 0) {
@@ -675,7 +690,7 @@ function filterBlockedAndMutedUsers(mylist, filterForUsers) {
 		final_profiles_with_private = filteredlist
 
 		fillColumnsProfiles(filteredlist)
-
+        
 		return
 	}
 

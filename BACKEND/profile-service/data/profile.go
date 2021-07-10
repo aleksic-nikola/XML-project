@@ -13,7 +13,7 @@ type Profile struct {
 	Username        	string              `json:"username" gorm:"uniqueIndex"`
 	Phone           	string             	`json:"phone"`
 	Gender          	Gender             	`json:"gender" gorm:"type:int" `
-	DateOfBirth     	time.Time          	`json:"date_of_birth;type:date"`
+	DateOfBirth     	time.Time          	`json:"date_of_birth"`
 	Website         	string         	    `json:"website"`
 	Biography       	string       	    `json:"biography"`
 	CloseFriends    	[]Profile 	        `json:"close_friends" gorm:"many2many:profile_close_friends;"`

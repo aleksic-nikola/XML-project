@@ -73,15 +73,45 @@ func (service *PostService) LikePost(id string, username string) error {
 
 	for _, user := range post.Likes {
 		if user.Username == username {
-			fmt.Println("Already likes this post")
-			return fmt.Errorf("Already likes this post")
+			//fmt.Println("Already likes this post")
+			//return fmt.Errorf("Already likes this post")
+
+			err := service.unlikePost(id, username)
+			return err
+
 		}
 	}
 
 	post.Likes = append(post.Likes, data.User{Username: username})
 	err := service.Repo.SavePost(post)
 
+	err = service.undislikePost(id, username)
 	return err
+}
+
+func (service *PostService) unlikePost(id string, username string) error {
+
+	post := service.Repo.GetPostByID(id)
+	var new_likes []data.User
+	for _, like := range post.Likes {
+		if username != like.Username {
+			new_likes = append(new_likes, like)
+		}
+	}
+
+	err := service.Repo.ClearLikes(post)
+
+	if err != nil {
+		return err
+	}
+	post.Likes = new_likes
+	err = service.Repo.SavePost(post)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (service *PostService) DislikePost(id string, username string) error {
@@ -90,16 +120,40 @@ func (service *PostService) DislikePost(id string, username string) error {
 
 	for _, user := range post.Dislikes {
 		if user.Username == username {
-			fmt.Println("Already dislikes this post")
-			return fmt.Errorf("Already dislikes this post")
+			err := service.undislikePost(id, username)
+			return err
 		}
 	}
 
 	post.Dislikes = append(post.Dislikes, data.User{Username: username})
 	err := service.Repo.SavePost(post)
-
+	err = service.unlikePost(id, username)
 	return err
+}
 
+func (service *PostService) undislikePost(id string, username string) error {
+
+	post := service.Repo.GetPostByID(id)
+	var new_dislikes []data.User
+	for _, dislike := range post.Dislikes {
+		if username != dislike.Username {
+			new_dislikes = append(new_dislikes, dislike)
+		}
+	}
+
+	err := service.Repo.ClearDislikes(post)
+
+	if err != nil {
+		return err
+	}
+	post.Dislikes = new_dislikes
+	err = service.Repo.SavePost(post)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (service *PostService) GetPostsByIds(ids dtos.PostIdsDto) *data.Posts {

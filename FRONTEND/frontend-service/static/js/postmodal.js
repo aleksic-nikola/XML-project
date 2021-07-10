@@ -102,16 +102,33 @@ function changeActionURL() {
 
 	//e.preventDefault(); // avoid to execute the actual submit of the form.
 
-	if ($("#closeFriend_select").prop('selectedIndex') == 0) {
-		alert("Select if is story for close friend")
-		return
+	// only if on story 
+	if ($("#select_type").prop('selectedIndex') == 2) {
+		if ($("#closeFriend_select").prop('selectedIndex') == 0) {
+			alert("Select if is story for close friend")
+			return
+		}
+		else if ($("#closeFriend_select").prop('selectedIndex') == 1) { //true
+			$("#closeFriends_input").val("TRUE")
+		}
+		else {
+			$("#closeFriends_input").val("FALSE")
+	
+		}
 	}
-	else if ($("#closeFriend_select").prop('selectedIndex') == 1) { //true
-		$("#closeFriends_input").val("TRUE")
-	}
-	else {
-		$("#closeFriends_input").val("FALSE")
-
+	// only if on album and if on story
+	if ($("#select_type").prop('selectedIndex') == 1 && album_select.prop('selectedIndex') == 2) {
+		if ($("#closeFriend_select").prop('selectedIndex') == 0) {
+			alert("Select if is story for close friend")
+			return
+		}
+		else if ($("#closeFriend_select").prop('selectedIndex') == 1) { //true
+			$("#closeFriends_input").val("TRUE")
+		}
+		else {
+			$("#closeFriends_input").val("FALSE")
+	
+		}
 	}
 
 	var datax = new FormData($("#post_form")[0]);

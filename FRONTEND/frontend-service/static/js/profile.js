@@ -196,6 +196,12 @@ function modifyForNotMyProfile() {
     $('#disliked-tab').addClass('disabled')
     $('#saved-tab').addClass('disabled')
     $('#archive-tab').hide()
+    $('#closeFriends-tab').hide()
+    if (!loggedIn) {
+        $('#blockmutePart').hide()
+        $('#follow_button').hide()
+    }
+
     var visitedUsername = location.href.split("?")[1];
 
     checkIfUserBlockedMeAndRestrict();
@@ -698,6 +704,12 @@ $("#follow_button").click(function () {
         followToUsername: user_on_page.username
     }
 
+    if ($("#follow_button").text() == "Following") {
+        unfollowUser(obj)
+        return 
+    }
+
+    
     $.ajax({
         type: 'POST',
         crossDomain: true,
@@ -724,7 +736,33 @@ $("#follow_button").click(function () {
 
 })
 
+function unfollowUser(obj) {
 
+    //var datax = JSON.stringify(obj)
+
+    $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        url: PROFILE_SERVICE_URL + '/unfollow/' + obj.followToUsername,
+        contentType: 'application/json',
+        //dataType: 'JSON',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('myToken'));
+        },
+        success: function () {
+            //console.log("USPESNO ZAPRAĆENO")
+            alert('Successfully unfollowed')
+            window.location.reload()
+        },
+        error: function () {
+            alert('Could not unfollow')
+            //console.log("Erorr at ajax call FOLLOW!!!")
+
+
+        }
+    })
+
+}
 
 function checkIfAlreadyFollowed() {
     //console.log("USAO U FUNKCIJA CHECK IF ALREADY!!!")
@@ -737,7 +775,7 @@ function checkIfAlreadyFollowed() {
         if (allFollowers[i].username === this_is_me.username) {
             //console.log("NASAO SAM SEBE!!!")
             $('#follow_button').text("Following")
-            $('#follow_button').attr("disabled", 'true')
+            //$('#follow_button').attr("disabled", 'true')
             return
         }
     }

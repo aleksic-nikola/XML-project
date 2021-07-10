@@ -180,8 +180,8 @@ func (p *PostHandler) UploadPost(rw http.ResponseWriter, r *http.Request) {
 		var media data.Media
 		media.Path = "temp/id-" + strconv.Itoa(int(userID)) + "/" + files[i].Filename
 		var location data.Location
-		location.Country = "some country"
-		location.City = "some_city"
+		location.Country = ""
+		location.City = id[0]
 		media.Location = location
 		media.Type = "IMAGE"
 		medias = append(medias, media)

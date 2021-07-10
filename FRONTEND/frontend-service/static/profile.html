@@ -28,11 +28,11 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ml-auto" id="homenav">
                     <li class="nav-item">
                         <a class="nav-link" href="feed.html"> Home </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="reqsnav">
                         <a class="nav-link" data-toggle="modal" data-target="#followReqsModal" href="#"> Follow Requests
                             <span id="numOfFollowReqs"></span>
                         </a>
@@ -45,11 +45,11 @@
                     </li>
 
 
-                    <li class="nav-item active">
+                    <li class="nav-item active" id="profilenav">
                         <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item" id="logoutnav">
                         <a class="nav-link" onclick="logout()"> Log out </a>
                     </li>
 
@@ -405,10 +405,10 @@
                                                 </table>
 
                                                 <hr>
-                                                <div id="writecomment_section" class="writecomment_section">
+                                                <div class="writecomment_section">
                                                     <div class="form-group">
                                                         <textarea class="form-control comment_textarea"
-                                                            id="insert_comment" rows="2"
+                                                            id="insert_comment_profile" rows="2"
                                                             placeholder="Add a comment..."></textarea>
                                                         <div id="post_comment_button_div">
                                                             <button class="btn btn-primary postcommentbtn"
@@ -416,23 +416,12 @@
                                                             </button>
 
                                                         </div>
+
                                                     </div>
+                                                </div>
 
                                                     <hr>
-                                                    <div class="writecomment_section">
-                                                        <div class="form-group">
-                                                            <textarea class="form-control comment_textarea"
-                                                                id="insert_comment_profile" rows="2"
-                                                                placeholder="Add a comment..."></textarea>
-                                                            <div id="post_comment_button_div">
-                                                                <button class="btn btn-primary postcommentbtn"
-                                                                    id="post_comment_btn" onclick="postComment()"> Post
-                                                                </button>
-
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
+                                                    
 
 
                                                 </div>

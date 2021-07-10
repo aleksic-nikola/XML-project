@@ -1252,6 +1252,37 @@ func (u *ProfileHandler) CheckIfCloseFriends(rw http.ResponseWriter, r *http.Req
 
 }
 
+func (u *ProfileHandler) UnfollowUser(rw http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	usernameToUnfollow := params["username"]
+
+	dtoMe, err := getCurrentUserCredentials(r.Header.Get("Authorization"))
+	if err != nil {
+
+		http.Error(
+			rw,
+			fmt.Sprintf("Error deserializing JSON %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	err = u.Service.UnfollowUser(dtoMe.Username, usernameToUnfollow)
+
+	if err != nil {
+		http.Error(
+			rw,
+			fmt.Sprintf("Couldn't unfollow user %s", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+
+}
+
 
 
 func GetCurrentUserWrapper(tokenString string) (dto.UsernameRole, error) {

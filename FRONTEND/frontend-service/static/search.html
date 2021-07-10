@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/search.css">
+    <link rel="stylesheet" type="text/css" href="css/profile.css">
+
+    <title></title>
+</head>
+
+<body>
+
+    <!-- NAVBAR START-->
+    <nav class="navbar sticky-top navbar-expand-md navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand brand" id="navbarid" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
+
+            <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" id="feednav">
+                        <a class="nav-link" href="feed.html"> Home </a>
+                    </li>
+                    <li class="nav-item" id="reqsnav">
+                        <a class="nav-link" data-toggle="modal" data-target="#followReqsModal" href="#"> Follow Requests
+                            <span id="numOfFollowReqs"></span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item" id="profnav">
+                        <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
+                    </li>
+
+                    <li class="nav-item" id="logoutnav">
+                        <a class="nav-link" onclick="logout()"> Log out </a>
+                    </li>
+
+                    <li class="nav-item" id="loginnav">
+                        <a class="nav-link" href="login.html"> Login </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- NAVBAR END-->
+
+    <!-- Column 1-->
+
+    <div class="row">
+        <div class="column-left pl-2" style="background-color:#aaa;">
+            <br>
+            <h6 class="text-center">Posts by tags</h6>
+            <hr>
+            <div class="row2">
+                <div class="column2" id="column-left-0">
+                  
+                </div>
+                <div class="column2" id="column-left-1">
+                 
+                </div>
+                <div class="column2" id="column-left-2">
+                   
+                  </div>
+                <div class="column2" id="column-left-3">
+                    
+                  </div>
+              </div>
+        </div>
+
+
+        <!-- Column 2-->
+
+        <div class="column-mid" style="background-color:#bbb;">
+          <br>
+          <h6 class="text-center">Profiles</h6>
+          <hr>
+          <div class="card" style="width: 100%">
+            <ul class="list-group list-group-flush" id="profile_list">
+              
+            </ul>
+          </div>
+        </div>
+
+        <!-- Column 3-->
+        <div class="column-right" id="column-right" style="background-color:#ccc;">
+            <br>
+            <h6 class="text-center">Posts by location</h6>
+            <hr>
+            <div class="row2">
+                <div class="column2" id="column-right-0">
+             
+                </div>
+                <div class="column2" id="column-right-1">
+
+                </div>
+                <div class="column2" id="column-right-2">
+             
+                  </div>
+                <div class="column2" id="column-right-3">
+                  
+                  </div>
+              </div>
+        </div>
+
+            <!-- Modal -->
+        <div class="modal fade" id="gallery-modal-search" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!-- <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5> -->
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="image_modal_body">
+                        <!-- CONTENT OF MODAL WHEN CLICKING ON PICTURE -->
+                        
+                        <div class="one-feed text-center">
+                            <div>
+                                <img src="img/avatar.png" class="user_img">
+                                <a class="postedby" id="user_posted_bysearch">User</a>
+                                <button class="btn btn-secondary" style="float: right;" id="report" onclick="setGlobalPostToReport(this.id)" data-toggle="modal" data-target="#reportModal">&nbsp&nbsp&nbsp&nbsp Report &nbsp&nbsp&nbsp&nbsp</button>
+                            </div>
+                            <br>
+
+                            <div class="card" style="width: 100%;">
+                                <!-- IMAGE OF POST-->
+                                <div id="which_image1" style="width: auto; height: auto !important;">
+                                    <img class="card-img-top modal-img"  src="img/test2.png"
+                                        alt="Card image cap">
+                                </div>
+                                <div class="card-body">
+
+                                    <!-- DESCRIPTION OF IMAGE-->
+                                    <p class="card-text text-left description_part" id="image_description1">
+                                        Moj opis za moju trecu sliku.</p>
+
+                                    <!-- LIKE & COMMENT OPTIONS   +  dodati modal za pisanje komentara -->
+                                    <p class="text-left">
+                                    <div id="like_button_div1">
+                                        <a href=""> Like &nbsp&nbsp&nbsp&nbsp</a>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button id="like" class="btn btn-success" onclick="likePost(this.id)">&nbsp&nbspLike&nbsp&nbsp</button>
+                                        </div>
+                                        <div class="col">
+                                            <button id="dislike" class="btn btn-danger" onclick="dislikePost(this.id)">&nbsp&nbspDislike&nbsp&nbsp</button>
+                                        </div>
+                                        <div class="col">
+                                            <button id="save" class="btn btn-warning" onclick="setGlobalPostToSave(this.id)" data-toggle="modal" data-target="#saveModalSearch">&nbsp&nbspSave&nbsp&nbsp</button>
+                                        </div>
+                                    </div>
+                                    </p>
+                                    <hr>
+                                    <!--DUGME ZA BRISANJE IZ SAVED-->
+
+
+                                    <h5 class="text-left">Comments:</h5>
+                                    <hr>
+                                    <!-- COMMENTS -->
+
+                                    <table class="table" id="mydatatable">
+                                        <thead class="hideheader">
+                                            <tr>
+                                                <th scope="col" id="commented_by">CommentedBy</th>
+                                                <th scope="col" id="comment">Comment</th>
+                                            </tr>
+                                        </thead>
+                                        <div class="bodycontainer scrollable">
+                                            <tbody class="text-left" id="comments_body1">
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>Veoma lepa slika, pohvala za fotografa</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>Vrh</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>Svaka cast majstore</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>bravo care</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="first_td"> <a class="commentedby" href="">
+                                                            Mark Markic: </a> </td>
+                                                    <td>pozdrav</td>
+                                                </tr>
+
+                                            </tbody>
+
+                                        </div>
+                                    </table>
+
+                                    <hr>
+                                    <div class="writecomment_section">
+                                        <div class="form-group">
+                                            <textarea class="form-control comment_textarea"
+                                                id="insert_comment_search" rows="2"
+                                                placeholder="Add a comment..."></textarea>
+                                            <div id="post_comment_button_div1">
+                                                <button class="btn btn-primary postcommentbtn"
+                                                    id="post_comment_btn" onclick="postComment()"> Post
+                                                </button>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <!--SAVE POST TO COLLECTION MODAL-->
+
+
+                <div class="modal fade" id="saveModalSearch" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable text-center">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title text-center" id="saveModalLabel">Save photo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <table class="table save_table text-center">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th class="save_td_th" scope="col">
+                                                    Your collections
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableInsert" class="save_tbody text-center">
+        
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" id="collection_field_profile" class="form-control" placeholder="Collection name">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-warning" id="save" onclick="savePostOnProfile()">&nbsp&nbsp&nbsp&nbsp Save &nbsp&nbsp&nbsp&nbsp</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            <!--NON LOGGED USER CONTENT SHOW MODAL-->
+
+
+            <div class="modal fade" id="nonLoggedModal" tabindex="-1"  aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable text-center">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <h6>Login to view posts:</h6>
+                                <p><a href="login.html">Login</a></p>
+
+                                <hr>
+                                <br><br>
+                                <p> Don't have an account? <a href="signup.html">Sign Up</a></p>
+
+                            </div>
+                            <br>
+
+                            <div class="form-group">
+                                <button class="btn btn-dark float-right" id="close_alert" data-dismiss="modal">&nbsp&nbspClose&nbsp&nbsp</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        <!--MODAL ZA SENSITIVE CONTENT REPORT-->
+
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="reportModalLabel">Sensitive content report</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">      
+                        <div class="form-group">
+                            <input type="text" id="note" class="form-control" placeholder="Reason">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" id="save" onclick="createSensitiveReport()">&nbsp&nbsp&nbsp&nbsp Send report &nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script src="js/constants.js"></script>
+    
+    <script src="js/search.js"></script>
+    <script src="js/login.js"></script>
+
+    <script src="js/likecomment.js"></script>
+    <script src="js/favourites.js"></script>
+    <script src="js/sensitivereport.js"></script>
+</body>
+
+</html>

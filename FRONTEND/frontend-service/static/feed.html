@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+    <link rel="stylesheet" type="text/css" href="css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="css/feed.css">
+    <!--<link rel="stylesheet" type="text/css" href="css/savePost.css">-->
+
+    <title></title>
+</head>
+
+<body>
+
+    <!-- NAVBAR START-->
+    <nav class="navbar sticky-top navbar-expand-md navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand brand" href="feed.html"> <img src="img/nistagram_logo.png" class="navbar_logo"></a>
+
+            <input class="form-control search-input text-center" type="text" placeholder="Search..." id="search_input">
+            <button class="btn btn-primary" onclick="search()">Search</button>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showModalPost()"> + </a>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link" href="feed.html"> Home </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="modal" data-target="#followReqsModal" href="#"> Follow Requests
+                            <span id="numOfFollowReqs"></span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item" id="postnotifsnav">
+                        <a class="nav-link" data-toggle="modal" data-target="#postNotifModal" href="#">Notifications
+                            <span id="numOfPostNotifs"></span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a id="myProfileHref" class="nav-link" href="profile.html"> Profile </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="logout()"> Log out </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- NAVBAR END-->
+
+    <div class=container>
+        <div class="row">
+
+            <div class="col-sm-6">
+                <!--                        STORY PART-->
+                <div class="story-part">
+
+                    <div class="scrollmenu" id="stories_here_plz">
+
+                    </div>
+                </div>
+                <!-- STORY PART END-->
+                <div id="insertFeedPosts"></div>
+                <!-- INSERTING ALL POSTS HERE -->
+
+                <!--Post modal-->
+                <!-- Modal -->
+                <div class="modal fade" id="new-post-modal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <!-- <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5> -->
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="post_form" enctype="multipart/form-data" action="ph" method="post">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="offset-5 col-3">
+
+                                                <select id="select_type">
+                                                    <option>Post</option>
+                                                    <option>Album</option>
+                                                    <option>Story</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="offset-5 col-3">
+
+                                                <select id="album_select">
+                                                    <option>Share album as..</option>
+                                                    <option>Post</option>
+                                                    <option>Story</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <br>
+
+                                        <div class="row">
+                                            <div class="offset-5  col-5">
+                                                <input type="text" name="post_title" id="post_title"
+                                                    placeholder="location">
+
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="offset-5 col-5">
+                                                <textarea rows="2" placeholder="description" name="description_part"
+                                                    id="description_part" style="resize : none;"> </textarea>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="offset-5 col-5">
+                                                <select id="closeFriend_select">
+                                                    <option>For close friends only</option>
+                                                    <option>True</option>
+                                                    <option>False</option>
+
+                                                </select>
+                                                <input id="closeFriends_input" name="closeFriends_input" hidden
+                                                    type="text">
+                                            </div>
+
+                                        </div>
+                                        <br>
+
+                                        <div class="row">
+                                            <div class="offset-5 col-5">
+
+                                                <input type="file" name="multiplefiles" id="multiplefiles" multiple>
+                                                <input type="button" onclick="changeActionURL()" value="upload" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <br>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="followReqsModal" tabindex="-1" aria-labelledby="followReqsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="followReqsModalLabel">Follow requests
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="insertAllFollowReqs"></div>
+
+                        <!-- <ul class="list-unstyled">
+                                    <li class="media">
+                                        <img src="#" class="mr-3" alt="...">
+                                        <div class="media-body">
+                                            <h5 class="mt-0 mb-1">aleksiic98</h5>
+                                            <p>Nikola Aleksic</p>
+                                        </div>
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-primary btn-lg btnFollow">Accept</button>
+                                        </span>
+                                        &nbsp&nbsp&nbsp
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-danger btn-lg btnFollow">Delete</button>
+                                        </span>
+                                    </li>
+        
+                                    <hr>
+                                    <li class="media">
+                                        <img src="#" class="mr-3" alt="...">
+                                        <div class="media-body">
+                                            <h5 class="mt-0 mb-1">aleksiic98</h5>
+                                            <p>Nikola Aleksic</p>
+                                        </div>
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-primary btn-lg btnFollow">Accept</button>
+                                        </span>
+                                        &nbsp&nbsp&nbsp
+                                        <span class="btnFollow">
+                                            <button type="button" class="btn btn-danger btn-lg btnFollow">Delete</button>
+                                        </span>
+                                    </li>
+        
+                                </ul> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="btnTriggerStory" hidden data-toggle="modal" data-target="#storyModal"></button>
+
+        <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xs modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="storyModalLabel">Story
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="storyModalWindow">
+                        <div class="container">
+                            <div id="insertStory"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--MODAL ZA SAVEOVANJE POSTOVA U FAVORITE-->
+
+        <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="save-modal-content modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="saveModalLabel">Save photo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <table class="table save_table text-center">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th class="save_td_th" scope="col">
+                                            Your collections
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableInsert" class="save_tbody text-center">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="text" id="collection_field" class="form-control"
+                                placeholder="Collection name">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-warning" id="save" onclick="savePost()">&nbsp&nbsp&nbsp&nbsp Save
+                                &nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--MODAL ZA SENSITIVE CONTENT REPORT-->
+
+
+
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable text-center">
+                <div class="modal-content report-modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="modal-title text-center" id="reportModalLabel">Sensitive content report</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" id="note" class="form-control" placeholder="Reason">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary" id="save"
+                                onclick="createSensitiveReport()">&nbsp&nbsp&nbsp&nbsp Send report
+                                &nbsp&nbsp&nbsp&nbsp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--MODAL ZA POST NOTIFIKACIJE-->
+
+        <div class="modal fade" id="postNotifModal" tabindex="-1" aria-labelledby="postNotifModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="postNotifModalLabel">Post notifications</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table save_table table-sm">
+                            <tbody class="save_tbody" id="insertNotifications">
+                            </tbody>
+                        </table>
+                        <button class="btn btn-secondary float-right" onclick="readNotif()">&nbsp&nbsp Mark all as read
+                            &nbsp&nbsp</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/likecomment.js"></script>
+    <script src="js/postmodal.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/feed.js"></script>
+    <script src="js/followReqs.js"></script>
+    <script src="js/searchinput.js"></script>
+    <script src="js/sensitivereport.js"></script>
+    <script src="js/stories.js"></script>
+    <script src="js/modals/notifications.js"></script>
+
+</body>
+
+</html>

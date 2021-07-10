@@ -1,0 +1,11 @@
+service-list:
+
+- gateway
+- auth-service
+- request-service
+- content-service (post+story)
+- interaction-service (message+notification)
+- profile-service (profile + suggestion)
+- campaign-service
+- search-service
+- monolit-app

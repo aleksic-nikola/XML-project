@@ -1,0 +1,23 @@
+
+.save_table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    height: 80% !important;
+}
+
+.save_tbody {
+    width: 100%;
+    height: 80% !important;
+}
+
+.save_td_th {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: center;
+    width: 1000px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}

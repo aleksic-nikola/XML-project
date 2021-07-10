@@ -1,0 +1,199 @@
+version: "3.8"
+services:
+  gateway:
+    image: nginx:1.19.8-alpine
+    ports:
+      - 8888:8888
+    networks:
+      - backend
+    restart: always
+    volumes:
+      - ./BACKEND/Gateway/nginx.conf:/etc/nginx/nginx.conf
+      - ./BACKEND/Gateway/api_gateway.conf:/etc/nginx/api_gateway.conf
+  
+  profile-service:
+    image: nistagram-profile
+    container_name: profile-service
+    build:
+      context: ./BACKEND/profile-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      HOST_NAME: ${HOST_NAME}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_PROFILE}
+      PASSWORD: ${PASSWORD}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      CONTENT_SERVICE_DOMAIN: ${CONTENT_SERVICE_DOMAIN}
+      CONTENT_SERVICE_PORT: ${CONTENT_SERVICE_PORT}
+      REQUEST_SERVICE_DOMAIN: ${REQUEST_SERVICE_DOMAIN}
+      REQUEST_SERVICE_PORT: ${REQUEST_SERVICE_PORT}
+      SEARCH_SERVICE_DOMAIN: ${SEARCH_SERVICE_DOMAIN}
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      PORT: ${PROFILE_SERVICE_PORT}
+      DOCKERIZED: ${DOCKERIZED}
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  auth-service:
+    image: nistagram-auth
+    container_name: auth-service
+    build:
+      context: ./BACKEND/auth-service
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./FRONTEND/frontend-service/static/temp:/app/temp
+    environment:
+      HOST_NAME: ${HOST_NAME}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_AUTH}
+      PASSWORD: ${PASSWORD}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
+      CONTENT_SERVICE_DOMAIN: ${CONTENT_SERVICE_DOMAIN}
+      CONTENT_SERVICE_PORT: ${CONTENT_SERVICE_PORT}
+      REQUEST_SERVICE_DOMAIN: ${REQUEST_SERVICE_DOMAIN}
+      REQUEST_SERVICE_PORT: ${REQUEST_SERVICE_PORT}
+      SEARCH_SERVICE_DOMAIN: ${SEARCH_SERVICE_DOMAIN}
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      PORT: ${AUTH_SERVICE_PORT}
+      DOCKERIZED: ${DOCKERIZED}
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  content-service:
+    image: nistagram-content
+    container_name: content-service
+    build:
+      context: ./BACKEND/content-service
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./FRONTEND/frontend-service/static/temp:/app/temp
+    environment:
+      HOST_NAME: ${HOST_NAME}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_CONTENT}
+      PASSWORD: ${PASSWORD}
+      CONTENT_SERVICE_DOMAIN: ${CONTENT_SERVICE_DOMAIN}
+      CONTENT_SERVICE_PORT: ${CONTENT_SERVICE_PORT}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
+      REQUEST_SERVICE_DOMAIN: ${REQUEST_SERVICE_DOMAIN}
+      REQUEST_SERVICE_PORT: ${REQUEST_SERVICE_PORT}
+      SEARCH_SERVICE_DOMAIN: ${SEARCH_SERVICE_DOMAIN}
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      PORT: ${CONTENT_SERVICE_PORT}
+      DOCKERIZED: ${DOCKERIZED}
+      CONTENT_DOCKER_STORAGE: ${CONTENT_DOCKER_STORAGE}
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  request-service:
+    image: nistagram-request
+    container_name: request-service
+    build:
+      context: ./BACKEND/request-service
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./FRONTEND/frontend-service/static/temp:/app/temp
+    environment:
+      HOST_NAME: ${HOST_NAME}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_REQUEST}
+      PASSWORD: ${PASSWORD}
+      CONTENT_SERVICE_DOMAIN: ${CONTENT_SERVICE_DOMAIN}
+      CONTENT_SERVICE_PORT: ${CONTENT_SERVICE_PORT}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
+      REQUEST_SERVICE_DOMAIN: ${REQUEST_SERVICE_DOMAIN}
+      REQUEST_SERVICE_PORT: ${REQUEST_SERVICE_PORT}
+      SEARCH_SERVICE_DOMAIN: ${SEARCH_SERVICE_DOMAIN}
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      PORT: ${CONTENT_SERVICE_PORT}
+      DOCKERIZED: ${DOCKERIZED}
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  interaction-service:
+    image: nistagram-interaction
+    container_name: interaction-service
+    build:
+      context: ./BACKEND/interaction-service
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      HOST_NAME: ${HOST_NAME}
+      DIALECT: ${DIALECT}
+      DBPORT: ${DBPORT}
+      USER: ${USER}
+      NAME: ${NAME_INTERACTION}
+      PASSWORD: ${PASSWORD}
+      CONTENT_SERVICE_DOMAIN: ${CONTENT_SERVICE_DOMAIN}
+      CONTENT_SERVICE_PORT: ${CONTENT_SERVICE_PORT}
+      AUTH_SERVICE_DOMAIN: ${AUTH_SERVICE_DOMAIN}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      PROFILE_SERVICE_DOMAIN: ${PROFILE_SERVICE_DOMAIN}
+      PROFILE_SERVICE_PORT: ${PROFILE_SERVICE_PORT}
+      REQUEST_SERVICE_DOMAIN: ${REQUEST_SERVICE_DOMAIN}
+      REQUEST_SERVICE_PORT: ${REQUEST_SERVICE_PORT}
+      INTERACTION_SERVICE_DOMAIN: ${INTERACTION_SERVICE_DOMAIN}
+      INTERACTION_SERVICE_PORT: ${INTERACTION_SERVICE_PORT}
+      PORT: ${CONTENT_SERVICE_PORT}
+      DOCKERIZED: ${DOCKERIZED}
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    build:
+      context: ./BACKEND/database
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    restart: on-failure
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: root
+    networks:
+      - backend
+
+volumes:
+  database_postgres:
+
+networks:
+  backend:
+    name: backend
+    driver: bridge

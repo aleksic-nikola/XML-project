@@ -12,6 +12,8 @@ type VerifiedRepository struct {
 }
 
 func (repo *VerifiedRepository) CreateVerified(user *data.Verified) error {
+	fmt.Println("Iz baze poziv: ")
+	fmt.Println(user)
 	result := repo.Database.Create(user)
 	//TODO convert to logs
 	fmt.Println(result.RowsAffected)
@@ -20,7 +22,7 @@ func (repo *VerifiedRepository) CreateVerified(user *data.Verified) error {
 
 func (repo *VerifiedRepository) VerifiedExists(id uint) bool {
 	var count int64
-	repo.Database.Where("id = ?", id).Find(&data.Profile{}).Count(&count)
+	repo.Database.Where("profile_id = ?", id).Find(&data.Verified{}).Count(&count)
 	return count != 0
 }
 
@@ -32,6 +34,8 @@ func (repo *VerifiedRepository) GetVerificationForUser(id uint) (data.Verified, 
 
 	var ver data.Verified
 	err := repo.Database.Where("profile_id = ?", id).Find(&ver)
+	fmt.Println("after getverif")
+	fmt.Println(ver)
 
 	return ver, err.Error
 

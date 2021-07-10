@@ -164,16 +164,25 @@ func (handler *VerificationRequestHandler) CreateInProgressVerificationRequest(r
 	if os.Getenv("DOCKERIZED")== "yes" {
 		fmt.Println("USAO DA JE DOKERIZED!")
 		finalPath = "./temp/id-" + strconv.Itoa(int(user_id.UserId)) + "/" + h.Filename
+		fmt.Println(finalPath)
 	} else{
 		finalPath =  filepath.Join("../../FRONTEND/frontend-service/static/temp/id-" + strconv.Itoa(int(user_id.UserId)), h.Filename )
 	}
 
 	out, err := os.Create(finalPath)
 
+	if err != nil {
+		fmt.Errorf("Error in creating")
+		fmt.Println("error in creating")
+		rw.WriteHeader(http.StatusExpectationFailed)
+		return
+	}
+
 	_, err = io.Copy(out, file) // file not files[i] !
 
 	if err != nil {
 		fmt.Fprintln(rw, err)
+		rw.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
 	var verifiedType data.VerifiedType
@@ -277,6 +286,7 @@ func CreateVerified(verificationReq data.VerificationRequest) (*http.Response, e
 	godotenv.Load()
 	newVerified := dtoRequest.NewVerified{Username: verificationReq.Request.SentBy,VerifiedType: verificationReq.Category}
 
+	fmt.Println(newVerified)
 	requestBody, err := json.Marshal(newVerified)
 	client := &http.Client{}
 	url := "http://" + constants.PROFILE_SERVICE_URL + "/verified/create"

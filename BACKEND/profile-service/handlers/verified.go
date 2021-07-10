@@ -91,6 +91,11 @@ func (u *VerifiedHandler) CheckIfVerified(rw http.ResponseWriter, r *http.Reques
 
 	ver, err1 := u.Service.GetVerificationForUser(id)
 	fmt.Println("CheckIfVerified Error")
+	fmt.Println(ver)
+
+	xyz,err := u.ProfileService.Repo.GetProfileByID(ver.ProfileID)
+
+
 	fmt.Println(err1)
 	if err1 != nil {
 		fmt.Println("THIS USER IS NOT VERIFIED BRO")
@@ -102,7 +107,9 @@ func (u *VerifiedHandler) CheckIfVerified(rw http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if ver.Profile.Username == "" {
+	fmt.Println(xyz)
+
+	if xyz.Username == "" {
 		fmt.Println("THIS USER IS NOT VERIFIED BRO")
 		http.Error(
 			rw,

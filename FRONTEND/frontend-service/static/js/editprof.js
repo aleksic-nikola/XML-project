@@ -99,11 +99,11 @@ function fillProfileDataFromProfile(data) {
 
     // ?????  why undefined 
     ////console.log(data.date_of_birth)
-    
+    console.log(data)
     if(data.date_of_birth == "" || data.date_of_birth == "undefined" || data.date_of_birth == null) {
         dateofbirth.val("")
     } else {
-        dateofbirth.val(data.date_of_birth.toString())
+        dateofbirth.val(data.date_of_birth.toString().split("T")[0])
     }
 
     bio.val(data.biography)

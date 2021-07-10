@@ -2,6 +2,8 @@ package service
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 	"xml/profile-service/data"
 	"xml/profile-service/dto"
@@ -91,15 +93,19 @@ func (service *ProfileService) EditProfileData(dto dto.ProfileEditDTO, oldUserna
 	} else {
 		profile.Gender = 1
 	}
-	layoutISO := "2006-01-02"
+	//layoutISO := "2006-01-02"
 	//date := "1999-12-31"
-	t, _ := time.Parse(layoutISO, dto.DateOfBirth)
-
-	profile.DateOfBirth = t
+	//t, _ := time.Parse(layoutISO, dto.DateOfBirth)
+	parts := strings.Split(dto.DateOfBirth, "-")
+	year , err := strconv.Atoi(parts[0])
+	month, err := strconv.Atoi(parts[1])
+	day, err := strconv.Atoi(parts[2])
+	profile.DateOfBirth = time.Date( year, time.Month(month) ,day, 0, 0, 0, 0, time.UTC)
+	//profile.DateOfBirth = t
 	profile.Website = dto.Website
 	profile.Biography = dto.Biography
 
-	err := service.Repo.UpdateProfile(profile)
+	err = service.Repo.UpdateProfile(profile)
 
 	if err != nil {
 		fmt.Println(err)
@@ -610,4 +616,69 @@ func (service *ProfileService) CheckIfCloseFriends(myUsername string, usernameCh
 	}
 	fmt.Println("NISMO SMO SE NASLI")
 	return false, nil
+}
+
+func (service *ProfileService) UnfollowUser(me string, notme string) error {
+
+	myProfile, err := service.GetProfileByUsername(me)
+
+	if err != nil {
+		return err
+	}
+
+	profile_to_unfollow, err := service.GetProfileByUsername(notme)
+
+	if err != nil {
+
+		return err
+	}
+
+	// remove him from my following
+
+	var new_for_me []data.Profile
+	var new_for_other_user []data.Profile
+
+	for _, prof := range myProfile.Following {
+
+		if prof.Username == notme {
+			continue
+		}
+		new_for_me = append(new_for_me, prof)
+	}
+
+	for _, other := range profile_to_unfollow.Followers {
+		if other.Username == me {
+			continue
+		}
+		new_for_other_user = append(new_for_other_user, other)
+	}
+
+	err = service.Repo.ClearFollowing(myProfile)
+
+	if err != nil {
+		return err
+	}
+
+	err = service.Repo.ClearFollowers(profile_to_unfollow)
+	if err != nil {
+		return err
+	}
+
+	myProfile.Following = new_for_me
+
+	err = service.Repo.UpdateProfile(myProfile)
+
+	if err != nil {
+		return err
+	}
+
+	profile_to_unfollow.Followers = new_for_other_user
+	err = service.Repo.UpdateProfile(profile_to_unfollow)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

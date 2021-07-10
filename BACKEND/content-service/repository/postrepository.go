@@ -89,4 +89,18 @@ func (repo *PostRepository) GetPostById(id uint) data.Post {
 	return post
 }
 
+func (repo *PostRepository) ClearLikes(post *data.Post) error {
+
+	repo.Database.Model(&post).Association("Likes").Clear()
+
+	return nil
+}
+
+func (repo *PostRepository) ClearDislikes(post *data.Post) error {
+
+	repo.Database.Model(&post).Association("Dislikes").Clear()
+
+	return nil
+}
+
 

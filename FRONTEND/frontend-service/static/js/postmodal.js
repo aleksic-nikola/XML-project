@@ -201,7 +201,8 @@ function changeActionURL() {
 		processData: false,
 		contentType: false,
 		success: function (data) {
-			alert(data); // show response from the php script.
+			alert("Succesfully added content"); // show response from the php script.
+			window.location.reload()
 		}
 	});
 

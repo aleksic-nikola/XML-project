@@ -116,6 +116,8 @@ services:
       context: ./BACKEND/request-service
       dockerfile: Dockerfile
     restart: always
+    volumes:
+      - ./FRONTEND/frontend-service/static/temp:/app/temp
     environment:
       HOST_NAME: ${HOST_NAME}
       DIALECT: ${DIALECT}

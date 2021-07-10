@@ -44,8 +44,12 @@ function sendVerificationRequest() {
 	    contentType: false,	
            success: function(data)
            {
-               alert(data); // show response from the php script.
-           }
+			   alert('Successfully sent verification')
+               //alert(data); // show response from the php script.
+           },
+		   error: function() {
+			alert('Error in sending verification')
+		   }
          });
 	 
 }

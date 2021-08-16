@@ -196,7 +196,7 @@ function modifyForNotMyProfile() {
     $('#disliked-tab').addClass('disabled')
     $('#saved-tab').addClass('disabled')
     $('#archive-tab').hide()
-    $('#closeFriends-tab').hide()
+    //$('#closeFriends-tab').hide()
     if (!loggedIn) {
         $('#blockmutePart').hide()
         $('#follow_button').hide()
